@@ -8,8 +8,8 @@ function LogItem({log}) {
 
     return (
         <li>
+            <button>bookmark</button>
             <Link to={logUrl}>
-                <button>bookmark</button>
                 <span>{subject}</span>
                 <span>{title}</span>
                 <span>{start_date}</span>
