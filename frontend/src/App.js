@@ -3,7 +3,7 @@ import Home from "./routes/Home";
 import Conversation from "./routes/Conversation/Conversation";
 import ConversationLog from "./routes/ConversationLog/ConversationLog";
 import Community from "./routes/Community";
-import GrowthRecord from "./routes/GrowthRecord";
+import GrowthRecord from "./routes/GrowthRecord/GrowthRecord";
 import Login from "./routes/LogIn";
 import Signin from "./routes/SignIn";
 import Mypage from "./routes/Mypage";
