@@ -18,6 +18,18 @@
     background-color: white;
 }
 
+#roomViewTopBar > span {
+    font-size: large;
+    line-height: 64px;
+    vertical-align: middle;
+    margin-left: 20px;
+    /* margin-right: 20px; */
+}
+
+#roomViewTitle {
+    margin-right: 300px;
+}
+
 #video-container {
     position: absolute;
 }

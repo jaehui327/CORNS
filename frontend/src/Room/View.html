@@ -18,6 +18,7 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <!-- Bootstrap -->
       <link rel="stylesheet" href="/openVidu/openvidu-style.css" type="text/css" media="screen">
+      <script src="https://kit.fontawesome.com/b09b9ec2e7.js" crossorigin="anonymous"></script>
       <script src="/openVidu/openvidu-browser-2.25.0.js"></script>
       <link rel="stylesheet" href="contents/css/roomStyle.css">
       <script src="/openVidu/openvidu.js"></script>
@@ -25,9 +26,21 @@
     <body>
       <div id="roomViewBackground">
         <!-- 탑바 -->
-        <div id="roomViewTopBar"></div>
+        <div id="roomViewTopBar">
+          <span id="roomViewTitle">🎈 제목이 들어갈 자리입니다. [일상]</span>
+          <span id="roomViewTimer">10:00</span>
+          <span id="roomViewMemberCount">2/3</span>
+          <span id="roomViewMike"><i class="fa-solid fa-microphone"></i></span>
+          <span id="roomViewVideo"><i class="fa-solid fa-video"></i></span>
+          <span id="roomViewPlay"><i class="fa-solid fa-play"></i></span>
+          <span id="roomViewOut"><i class="fa-solid fa-right-from-bracket"></i></span>
+
+        </div>
         <!-- 채팅창 -->
-        <div id="roomViewCatting">chatting</div>
+        <div id="roomViewCatting">
+          <textarea></textarea>
+          <button>보내기</button>
+        </div>
         <div id="roomViewUserList">
           <!-- 유저1 -->
           <div id="roomViewUser1" class="roomViewUser"></div>
