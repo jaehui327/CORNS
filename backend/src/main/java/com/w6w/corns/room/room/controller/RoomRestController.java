@@ -48,4 +48,28 @@ public class RoomRestController {
         return new ResponseEntity<Map>(resultMap, status);
     }
 
+    @ApiOperation(value = "쫑알쫑알 전체 목록 보기", notes = "필터링 추가해야 함")
+    @GetMapping()
+    private ResponseEntity<?> getAllRooms() {
+
+        Map resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            List<Room> rooms = roomService.findAll();
+            logger.debug("rooms: {}", rooms);
+            if (rooms.isEmpty()) {
+                status = HttpStatus.NO_CONTENT;
+            } else {
+                resultMap.put("rooms", rooms);
+                status = HttpStatus.OK;
+            }
+        } catch (Exception e) {
+            resultMap.put("message", e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<Map>(resultMap, status);
+    }
+
 }

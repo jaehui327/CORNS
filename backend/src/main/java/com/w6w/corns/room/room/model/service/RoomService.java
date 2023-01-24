@@ -20,4 +20,10 @@ public class RoomService {
         return room;
     }
 
+    public List<Room> findAll() {
+        List<Room> rooms = new ArrayList<>();
+        roomRepository.findAll().forEach(e -> rooms.add(e));
+        return rooms;
+    }
+
 }
