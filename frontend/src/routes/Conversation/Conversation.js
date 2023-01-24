@@ -1,11 +1,14 @@
 import Navbar from "../../components/Navbar";
+import LogInUserArea from "./LogInUserArea";
+import AnonymousUserArea from "./AnonymousUserArea";
 import RoomList from "./RoomList";
 
 function Conversation() {
+  const user = true;
   return (
     <>
       <Navbar />
-      <h1>Conversation</h1>
+      {user ? <LogInUserArea /> : <AnonymousUserArea />}
       <RoomList />
     </>
   );

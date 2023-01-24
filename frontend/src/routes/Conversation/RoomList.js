@@ -1,11 +1,11 @@
-import * as React from "react";
+import React from "react";
 
 import RoomCard from "./RoomCard";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
-export default function RoomList() {
+function RoomList() {
   const datas = [
     { id: 1, subject: "일상" },
     { id: 2, subject: "비즈니스" },
@@ -22,16 +22,21 @@ export default function RoomList() {
   ];
 
   const roomList = datas.map((item) => (
-    <Grid item xs={6} md={2} key={item.id}>
+    <Grid item xs={6} sm={3} md={2} key={item.id}>
       <RoomCard title={item.subject} />
     </Grid>
   ));
 
   return (
-    <Box>
-      <Grid container spacing={1}>
-        {roomList}
-      </Grid>
-    </Box>
+    <>
+      <h2>쫑알룸리스트</h2>
+      <Box>
+        <Grid container spacing={1}>
+          {roomList}
+        </Grid>
+      </Box>
+    </>
   );
 }
+
+export default RoomList;
