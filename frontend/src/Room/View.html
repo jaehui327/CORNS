@@ -28,14 +28,23 @@
         <div id="roomViewTopBar"></div>
         <!-- 채팅창 -->
         <div id="roomViewCatting">chatting</div>
-        <!-- 유저1 -->
-        <div id="roomViewUser1" class="roomViewUser">user1</div>
-        <!-- 유저2 -->
-        <div id="roomViewUser2" class="roomViewUser">user2</div>
-        <!-- 유저3 -->
-        <div id="roomViewUser3" class="roomViewUser">user3</div>
-        <!-- 유저4 -->
-        <div id="roomViewUser4" class="roomViewUser">user4</div>
+        <div id="roomViewUserList">
+          <!-- 유저1 -->
+          <div id="roomViewUser1" class="roomViewUser"></div>
+          <!-- 유저2 -->
+          <div id="roomViewUser2" class="roomViewUser"></div>
+          <!-- 유저3 -->
+          <div id="roomViewUser3" class="roomViewUser"></div>
+          <!-- 유저4 -->
+          <div id="roomViewUser4" class="roomViewUser"></div>
+        </div>
+        <!-- <div id="video-container" class="col-md-6"></div> -->
+        <div id="video-container" class="col-md-6">
+          <!-- <video autoplay="" id="local-video-undefined"></video>
+          <div class="data-node" id="data-Participant38">
+            <p>Participant38</p>
+          </div> -->
+        </div>
       </div>
       <input type="hidden" id="sessionId" />
       <input type="hidden" id="userName" />
@@ -58,7 +67,7 @@
           $("#sessionId").val(session);
           $("#userName").val("앨리스"); // 유저이름은 쿠키에서 가져올려나
 
-          // joinSession();
+          joinSession();
           
         }
 

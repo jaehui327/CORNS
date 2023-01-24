@@ -18,6 +18,10 @@
     background-color: white;
 }
 
+#video-container {
+    position: absolute;
+}
+
 .roomViewUser {
     position: absolute;
     width: 480px;
