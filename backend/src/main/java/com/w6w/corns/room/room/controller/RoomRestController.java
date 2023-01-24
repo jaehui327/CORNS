@@ -11,14 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@RestController("/room")
+@RestController()
+@RequestMapping("room")
 public class RoomRestController {
 
     private final Logger logger = LoggerFactory.getLogger(RoomRestController.class);
@@ -72,4 +69,28 @@ public class RoomRestController {
         return new ResponseEntity<Map>(resultMap, status);
     }
 
+    @ApiOperation(value = "쫑알룸 정보 가져오기", notes = "쫑알룸 room_no를 path variable로 넘기면 쫑알룸 정보를 리턴")
+    @GetMapping(value = "/{roomNo}")
+    private ResponseEntity<?> getRoom(@PathVariable Integer roomNo) {
+
+        logger.debug("room_no: {}", roomNo);
+        Map resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            Optional<Room> room = roomService.findByRoomNo(roomNo);
+            logger.debug("room: {}", room);
+            if (room.isEmpty()) {
+                status = HttpStatus.NO_CONTENT;
+            } else {
+                resultMap.put("room", room);
+                status = HttpStatus.OK;
+            }
+        } catch (Exception e) {
+            resultMap.put("message", e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<Map>(resultMap, status);
+    }
 }

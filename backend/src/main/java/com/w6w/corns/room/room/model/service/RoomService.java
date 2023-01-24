@@ -26,4 +26,9 @@ public class RoomService {
         return rooms;
     }
 
+    public Optional<Room> findByRoomNo(int roomNo) {
+        Optional<Room> room = roomRepository.findById(roomNo);
+        return room;
+    }
+
 }
