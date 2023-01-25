@@ -9,9 +9,17 @@ import Signin from "./routes/SignIn";
 import Mypage from "./routes/Mypage";
 // import FriendList from "./pages/FriendList";
 
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+
 function App() {
   return (
-    <div className="App">
+    <div
+      className="App"
+      css={css`
+        margin: 0 105px;
+      `}
+    >
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/conversation" component={Conversation} />
