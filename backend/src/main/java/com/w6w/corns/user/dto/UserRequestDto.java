@@ -1,6 +1,7 @@
 package com.w6w.corns.user.dto;
 
 import com.w6w.corns.user.domain.User;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -27,6 +28,9 @@ public class UserRequestDto {
     
     @ApiModelProperty(value = "회원 프로필 이미지")
     private String imgUrl;
+
+    @ApiModelProperty(value = "로그인정보")
+    private int social;
     
     @ApiModelProperty(value = "토큰")
     private String refreshToken;
@@ -38,6 +42,7 @@ public class UserRequestDto {
                 .password(password)
                 .nickname(nickname)
                 .imgUrl(imgUrl)
+                .social(social)
                 .refreshToken(refreshToken)
                 .build();
     }

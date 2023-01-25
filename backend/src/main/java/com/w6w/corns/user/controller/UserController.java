@@ -4,6 +4,7 @@ import com.w6w.corns.auth.OAuthService;
 import com.w6w.corns.jwt.JwtService;
 import com.w6w.corns.user.domain.User;
 import com.w6w.corns.user.dto.LoginResponseDto;
+import com.w6w.corns.user.dto.UserRequestDto;
 import com.w6w.corns.user.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +34,26 @@ public class UserController {
 
     //join
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody User user){
+    public ResponseEntity<?> join(@RequestBody UserRequestDto user){
         try {
             int result = userService.signUp(user);
             if(result < 0) return new ResponseEntity<>(HttpStatus.CONFLICT); //중복 이메일
             else return new ResponseEntity<HttpStatus>(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
+            return exceptionHandling(e);
+        }
+    }
+
+    @GetMapping("/email-check/{email}")
+    public ResponseEntity<?> checkDuplicateEmail(@PathVariable String email){
+
+        try {
+            int result = userService.validateDuplicateUser(email);
+            if(result == 0) return new ResponseEntity<>(HttpStatus.OK);
+            else return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception e) {
+            log.error((e.getMessage()));
             return exceptionHandling(e);
         }
     }

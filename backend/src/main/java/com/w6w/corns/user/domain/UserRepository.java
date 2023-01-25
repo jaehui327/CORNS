@@ -5,11 +5,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query("select u from User u where u.email = :email")
+//    @Query("select u from User u where u.email = :email")
     User findByEmail(String email);
+
+    List<User> findAll();
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE User set refreshToken=:refreshToken where userId=:userId")
@@ -18,4 +22,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying(clearAutomatically = true)
     @Query("update User set social=:updateSocial where userId=:userId")
     int updateSocial(int userId, int updateSocial);
+
 }

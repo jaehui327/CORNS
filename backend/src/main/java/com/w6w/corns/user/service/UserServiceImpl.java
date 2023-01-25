@@ -2,9 +2,12 @@ package com.w6w.corns.user.service;
 
 import com.w6w.corns.user.domain.User;
 import com.w6w.corns.user.domain.UserRepository;
+import com.w6w.corns.user.dto.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -14,31 +17,26 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
 
-    /**
-     *
-     * @param user 가입하는 회원 정보
-     * @throws Exception
-     */
     @Override
-    public int signUp(User user) throws Exception {
+    public int signUp(UserRequestDto user) throws Exception {
 
         //이메일 검증 필요
-        int result = validateDuplicateUser(user);
-        if (result == 0) return -1;
+        int result = validateDuplicateUser(user.getEmail());
+        if (result == 1) return -1;
          else {
-            //암호화필요, social도 함께 저장 필요
-            userRepository.save(user);
-            userRepository.updateSocial(user.getUserId(),
-                    user.getSocial() | 1);
+            //암호화필요
+            user.setSocial(1); //기본 회원가입 설정
+            userRepository.save(user.toEntity()); //회원 저장
             return 1;
         }
     }
-    private int validateDuplicateUser(User user){
-        System.out.println("user = " + user);
-        User findUser = userRepository.findByEmail(user.getEmail());
+
+    @Override
+    public int validateDuplicateUser(String email){
+        User findUser = userRepository.findByEmail(email);
 //        System.out.println("findUser = " + findUser);
-        if(findUser == null) return 1; //중복 x
-        else return 0; //중복
+        if(findUser == null) return 0; //중복 x
+        else return 1; //중복
     }
 
 
