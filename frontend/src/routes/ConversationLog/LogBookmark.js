@@ -1,7 +1,12 @@
 import React from "react";
-import LogFilter from "../../components/ConversationLog/LogFilter";
 import LogHeader from "../../components/ConversationLog/LogHeader";
 import LogList from "../../components/ConversationLog/LogList";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import Paper from "@mui/material/Paper";
 
 function LogBookmark() {
   // fetch
@@ -33,10 +38,18 @@ function LogBookmark() {
 
   return (
     <>
-      <h5>즐겨찾기</h5>
-      <hr />
-      <LogHeader />
-      <LogList logs={logs}/>
+      <h2>쫑알로그</h2>
+
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <LogHeader />
+          </TableHead>
+          <TableBody>
+            <LogList logs={logs} />
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }
