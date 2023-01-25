@@ -4,6 +4,7 @@ import Sidebar from "../../components/Sidebar";
 import MyProfile from './MyProfile'
 import ExperienceDetail from './ExperienceDetail';
 import Indicators from './indicators';
+import Grid from "@mui/material/Grid";
 
 function GrowthRecord() {
   const SidebarItems = [
@@ -15,16 +16,19 @@ function GrowthRecord() {
   return (
     <>
       <Navbar />
-      <hr />
 
-      <Sidebar Items={SidebarItems}/>
-
-      <hr />
-      <Switch>
-        <Route exact path="/growthRecord" component={MyProfile} />
-        <Route exact path="/growthRecord/experienceDetail" component={ExperienceDetail} />
-        <Route exact path="/growthRecord/indicators" component={Indicators} />
-      </Switch>
+      <Grid container spacing = {1}>
+        <Grid item xs = {2}>
+          <Sidebar Items={SidebarItems}/>
+        </Grid>
+        <Grid item xs = {10}>
+          <Switch>
+            <Route exact path="/growthRecord" component={MyProfile} />
+            <Route exact path="/growthRecord/experienceDetail" component={ExperienceDetail} />
+            <Route exact path="/growthRecord/indicators" component={Indicators} />
+          </Switch>
+        </Grid>
+      </Grid>
 
     </>
   );
