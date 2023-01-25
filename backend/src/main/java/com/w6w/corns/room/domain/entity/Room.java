@@ -1,4 +1,4 @@
-package com.w6w.corns.room.room.entity;
+package com.w6w.corns.room.domain.entity;
 
 import com.w6w.corns.util.RoomCode;
 import lombok.Data;

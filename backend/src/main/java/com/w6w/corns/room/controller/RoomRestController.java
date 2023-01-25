@@ -1,8 +1,8 @@
-package com.w6w.corns.room.room.controller;
+package com.w6w.corns.room.controller;
 
-import com.w6w.corns.room.room.entity.Room;
-import com.w6w.corns.room.room.model.service.RoomService;
-import com.w6w.corns.util.RoomCode;
+import com.w6w.corns.room.service.RoomService;
+import com.w6w.corns.room.domain.entity.Room;
+//import com.w6w.corns.util.code.RoomCode;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class RoomRestController {
         HttpStatus status;
 
         try {
-            room.setRoomCd(RoomCode.ROOM_WAITING.getCode());
+//            room.setRoomCd(RoomCode.ROOM_WAITING.getCode());
             room.setRegTm(LocalDateTime.now());
             Room saveRoom = roomService.save(room);
             logger.debug("saveRoom: {}", saveRoom);
@@ -47,7 +48,7 @@ public class RoomRestController {
 
     @ApiOperation(value = "쫑알쫑알 전체 목록 보기", notes = "필터링 추가해야 함")
     @GetMapping()
-    private ResponseEntity<?> getAllRooms() {
+    private ResponseEntity<?> getAllRooms(Pageable pageable) {
 
         Map resultMap = new HashMap<>();
         HttpStatus status;
