@@ -5,8 +5,8 @@ import LogInUserArea from "../components/Conversation/LogInUserArea";
 import AnonymousUserArea from "../components/Conversation/AnonymousUserArea";
 import ConversationRoomFilter from "../components/Conversation/ConversationRoomFilter";
 import RoomList from "../components/Conversation/RoomList";
-import BasicModal from "../components/Conversation/RoomCreateForm";
-import SelfEvaluation from "../components/Conversation/SelfEvaluation";
+import RoomCreateModal from "../components/Conversation/RoomCreateForm";
+import SelfEvaluationModal from "../components/Conversation/SelfEvaluationModal";
 
 function Conversation() {
   const user = true;
@@ -18,8 +18,8 @@ function Conversation() {
       <h2>쫑알룸리스트</h2>
       <ConversationRoomFilter />
       <RoomList />
-      <BasicModal />
-      <SelfEvaluation />
+      <RoomCreateModal />
+      <SelfEvaluationModal />
     </>
   );
 }

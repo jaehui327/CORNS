@@ -64,7 +64,7 @@ const times = [
 
 const people = [{ label: "2명" }, { label: "3명" }, { label: "4명" }];
 
-export default function BasicModal() {
+export default function RoomCreateModal() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
