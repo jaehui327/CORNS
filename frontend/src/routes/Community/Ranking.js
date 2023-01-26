@@ -13,6 +13,7 @@ function Ranking({location}) {
   return (
     <>
       <Tabmenu Items={TabMenus} Location={location.pathname}/>
+      
     </>
   );
 

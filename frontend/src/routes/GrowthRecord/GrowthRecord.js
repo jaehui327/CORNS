@@ -3,7 +3,7 @@ import Navbar from "../../components/GlobalComponents/Navbar";
 import Sidebar from "../../components/GlobalComponents/Sidebar";
 import MyProfile from './MyProfile'
 import ExperienceDetail from './ExperienceDetail';
-import Indicators from './indicators';
+import Indicators from './Indicators';
 import Grid from "@mui/material/Grid";
 
 function GrowthRecord() {
