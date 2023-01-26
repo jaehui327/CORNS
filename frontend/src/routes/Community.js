@@ -1,12 +1,12 @@
 import Navbar from "../components/GlobalComponents/Navbar";
 
-function Mypage() {
+function Community() {
   return (
     <>
       <Navbar />
-      <h1>Mypage</h1>
+      <h1>Community</h1>
     </>
   );
 }
 
-export default Mypage;
+export default Community;

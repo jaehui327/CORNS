@@ -1,7 +1,11 @@
 import React from "react";
 import LogItem from "../../components/ConversationLog/LogItem";
 import ParticipantList from "../../components/ConversationLog/ParticipantList";
-import SelfEvaluationForm from "../../components/SelfEvaluationForm";
+import SelfEvaluationForm from "../../components/GlobalComponents/SelfEvaluationForm";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+
 
 function LogDetail({ match }) {
   const { room_no } = match.params;
@@ -22,28 +26,33 @@ function LogDetail({ match }) {
 
   const participants = [
     {
-        imgUrl: '', 
-        nickname: 'isk2', 
-        user_id: 100000, 
-        ddabong: 2, 
-        ignition: '3분 20초', 
-        script: ''
+      imgUrl: "",
+      nickname: "isk2",
+      user_id: 100000,
+      ddabong: 2,
+      ignition: "3분 20초",
+      script: "",
     },
     {
-        imgUrl: '', 
-        nickname: 'haun', 
-        user_id: 100001, 
-        ddabong: 1, 
-        ignition: '4분', 
-        script: ''
-    }
-  ]
+      imgUrl: "",
+      nickname: "haun",
+      user_id: 100001,
+      ddabong: 1,
+      ignition: "4분",
+      script: "",
+    },
+  ];
 
   return (
     <>
-      <LogItem log={log}/>
-      <hr />
-      <ParticipantList participants={participants}/>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableBody>
+          <LogItem log={log} />
+        </TableBody>
+      </Table>
+      <hr/>
+      
+      <ParticipantList participants={participants} />
       <hr />
       <SelfEvaluationForm />
     </>
