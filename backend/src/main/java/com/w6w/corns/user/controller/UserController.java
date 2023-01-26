@@ -27,9 +27,10 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
-    private ResponseEntity<String> exceptionHandling(Exception e) {
-        e.printStackTrace();
-        return new ResponseEntity<String>("Sorry: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    private ResponseEntity<?> exceptionHandling(Exception e) {
+        Map<String, String> map = new HashMap<>();
+        map.put("message", e.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //join

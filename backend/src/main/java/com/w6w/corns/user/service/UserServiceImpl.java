@@ -22,14 +22,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public int signUp(UserRequestDto user) throws Exception {
 
-        //이메일 검증 필요
+        //이메일 검증
         int result = validateDuplicateUser(user.getEmail());
+
         if (result == 1) return -1;
          else {
-            //암호화필요
             user.setSocial(1); //기본 회원가입 설정
             userRepository.save(user.toEntity()); //회원 저장
-            
             return 1;
         }
     }
@@ -37,7 +36,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public int validateDuplicateUser(String email){
         User findUser = userRepository.findByEmail(email);
-//        System.out.println("findUser = " + findUser);
+
         if(findUser == null) return 0; //중복 x
         else return 1; //중복
     }
@@ -59,6 +58,7 @@ public class UserServiceImpl implements UserService{
             //탈퇴회원 및 이용정지회원은 나중에 처리하기
             if(newPass.equals(user.getPassword()) && user.getUserCd() == 8000) {
 
+                //따봉, 친구, 출석, 발화량 나중에 추가 필요
                 return LoginResponseDto.builder()
                         .userId(user.getUserId())
                         .email(user.getEmail())
