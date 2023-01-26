@@ -1,5 +1,6 @@
 package com.w6w.corns.user.domain;
 
+import com.w6w.corns.util.BaseTime;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -7,15 +8,15 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@DynamicInsert
+@DynamicUpdate
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
-@DynamicInsert
-@DynamicUpdate
 @Entity
-public class User {
+public class User extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,43 +28,45 @@ public class User {
     @Column(length = 100)
     String email;
 
-    @Column(length = 512)
+    @Column(length = 1000)
     String password;
+
+    @Column(length=500)
+    String salt;
 
     @Column(length = 1000)
     String imgUrl;
 
-    @Column(columnDefinition = "SMALLINT")
+    @Column(columnDefinition = "SMALLINT", insertable = false)
     int expTotal;
 
-    @Column(columnDefinition = "SMALLINT")
-    int level;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "level_no")
+    Level level;
 
-    @Column(columnDefinition = "SMALLINT")
+    @Column(columnDefinition = "SMALLINT", insertable = false)
     int friendTotal;
 
     @Column(columnDefinition = "TIMESTAMP")
     LocalDateTime lastLoginTm;
 
-    @Column(name="social", columnDefinition = "TINYINT", length=1)
+    @Column(columnDefinition = "TINYINT", nullable = false)
     int social;
 
     @Column(length = 1000)
     String refreshToken;
 
-    @Column(name="delete_yn", length=1)
-    char deleteYn;
+    @Column(columnDefinition = "SMALLINT", insertable = false)
+    int userCd;
 
-    @Column(columnDefinition = "TIMESTAMP")
-    LocalDateTime reg_tm;
-
-    @Column(columnDefinition = "TIMESTAMP")
-    LocalDateTime mod_tm;
+    @Column(columnDefinition = "SMALLINT", insertable = false)
+    int reportTotal;
 
     @Builder(builderClassName = "UserRegister", builderMethodName = "userRegister")
-    public User(String email, String password, String nickname, int social) {
+    public User(String email, String password, String salt, String nickname, int social) {
         this.email = email;
         this.password=password;
+        this.salt=salt;
         this.nickname=nickname;
         this.social = social;
     }
@@ -73,6 +76,10 @@ public class User {
         this.imgUrl=imgUrl;
         this.social=social;
         return this;
+    }
+
+    public void updateLastLoginTM(){
+        this.lastLoginTm=LocalDateTime.now();
     }
 
 }

@@ -1,11 +1,12 @@
 package com.w6w.corns.user.controller;
 
-import com.w6w.corns.auth.OAuthService;
+//import com.w6w.corns.auth.OAuthService;
 import com.w6w.corns.jwt.JwtService;
 import com.w6w.corns.user.domain.User;
 import com.w6w.corns.user.dto.LoginResponseDto;
 import com.w6w.corns.user.dto.UserRequestDto;
 import com.w6w.corns.user.service.UserService;
+import com.w6w.corns.util.SHA256Util;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,6 @@ public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
-    private final OAuthService oAuthService;
 
     private ResponseEntity<String> exceptionHandling(Exception e) {
         e.printStackTrace();
@@ -36,6 +36,11 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody UserRequestDto user){
         try {
+            String salt = SHA256Util.generateSalt();
+            String newPass = SHA256Util.getEncrypt(user.getPassword(), salt);
+            user.setPassword(newPass);
+            user.setSalt(salt);
+
             int result = userService.signUp(user);
             if(result < 0) return new ResponseEntity<>(HttpStatus.CONFLICT); //중복 이메일
             else return new ResponseEntity<HttpStatus>(HttpStatus.OK);
@@ -60,13 +65,13 @@ public class UserController {
 
     //login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user){
+    public ResponseEntity<?> login(@RequestBody UserRequestDto requestUser){
 
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
-        User loginUser = null;
+        LoginResponseDto loginUser = null;
         try {
-            loginUser = userService.login(user);
+            loginUser = userService.login(requestUser);
             System.out.println("loginUser = " + loginUser);
             if(loginUser == null) status = HttpStatus.UNAUTHORIZED;
             else{
@@ -76,8 +81,10 @@ public class UserController {
                 log.debug("accessToken = " + accessToken);
                 log.debug("refreshToken = " + refreshToken);
 
+                //경험치도 줘야함!
                 userService.saveRefreshToken(loginUser.getUserId(), refreshToken);
-
+                userService.updateLastLoginTm(loginUser.getUserId());
+                loginUser.setRefreshToken(refreshToken);
                 resultMap.put("accessToken", accessToken);
                 resultMap.put("refreshToken", refreshToken);
                 resultMap.put("loginUser", loginUser);
@@ -91,29 +98,28 @@ public class UserController {
         return new ResponseEntity<>(resultMap, status);
     }
 
-    //Authorization code 받기 -> OAuth 서버에 토큰 요청
-    //access token으로 이름, 이메일, 프로필url 요청
-    //db에 존재한다면 업데이트, 아니면 새로 등록
-    //유저 primary key 값으로 jwt 토큰 생성
-//    @PostMapping("/login/google")
-//    public ResponseEntity<?> googleLogin(@RequestBody User user){
-//        //처음 로그인
-//        try {
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        //기존 로그인 회원
-//        return null;
-//    }
-//
+
+
     @GetMapping("/login/google")
     public ResponseEntity<?> googleLogin(@RequestParam String code){
 
-        LoginResponseDto loginResponseDto = oAuthService.login("google", code);
-        return ResponseEntity.ok().body(loginResponseDto);
+        //Authorization code 받기 -> OAuth 서버에 토큰 요청
+        //access token으로 이름, 이메일, 프로필url 요청
+        //db에 존재한다면 업데이트, 아니면 새로 등록
+        //유저 primary key 값으로 jwt 토큰 생성
+        return null;
     }
 
     //logout
+    @PostMapping("/user/logout/{userId}")
+    public ResponseEntity<?> logout(@RequestParam int userId){
+
+        try {
+            userService.deleteRefreshToken(userId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return exceptionHandling(e);
+        }
+    }
 }

@@ -23,6 +23,9 @@ public class UserRequestDto {
     @ApiModelProperty(value = "회원 비밀번호")
     private String password;
 
+    @ApiModelProperty(value = "salt")
+    private String salt;
+
     @ApiModelProperty(value = "회원 닉네임")
     private String nickname;
     
@@ -40,6 +43,7 @@ public class UserRequestDto {
                 .userId(userId)
                 .email(email)
                 .password(password)
+                .salt(salt)
                 .nickname(nickname)
                 .imgUrl(imgUrl)
                 .social(social)

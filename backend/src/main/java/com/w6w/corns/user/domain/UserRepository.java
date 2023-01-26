@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-//    @Query("select u from User u where u.email = :email")
     User findByEmail(String email);
 
     List<User> findAll();
@@ -22,5 +21,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying(clearAutomatically = true)
     @Query("update User set social=:updateSocial where userId=:userId")
     int updateSocial(int userId, int updateSocial);
+
 
 }
