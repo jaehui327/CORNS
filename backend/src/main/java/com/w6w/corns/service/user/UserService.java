@@ -1,8 +1,7 @@
-package com.w6w.corns.user.service;
+package com.w6w.corns.service.user;
 
-import com.w6w.corns.user.domain.User;
-import com.w6w.corns.user.dto.LoginResponseDto;
-import com.w6w.corns.user.dto.UserRequestDto;
+import com.w6w.corns.dto.user.LoginResponseDto;
+import com.w6w.corns.dto.user.UserRequestDto;
 
 public interface UserService {
 

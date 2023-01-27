@@ -1,5 +1,6 @@
-package com.w6w.corns.user.domain;
+package com.w6w.corns.domain.user;
 
+import com.w6w.corns.domain.level.Level;
 import com.w6w.corns.util.BaseTime;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;

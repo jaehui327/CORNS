@@ -1,4 +1,4 @@
-package com.w6w.corns.user.domain;
+package com.w6w.corns.domain.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

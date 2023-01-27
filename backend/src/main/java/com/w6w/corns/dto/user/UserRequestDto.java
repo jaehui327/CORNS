@@ -1,7 +1,6 @@
-package com.w6w.corns.user.dto;
+package com.w6w.corns.dto.user;
 
-import com.w6w.corns.user.domain.User;
-import io.swagger.annotations.Api;
+import com.w6w.corns.domain.user.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;

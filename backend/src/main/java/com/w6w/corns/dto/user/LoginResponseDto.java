@@ -1,4 +1,4 @@
-package com.w6w.corns.user.dto;
+package com.w6w.corns.dto.user;
 
 import lombok.*;
 

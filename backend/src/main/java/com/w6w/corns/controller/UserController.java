@@ -1,11 +1,10 @@
-package com.w6w.corns.user.controller;
+package com.w6w.corns.controller;
 
 //import com.w6w.corns.auth.OAuthService;
-import com.w6w.corns.jwt.JwtService;
-import com.w6w.corns.user.domain.User;
-import com.w6w.corns.user.dto.LoginResponseDto;
-import com.w6w.corns.user.dto.UserRequestDto;
-import com.w6w.corns.user.service.UserService;
+import com.w6w.corns.service.jwt.JwtService;
+import com.w6w.corns.dto.user.LoginResponseDto;
+import com.w6w.corns.dto.user.UserRequestDto;
+import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.SHA256Util;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;

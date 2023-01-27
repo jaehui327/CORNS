@@ -1,4 +1,4 @@
-package com.w6w.corns.jwt;
+package com.w6w.corns.service.jwt;
 
 import java.util.Map;
 

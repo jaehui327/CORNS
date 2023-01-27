@@ -1,4 +1,4 @@
-package com.w6w.corns.user.domain;
+package com.w6w.corns.domain.level;
 
 import com.w6w.corns.util.BaseTime;
 import lombok.Getter;
