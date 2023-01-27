@@ -4,64 +4,59 @@ import com.w6w.corns.domain.level.Level;
 import com.w6w.corns.util.BaseTime;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @DynamicInsert
-@DynamicUpdate
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @Entity
 public class User extends BaseTime {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int userId;
+    private int userId;
 
     @Column(name="nickname", length = 20)
-    String nickname;
+    private String nickname;
 
     @Column(length = 100)
-    String email;
+    private String email;
 
     @Column(length = 1000)
-    String password;
+    private String password;
 
     @Column(length=500)
-    String salt;
+    private String salt;
 
     @Column(length = 1000)
-    String imgUrl;
+    private String imgUrl;
 
     @Column(columnDefinition = "SMALLINT", insertable = false)
-    int expTotal;
+    private int expTotal;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_no")
-    Level level;
+    private Level level;
 
     @Column(columnDefinition = "SMALLINT", insertable = false)
-    int friendTotal;
+    private int friendTotal;
 
     @Column(columnDefinition = "TIMESTAMP")
-    LocalDateTime lastLoginTm;
+    private LocalDateTime lastLoginTm;
 
     @Column(columnDefinition = "TINYINT", nullable = false)
-    int social;
+    private int social;
 
     @Column(length = 1000)
-    String refreshToken;
+    private String refreshToken;
 
     @Column(columnDefinition = "SMALLINT", insertable = false)
-    int userCd;
+    private int userCd;
 
     @Column(columnDefinition = "SMALLINT", insertable = false)
-    int reportTotal;
+    private int reportTotal;
 
     @Builder(builderClassName = "UserRegister", builderMethodName = "userRegister")
     public User(String email, String password, String salt, String nickname, int social) {
