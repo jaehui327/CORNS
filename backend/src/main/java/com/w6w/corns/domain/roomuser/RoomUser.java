@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 public class RoomUser extends BaseTime {
 
-    @Id()
+    @Id
     private int roomUserNo;
 
     private int roomNo;
