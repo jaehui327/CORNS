@@ -3,6 +3,10 @@ var session;
 
 var roomListId = "roomViewUser1";
 
+// 비디오 사이즈
+let videoWidth = parseInt($(window).width() * 0.35); //Math.floor(screen.width * 0.35); // "35vw";
+let videoHeight = parseInt($(window).height() * 0.375); //"37.5vh";
+
 /* OPENVIDU METHODS */
 
 function joinSession() {
@@ -47,7 +51,7 @@ function joinSession() {
 	// On every Stream destroyed...
 	session.on('streamDestroyed', event => {
 		// Delete the HTML element with the user's nickname. HTML videos are automatically removed from DOM
-		removeUserData(event.stream.connection);
+		// removeUserData(event.stream.connection);
 	});
 
 	// On every asynchronous exception...
@@ -75,13 +79,12 @@ function joinSession() {
 				// document.getElementById('session').style.display = 'block';
 
 				// --- 6) Get your own camera stream with the desired properties ---
-
 				var publisher = OV.initPublisher(roomListId, {
 					audioSource: undefined, // The source of audio. If undefined default microphone
 					videoSource: undefined, // The source of video. If undefined default webcam
 					publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 					publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-					resolution: '480x250',  // The resolution of your video
+					resolution: videoWidth + 'x' + videoHeight,//'480x250',  // The resolution of your video
 					frameRate: 30,			// The frame rate of your video
 					insertMode: 'APPEND',	// How the video is inserted in the target element roomListId
 					mirror: true       	// Whether to mirror your local video or not
@@ -124,7 +127,7 @@ function appendUserData(videoElement, connection) {
 	dataNode.className = "data-node";
 	dataNode.id = "data-" + nodeId;
 	dataNode.innerHTML = "<p>" + userData + "</p>";
-	videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
+	// videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
 }
 
 

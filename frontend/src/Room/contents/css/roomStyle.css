@@ -9,7 +9,8 @@
     margin-right: 2vw;
     margin-top: 4vh;
     margin-bottom: 4vh;
-    z-index: -1;
+    /* z-index: -1; */
+    border: 2px solid black;
 }
 
 #roomViewTopBar {
@@ -65,7 +66,7 @@
     margin-top: calc(12vh + 37.5vh + 1vh);
 }
 
-#roomViewCatting {
+#roomViewChatting {
     position: absolute;
     margin-left: calc(2vw + 71vw + 2vw);
     margin-top: 4vh;
@@ -74,3 +75,56 @@
     width: 19vw;
     height: 84vh;
 }
+
+#roomViewChattingReceive {
+    border-radius: 6px;
+    width: calc(19vw - 2vw);
+    height: calc(74vh - 4vh);
+    border: 1px solid black;
+    margin-left: 1vw;
+    margin-top: 2vh;
+    /* margin-left: calc(0.5vw - 1px);
+    margin-bottom: 0.5vh; */
+}
+
+#roomViewChattingSend {
+    border-radius: 6px;
+    width: calc(19vw - 2vw);
+    height: calc(10vh - 4vh);
+    margin-left: 1vw;
+    margin-top: 3vh;
+    border: 1px solid black;
+}
+
+#roomViewChattingSendMessage {
+    margin-top: 1.5vh;
+    border:0 solid black;
+}
+
+#roomViewChattingSendMessage:focus { 
+    outline: none; 
+}
+
+#roomViewChattingSendButton {
+    float: right;
+    margin-top: 2vh;
+    margin-right: 2vh;
+ }
+
+/* #roomViewChattingSendMessage {
+    width: calc(19vw - 1vw);
+    height: calc(6vh - 0.5vh);
+    border: 1px solid black;
+    margin-left: calc(0.5vw - 1px);
+    margin-bottom: 0.5vh;
+} */
+
+/* #roomViewChattingSend > input {
+    float: left; 
+    width: 80%;
+}
+#roomViewChattingSend > span {
+    float: left; 
+    width: 20%;
+} */
+
