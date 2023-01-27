@@ -1,5 +1,6 @@
 package com.w6w.corns.dto.user;
 
+import com.w6w.corns.domain.user.User;
 import lombok.*;
 
 import java.util.List;
@@ -32,5 +33,16 @@ public class LoginResponseDto {
         this.nickname = nickname;
         this.imgUrl = imgUrl;
         this.refreshToken = refreshToken;
+    }
+
+    @Builder
+    public LoginResponseDto(User user){
+        this.userId=user.getUserId();
+        this.email=user.getEmail();
+        this.imgUrl=user.getImgUrl();
+        this.nickname=user.getNickname();
+        this.level=user.getLevel().getLevelNo();
+        //여기서부터 계속
+//        this.
     }
 }

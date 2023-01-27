@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,7 +112,7 @@ public class UserController {
     }
 
     //logout
-    @PostMapping("/user/logout/{userId}")
+    @PostMapping("/logout/{userId}")
     public ResponseEntity<?> logout(@RequestParam int userId){
 
         try {
@@ -122,4 +123,37 @@ public class UserController {
             return exceptionHandling(e);
         }
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> reissueToken(@RequestBody UserRequestDto user, HttpServletRequest request){
+
+        HttpStatus status = null;
+        String token = request.getHeader("refreshToken");
+        try{
+            if(jwtService.checkToken(token) && token.equals(userService.getRefreshToken(user.getUserId()))){
+                String accessToken = jwtService.createAccessToken("id", user.getUserId());
+                log.debug("토큰 재발급");
+                Map<String, Object> result = new HashMap<>();
+                result.put("accessToken",accessToken);
+                status = HttpStatus.OK;
+
+                return new ResponseEntity<>(result, status);
+            }else{
+                log.debug("refresh token 만료");
+                status = HttpStatus.UNAUTHORIZED;
+                return new ResponseEntity<>(status);
+            }
+        }catch(Exception e){
+            log.error(e.getMessage());
+            return exceptionHandling(e);
+        }
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserInfo(@RequestParam int userId){
+
+
+        return null;
+    }
+
 }

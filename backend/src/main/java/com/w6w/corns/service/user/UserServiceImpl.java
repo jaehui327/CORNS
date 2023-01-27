@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
@@ -88,7 +87,8 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public Object getRefreshToken(int userId) throws Exception {
-        return null;
+        User user = userRepository.findByUserId(userId);
+        return user.getRefreshToken();
     }
 
     @Override
@@ -98,4 +98,10 @@ public class UserServiceImpl implements UserService{
         userRepository.updateRefreshToken(userId, null);
     }
 
+    @Override
+    @Transactional
+    public LoginResponseDto findUserById(int userId) throws Exception{
+
+        return null;
+    }
 }

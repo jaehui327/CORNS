@@ -12,6 +12,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByEmail(String email);
 
+    User findByUserId(int userId);
     List<User> findAll();
 
     @Modifying(clearAutomatically = true)
@@ -21,6 +22,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying(clearAutomatically = true)
     @Query("update User set social=:updateSocial where userId=:userId")
     int updateSocial(int userId, int updateSocial);
-
 
 }
