@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public int signUp(UserRequestDto user) throws Exception {
 
         //이메일 검증
@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int validateDuplicateUser(String email){
         User findUser = userRepository.findByEmail(email);
 
@@ -72,22 +73,26 @@ public class UserServiceImpl implements UserService{
         return null;
     }
     @Override
+    @Transactional(readOnly = true)
     public void updateLastLoginTm(int userId) throws Exception{
         User user = userRepository.getReferenceById(userId);
         user.updateLastLoginTM();
     }
 
     @Override
+    @Transactional
     public int saveRefreshToken(int userId, String refreshToken) throws Exception {
         return userRepository.updateRefreshToken(userId, refreshToken);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Object getRefreshToken(int userId) throws Exception {
         return null;
     }
 
     @Override
+    @Transactional
     public void deleteRefreshToken(int userId) throws Exception {
 
         userRepository.updateRefreshToken(userId, null);
