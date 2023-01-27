@@ -76,6 +76,16 @@
     height: 84vh;
 }
 
+#roomViewTranslation {
+    position: absolute;
+    margin-left: calc(2vw + 71vw + 2vw);
+    margin-top: 4vh;
+    border: 1px solid black;
+    background-color: white;
+    width: 19vw;
+    height: 84vh;
+}
+
 #roomViewChattingReceive {
     border-radius: 6px;
     width: calc(19vw - 2vw);

@@ -139,8 +139,10 @@ function removeUserData(connection) {
 
 var APPLICATION_SERVER_URL = "http://localhost:5000/";
 
-var OPENVIDU_URL= "http://localhost:4443/";
-var OPENVIDU_SECRET = "MY_SECRET";
+var OPENVIDU_URL= "https://3.39.6.81/";
+var OPENVIDU_SECRET = "a506w6w";
+
+var auth = "Basic T1BFTlZJRFVBUFA6YTUwNnc2dw==";
 
 function getToken(mySessionId) {
 	return createToken(mySessionId);
@@ -172,7 +174,7 @@ function createToken(sessionId) {
 			url: OPENVIDU_URL + 'openvidu/api/sessions/' + sessionId + '/connection',
 			data: JSON.stringify({}),
 			headers: { "Content-Type": "application/json",
-						"Authorization" : "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+						"Authorization" : auth,
 						"Access-Control-Allow-Origin" : "*"},
 			success: (response) => resolve(response), // The token
 			error: (error) => reject(error)
@@ -184,9 +186,9 @@ function createToken(sessionId) {
 function getConnection(sessionId){
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: OPENVIDU_URL + "openvidu/api/sessions/"+ sessionId + "/connection/",
+			url: OPENVIDU_URL + "openvidu/api/sessions/"+ sessionId + "/connection",
 			type: "GET",
-			headers: { 	"Authorization" : "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+			headers: { 	"Authorization" : auth,
 						"Access-Control-Allow-Origin" : "*"},
 			success: (data) => { resolve(data); },
 			error: (data) => { reject(data); }
@@ -198,9 +200,9 @@ function getConnection(sessionId){
 function getConnections(sessionId){
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: OPENVIDU_URL + "openvidu/api/sessions/"+ sessionId + "/connection/",
+			url: OPENVIDU_URL + "openvidu/api/sessions/"+ sessionId + "/connection",
 			type: "GET",
-			headers: { 	"Authorization" : "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+			headers: { 	"Authorization" : auth,
 						"Access-Control-Allow-Origin" : "*"},
 			success: (data) => { resolve(data); },
 			error: (data) => { reject(data); }
