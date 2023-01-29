@@ -1,8 +1,7 @@
-package com.w6w.corns.room.controller;
+package com.w6w.corns.controller;
 
-import com.w6w.corns.room.service.RoomService;
-import com.w6w.corns.room.domain.entity.Room;
-//import com.w6w.corns.util.code.RoomCode;
+import com.w6w.corns.domain.room.Room;
+import com.w6w.corns.service.room.RoomService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController()
@@ -33,7 +31,6 @@ public class RoomRestController {
 
         try {
 //            room.setRoomCd(RoomCode.ROOM_WAITING.getCode());
-            room.setRegTm(LocalDateTime.now());
             Room saveRoom = roomService.save(room);
             logger.debug("saveRoom: {}", saveRoom);
             resultMap.put("room", saveRoom);

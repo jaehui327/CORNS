@@ -1,4 +1,4 @@
-package com.w6w.corns.room.dto;
+package com.w6w.corns.dto.room;
 
 public class RoomRequestDto {
 }
