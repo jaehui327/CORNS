@@ -6,6 +6,9 @@ import ExperienceDetail from "./ExperienceDetail";
 import Indicators from "./Indicators";
 import Grid from "@mui/material/Grid";
 
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+
 function GrowthRecord() {
   const SidebarItems = [
     { name: "내정보", route: "/growthRecord" },
@@ -14,22 +17,18 @@ function GrowthRecord() {
   ];
 
   return (
-    <>
+    <div
+      css={css`
+        margin: 0 105px;
+      `}
+    >
       <Navbar />
 
       <Grid container spacing={1}>
         <Grid item xs={2}>
           <Sidebar Items={SidebarItems} />
         </Grid>
-        <Grid
-          item
-          xs={10}
-          sx={{
-            border: "3px solid #111",
-            padding: "0px 32px",
-            boxSizing: "border-box",
-          }}
-        >
+        <Grid item xs={10}>
           <Switch>
             <Route exact path="/growthRecord" component={MyProfile} />
             <Route
@@ -41,7 +40,7 @@ function GrowthRecord() {
           </Switch>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 }
 
