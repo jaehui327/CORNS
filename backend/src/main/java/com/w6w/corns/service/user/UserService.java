@@ -1,5 +1,6 @@
 package com.w6w.corns.service.user;
 
+import com.w6w.corns.domain.user.User;
 import com.w6w.corns.dto.user.LoginResponseDto;
 import com.w6w.corns.dto.user.UserRequestDto;
 
@@ -13,4 +14,5 @@ public interface UserService {
     Object getRefreshToken(int userId) throws Exception;
     void deleteRefreshToken(int userId) throws Exception;
 
+    User getUser(int userId) throws Exception;
 }

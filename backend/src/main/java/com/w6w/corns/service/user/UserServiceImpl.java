@@ -98,4 +98,10 @@ public class UserServiceImpl implements UserService{
         userRepository.updateRefreshToken(userId, null);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser(int userId) throws Exception {
+        return userRepository.findByUserId(userId);
+    }
+
 }
