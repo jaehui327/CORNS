@@ -86,6 +86,54 @@
     height: 84vh;
 }
 
+#roomViewTranslationDo {
+    border: 1px solid black;
+    margin-left : 1vw;
+    margin-top : 1.5vh;
+    width: 17vw;
+    height: calc(84vh/2 - 3vh);
+}
+
+#roomViewTranslationSave {
+    border: 1px solid black;
+    margin-left : 1vw;
+    margin-top : 1.5vh;
+    width: 17vw;
+    height: calc(84vh/2 - 3vh);
+}
+
+#roomViewTranslationSaveWord {
+    border: 1px solid black;
+    margin-left : 1vw;
+    margin-top : 1.5vh;
+    width: 15vw;
+    height: calc(84vh/4 - 4vh);
+}
+
+#roomViewTranslationSaveWord > div {
+    border: 1px solid black;
+    margin-left : 1px;
+    margin-top : 1px;   /*선만큼 마진*/
+    width: calc(15vw/3);
+    height: calc((84vh/4 - 4vh)/6);
+}
+
+#roomViewTranslationSaveSave {
+    border: 1px solid black;
+    margin-left : 1vw;
+    margin-top : 1.5vh;
+    width: 15vw;
+    height: calc(84vh/4 - 4vh);
+}
+
+#roomViewTranslationSaveSave > div {
+    border: 1px solid black;
+    margin-left : 1px;
+    margin-top : 1px;   /*선만큼 마진*/
+    width: calc(15vw/3);
+    height: calc((84vh/4 - 4vh)/6);
+}
+
 #roomViewChattingReceive {
     border-radius: 6px;
     width: calc(19vw - 2vw);
@@ -119,7 +167,40 @@
     float: right;
     margin-top: 2vh;
     margin-right: 2vh;
- }
+}
+
+#roomViewGetBestMemberModal {
+    position: absolute;
+    width: calc((100vw - 2vw - 2vw)/6*4);
+    height: calc((100vh - 4vh - 4vh)/6*4);
+    /* 비교해보기 쉽게 calc 사용. 최종결정되면 숫자로 변경 예정 */
+    margin-left: calc((100vw - 2vw - 2vw)/6 + 2vw);
+    margin-top: calc((100vh - 4vh - 4vh)/6 + 4vh);
+    /* z-index: -1; */
+    border: 1px solid black;
+    background-color: white;
+}
+
+#roomViewGetBestMemberModalTitle {
+    position: absolute;
+    width: calc((100vw - 2vw - 2vw)/6*4);
+    height: calc((100vh - 4vh - 4vh)/6);
+    /* 비교해보기 쉽게 calc 사용. 최종결정되면 숫자로 변경 예정 */
+    /* z-index: -1; */
+    background-color: white;
+    border: 1px solid black;
+}
+
+#roomViewGetBestMemberModalTitleText {
+    width: calc((100vw - 2vw - 2vw)/6*4);
+    height: calc((100vh - 4vh - 4vh)/6);
+    /* 비교해보기 쉽게 calc 사용. 최종결정되면 숫자로 변경 예정 */
+    /* z-index: -1; */
+    display: table-cell; 
+    vertical-align: middle;
+    text-align: center;
+    /* border: 1px solid red; */
+}
 
 /* #roomViewChattingSendMessage {
     width: calc(19vw - 1vw);
