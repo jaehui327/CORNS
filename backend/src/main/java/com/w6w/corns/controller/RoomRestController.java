@@ -1,6 +1,9 @@
 package com.w6w.corns.controller;
 
 import com.w6w.corns.domain.room.Room;
+import com.w6w.corns.dto.room.CreateRoomRequestDto;
+import com.w6w.corns.dto.room.RoomRequestDto;
+import com.w6w.corns.dto.room.RoomUserRequestDto;
 import com.w6w.corns.service.room.RoomService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -22,19 +25,19 @@ public class RoomRestController {
     @Autowired
     RoomService roomService;
 
-    @ApiOperation(value = "쫑알룸 생성하기", notes = "title, time, max_member, subject_no, host_user_id, session_id를 body에 담아 요청")
+
+    @ApiOperation(value = "쫑알룸 생성하기", notes = "방 정보와 OpenVidu 관련 정보를 body에 담아서 요청")
     @PostMapping()
-    private ResponseEntity<?> save(@RequestBody Room room) {
-        logger.debug("room: {}", room);
+    private ResponseEntity<?> save(@RequestBody CreateRoomRequestDto body) {
+        logger.debug("request body: {}", body);
         Map resultMap = new HashMap<>();
         HttpStatus status;
 
         try {
-//            room.setRoomCd(RoomCode.ROOM_WAITING.getCode());
-            Room saveRoom = roomService.save(room);
-            logger.debug("saveRoom: {}", saveRoom);
-            resultMap.put("room", saveRoom);
-            status = HttpStatus.OK;
+            if (roomService.save(body) == 1)
+                status = HttpStatus.OK;
+            else
+                status = HttpStatus.CONFLICT;
         } catch (Exception e) {
             resultMap.put("message", e);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
