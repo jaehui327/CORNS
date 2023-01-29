@@ -5,12 +5,13 @@ import com.w6w.corns.dto.user.UserRequestDto;
 
 public interface UserService {
 
-    int signUp(UserRequestDto user) throws Exception;
+    int signUp(UserRequestDto requestUser) throws Exception;
     int validateDuplicateUser(String emails) throws Exception;
-    LoginResponseDto login(UserRequestDto user) throws Exception;
+    LoginResponseDto login(UserRequestDto requestUser) throws Exception;
     void updateLastLoginTm(int userId) throws Exception;
     int saveRefreshToken(int userId, String refreshToken) throws Exception;
     Object getRefreshToken(int userId) throws Exception;
     void deleteRefreshToken(int userId) throws Exception;
-    public LoginResponseDto findUserById(int userId) throws Exception;
+    LoginResponseDto findUserById(int userId) throws Exception;
+    boolean isSamePassword(UserRequestDto requestUser) throws Exception;
 }

@@ -7,8 +7,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class LoginResponseDto {
@@ -26,7 +24,7 @@ public class LoginResponseDto {
     private int conversationTotal;
     private int ddabongTotal;
 
-    @Builder
+    @Builder(builderMethodName = "loginBuilder")
     public LoginResponseDto(int userId, String email, String nickname, String imgUrl, String refreshToken) {
         this.userId = userId;
         this.email = email;
@@ -42,7 +40,10 @@ public class LoginResponseDto {
         this.imgUrl=user.getImgUrl();
         this.nickname=user.getNickname();
         this.level=user.getLevel().getLevelNo();
-        //여기서부터 계속
-//        this.
+        this.expTotal=user.getExpTotal();
+        this.social=user.getSocial();
+        this.refreshToken=user.getRefreshToken();
+        //attendTotal, friendTotal, conv, ddabong, rank 가져오기
+
     }
 }

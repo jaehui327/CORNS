@@ -17,15 +17,15 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public int signUp(UserRequestDto user) throws Exception {
+    public int signUp(UserRequestDto requestUser) throws Exception {
 
         //이메일 검증
-        int result = validateDuplicateUser(user.getEmail());
+        int result = validateDuplicateUser(requestUser.getEmail());
 
         if (result == 1) return -1;
          else {
-            user.setSocial(1); //기본 회원가입 설정
-            userRepository.save(user.toEntity()); //회원 저장
+            requestUser.setSocial(1); //기본 회원가입 설정
+            userRepository.save(requestUser.toEntity()); //회원 저장
             return 1;
         }
     }
@@ -46,28 +46,14 @@ public class UserServiceImpl implements UserService{
 
         //해당 이메일을 가진 객체를 db에서 찾음
         User user = userRepository.findByEmail(requestUser.getEmail());
-        if(user != null){
-            String userSalt = user.getSalt();
 
-            //입력받은 user의 password 정보
-            String inputPass = requestUser.getPassword();
-            String newPass = SHA256Util.getEncrypt(inputPass, userSalt);
+        //탈퇴회원 및 이용정지회원은 나중에 처리하기
+        if(isSamePassword(requestUser) && user.getUserCd() == 8000){
 
-            //탈퇴회원 및 이용정지회원은 나중에 처리하기
-            if(newPass.equals(user.getPassword()) && user.getUserCd() == 8000) {
-
-                //따봉, 친구, 출석, 발화량 나중에 추가 필요
-                return LoginResponseDto.builder()
-                        .userId(user.getUserId())
-                        .email(user.getEmail())
-                        .nickname(user.getNickname())
-                        .imgUrl(user.getImgUrl())
-                        .expTotal(user.getExpTotal())
-                        .level(user.getLevel().getLevelNo())
-                        .social(user.getSocial())
-                        .refreshToken(user.getRefreshToken())
-                        .build();
-            }
+            //따봉, 친구, 출석, 발화량 나중에 추가 필요
+            return LoginResponseDto.builder()
+                    .user(user)
+                    .build();
         }
         return null;
     }
@@ -101,7 +87,24 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public LoginResponseDto findUserById(int userId) throws Exception{
+        User user = userRepository.findByUserId(userId);
+        return LoginResponseDto.builder().user(user).build();
+    }
 
-        return null;
+    @Override
+    public boolean isSamePassword(UserRequestDto requestUser) throws Exception {
+
+        User user = userRepository.findByUserId(requestUser.getUserId());
+
+        if(user != null){
+            String userSalt = user.getSalt();
+
+            //입력받은 user의 password 정보
+            String inputPass = requestUser.getPassword();
+            String newPass = SHA256Util.getEncrypt(inputPass, userSalt);
+
+            if(newPass.equals(user.getPassword())) return true;
+        }
+        return false;
     }
 }
