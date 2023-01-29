@@ -1,10 +1,8 @@
-import React, {useState} from 'react';
-import SearchComp from '../../components/GlobalComponents/SearchComp';
-import UserList from '../../components/Community/UserList';
+import React from 'react';
+import SearchComp from '../GlobalComponents/SearchComp';
+import UserList from './UserList';
 
-import Box from "@mui/material/Box";
-
-function SearchUser() {
+function FriendList({items}) {
   const users = [
     {
       img_url: "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
@@ -44,19 +42,14 @@ function SearchUser() {
     },
 
   ]
-
   
-  return (  
+  return (
     <>
-      <h2>유저 검색</h2>
+      <h3>친구목록</h3>
       <SearchComp />
-
-      <Box>
-        <UserList items={users} />
-      </Box>
+      <UserList items = {users}/>
     </>
-  );
-
+  )
 }
 
-export default SearchUser;
+export default FriendList;

@@ -1,19 +1,20 @@
 import React, { Route, Switch } from "react-router-dom";
 import Navbar from "../../components/GlobalComponents/Navbar";
 import Sidebar from "../../components/GlobalComponents/Sidebar";
-import Log from "./Log";
-import LogBookmark from "./LogBookmark";
-import LogDetail from "./LogDetail";
-import LogWord from "./LogWord";
+
+import ChangeProfile from "./ChangeProfile";
+import ChangePassword from "./ChangePassword";
+import Withdrawl from "./Withdrawl";
+
 import Grid from "@mui/material/Grid";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-function ConversationLog({}) {
+function Mypage() {
   const SidebarItems = [
-    { name: "쫑알로그", route: "/conversationLog" },
-    { name: "즐겨찾기", route: "/conversationLog/bookmarks" },
-    { name: "쫑알단어", route: "/conversationLog/words" },
+    { name: "회원수정", route: "/mypage/changeProfile" },
+    { name: "비밀번호 수정", route: "/mypage/changePassword" },
+    { name: "회원탈퇴", route: "/mypage/withDrawl" },
   ];
 
   return (
@@ -37,18 +38,17 @@ function ConversationLog({}) {
             `}
           >
             <Switch>
-              <Route exact path="/conversationLog" component={Log} />
               <Route
                 exact
-                path="/conversationLog/bookmarks"
-                component={LogBookmark}
+                path="/mypage/changeProfile"
+                component={ChangeProfile}
               />
               <Route
                 exact
-                path="/conversationLog/logdetail/:room_no"
-                component={LogDetail}
+                path="/mypage/changePassword"
+                component={ChangePassword}
               />
-              <Route exact path="/conversationLog/words" component={LogWord} />
+              <Route exact path="/mypage/withDrawl" component={Withdrawl} />
             </Switch>
           </div>
         </Grid>
@@ -57,4 +57,4 @@ function ConversationLog({}) {
   );
 }
 
-export default ConversationLog;
+export default Mypage;
