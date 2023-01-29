@@ -37,7 +37,10 @@ public class EvaluationController {
 
     @ApiOperation("따봉멤버 투표")
     @PostMapping("/thumb")
-    public ResponseEntity<?> voteThumbMember(@RequestParam int roomNo, @RequestParam int fromId, @RequestParam int toId) {
+    public ResponseEntity<?> voteThumbMember(@RequestBody Map<String, Object> map) {
+        int roomNo = (int)map.get("roomNo");
+        int fromId = (int)map.get("fromId");
+        int toId = (int)map.get("toId");
         evaluationService.voteThumbMember(new ThumbLogDto(roomNo, fromId, toId));
 
         return new ResponseEntity<Void>(HttpStatus.OK);
