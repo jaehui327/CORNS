@@ -34,10 +34,10 @@ function NavbarDropdown() {
           }}
         >
           <li>
-            <NavLink to="/mypage">마이페이지</NavLink>
+            <NavLink to="/mypage/changeProfile">마이페이지</NavLink>
           </li>
           <li>
-            <NavLink to="/friend-list">친구신청목록</NavLink>
+            <NavLink to="/community/friends">친구신청목록</NavLink>
           </li>
         </Collapse>
       </ul>

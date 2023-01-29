@@ -6,21 +6,14 @@ import Community from "./routes/Community/Community";
 import GrowthRecord from "./routes/GrowthRecord/GrowthRecord";
 import Login from "./routes/LogIn";
 import Signin from "./routes/SignIn";
-import Mypage from "./routes/Mypage";
-// import FriendList from "./pages/FriendList";
+import Mypage from "./routes/MyPage/MyPage";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 function App() {
-
   return (
-    <div
-      className="App"
-      css={css`
-        margin: 0 105px;
-      `}
-    >
+    <div className="App">
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/conversation" component={Conversation} />
@@ -30,7 +23,6 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signin" component={Signin} />
         <Route path="/mypage" component={Mypage} />
-        {/* <Route exact path="/friend-list" component={FriendList} /> */}
       </Switch>
     </div>
   );
