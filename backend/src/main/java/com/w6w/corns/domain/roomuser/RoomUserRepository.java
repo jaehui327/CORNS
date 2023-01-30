@@ -10,4 +10,6 @@ public interface RoomUserRepository extends JpaRepository<RoomUser, Integer> {
 
     @Query(value = "SELECT ru FROM RoomUser ru WHERE ru.roomUserCd <= 6001")
     List<RoomUser> findByUserIdAndRoomUserCd(int userId);
+
+    List<RoomUser> findByRoomNo(int roomNo);
 }

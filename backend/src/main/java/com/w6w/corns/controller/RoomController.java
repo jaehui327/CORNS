@@ -3,6 +3,7 @@ package com.w6w.corns.controller;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomResponseDto;
+import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
 import com.w6w.corns.service.room.RoomService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -70,19 +71,40 @@ public class RoomController {
 
     @ApiOperation(value = "쫑알룸 정보 가져오기", notes = "쫑알룸 room_no를 path variable로 넘기면 쫑알룸 정보를 리턴")
     @GetMapping(value = "/{roomNo}")
-    private ResponseEntity<?> getRoom(@PathVariable Integer roomNo) {
-
-        logger.debug("room_no: {}", roomNo);
+    private ResponseEntity<?> getRoom(@PathVariable int roomNo) {
         Map resultMap = new HashMap<>();
         HttpStatus status;
 
         try {
-            RoomResponseDto room = roomService.findByRoomNo(roomNo);
+            RoomResponseDto room = roomService.findRoomByRoomNo(roomNo);
             logger.debug("room: {}", room);
             if (room == null) {
                 status = HttpStatus.NO_CONTENT;
             } else {
                 resultMap.put("room", room);
+                status = HttpStatus.OK;
+            }
+        } catch (Exception e) {
+            resultMap.put("message", e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<Map>(resultMap, status);
+    }
+
+    @ApiOperation(value = "쫑알룸 유저 리스트", notes = "roomNo를 path variable로 넘기면 room user, user 테이블의 정보 반환")
+    @GetMapping(value = "/{roomNo}/users")
+    private ResponseEntity<?> getRoomUsers(@PathVariable int roomNo) {
+        Map resultMap = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            List<RoomUserListResponseDto> roomUsers = roomService.findRoomUserByRoomNo(roomNo);
+            logger.debug("roomUsers: {}", roomUsers);
+            if (roomUsers == null) {
+                status = HttpStatus.NO_CONTENT;
+            } else {
+                resultMap.put("room", roomUsers);
                 status = HttpStatus.OK;
             }
         } catch (Exception e) {

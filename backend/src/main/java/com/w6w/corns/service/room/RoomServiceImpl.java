@@ -4,25 +4,22 @@ import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.domain.room.RoomRepository;
 import com.w6w.corns.domain.roomuser.RoomUser;
 import com.w6w.corns.domain.roomuser.RoomUserRepository;
-import com.w6w.corns.domain.subject.Subject;
-import com.w6w.corns.domain.subject.SubjectRepository;
+import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomResponseDto;
-import com.w6w.corns.dto.subject.SubjectResponseDto;
+import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
+import com.w6w.corns.dto.room.response.RoomUserResponseDto;
 import com.w6w.corns.service.subject.SubjectService;
 import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +30,8 @@ public class RoomServiceImpl implements RoomService {
     private final RoomUserRepository roomUserRepository;
 
     private final SubjectService subjectService;
+
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -59,6 +58,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public boolean isAvailable(int userId) {
+        // 참가 가능한 상태면 true 반환 - 6000(대기중), 6001(대기중)인 상태가 없을 때
         if (roomUserRepository.findByUserIdAndRoomUserCd(userId).isEmpty()) return true;
         return false;
     }
@@ -81,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
     }
 
-    public RoomResponseDto findByRoomNo(int roomNo) {
+    public RoomResponseDto findRoomByRoomNo(int roomNo) {
         Optional<Room> result = roomRepository.findById(roomNo);
         if (result.isEmpty()) return null;
 
@@ -94,6 +94,23 @@ public class RoomServiceImpl implements RoomService {
                 .hostUserId(room.getHostUserId())
                 .sessionId(room.getSessionId())
                 .build();
+    }
+
+    public List<RoomUserListResponseDto> findRoomUserByRoomNo(int roomNo) {
+        List<RoomUser> roomUsers = roomUserRepository.findByRoomNo(roomNo);
+        if (roomUsers.isEmpty()) return null;
+
+        return roomUsers.stream()
+                .map(m -> RoomUserListResponseDto.builder()
+                        .roomUser(RoomUserResponseDto.builder()
+                                .connectionId(m.getConnectionId())
+                                .recordId(m.getRecordId())
+                                .token(m.getToken())
+                                .build())
+                        .user(userRepository.findById(m.getUserId()).get()
+                                .toUserResponseBuilder())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }
