@@ -54,10 +54,9 @@ export default function RankingList({}) {
     },
   ];
 
-  console.log(rankInfos);
   return (
     <>
-      <Grid container spacing={4}>
+      <Grid container>
         {rankInfos.map((rankInfo) => {
           return <RankingCard rankInfo={rankInfo} key={rankInfo.user_id} />;
         })}

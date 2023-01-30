@@ -33,7 +33,7 @@ export default function RankingCard({ rankInfo }) {
 
   return (
     <>
-      <Grid item xs={3}>
+      <Grid item xs={3} sx={{}}>
         <Box
           sx={{
             border: "3px solid #111",

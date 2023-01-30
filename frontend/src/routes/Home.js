@@ -44,18 +44,51 @@ function Home() {
         </Box>
         <Box>
           <Typography variant="h5">랭킹</Typography>
-          <Link to="/">더보기</Link>
+          <Link to="/community/ranking" sx={{ cursor: "pointer" }}>
+            더보기
+          </Link>
           <RankingList />
         </Box>
       </Box>
 
       <Box
         sx={{
+          display: "flex",
+          justifyContent: "space-between",
           width: "100%",
           height: "850px",
+          padding: "32px 105px",
+          boxSizing: "border-box",
           backgroundImage: `url(${backgroundImage})`,
         }}
-      ></Box>
+      >
+        <Box>
+          <Typography variant="h4">대화가 어려우신가요?</Typography>
+          <Typography variant="h4">대화가 어려우신가요?</Typography>
+          <Typography variant="h4">대화가 어려우신가요?</Typography>
+          <Typography variant="h4">대화가 어려우신가요?</Typography>
+        </Box>
+        <Box
+          sx={{
+            backgroundColor: "#fff",
+            width: "60%",
+            height: "100%",
+            border: "3px solid #111",
+            padding: "32px",
+            boxSizing: "border-box",
+          }}
+        >
+          <img
+            src="https://img.freepik.com/free-vector/different-people-asking-questions_23-2148934441.jpg"
+            alt="conversation-people"
+            css={css`
+              border: 3px solid #111;
+              width: 100%;
+              height: 100%;
+            `}
+          />
+        </Box>
+      </Box>
 
       <Box sx={{ mx: "105px" }}>
         <Typography variant="h2" sx={{ textAlign: "center" }}>
@@ -68,17 +101,31 @@ function Home() {
           <Grid item xs={4}>
             <Box
               sx={{ border: "3px solid #111", height: "500px", mr: "24px" }}
-            ></Box>
+            ></Box>{" "}
+            <Typography variant="h5">안녕하세요</Typography>
           </Grid>
           <Grid item xs={4}>
             <Box
               sx={{ border: "3px solid #111", height: "500px", mr: "24px" }}
             ></Box>
+            <Typography variant="h5">반갑습니다</Typography>
           </Grid>
           <Grid item xs={4}>
             <Box sx={{ border: "3px solid #111", height: "500px" }}></Box>
+            <Typography variant="h5">다시 만나요</Typography>
           </Grid>
         </Grid>
+        <Button variant="contained">
+          <Link
+            to="signin"
+            css={css`
+              text-decoration: none;
+              color: #fff;
+            `}
+          >
+            CORNS 가입하기
+          </Link>
+        </Button>
       </Box>
     </div>
   );
