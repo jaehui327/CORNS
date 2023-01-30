@@ -23,10 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-//@ConfigurationProperties("OAuth2")
 public class GoogleOauth implements SocialOauth{
-
-//    private final RestTemplate restTemplate;
 
     @Value("${OAuth2.google.url}")
     private String GOOGLE_SNS_LOGIN_URL;
@@ -57,8 +54,8 @@ public class GoogleOauth implements SocialOauth{
         System.out.println("GOOGLE_SNS_LOGIN_URL = " + GOOGLE_SNS_LOGIN_URL);
         params.put("scope", GOOGLE_DATA_ACCESS_SCOPE);
         params.put("response_type", "code");
-        params.put("client_id", GOOGLE_SNS_CLIENT_ID);
         params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
+        params.put("client_id", GOOGLE_SNS_CLIENT_ID);
 
         String parameterString = params.entrySet().stream()
                 .map(x->x.getKey()+"="+x.getValue())

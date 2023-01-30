@@ -213,7 +213,7 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@RequestParam int userId){
 
         try {
-            LoginResponseDto user = userService.findUserById(userId);
+            LoginResponseDto user = userService.findByUserId(userId);
             Map<String, LoginResponseDto> result = new HashMap<>();
             result.put("user",user);
             return new ResponseEntity<>(result, HttpStatus.OK);

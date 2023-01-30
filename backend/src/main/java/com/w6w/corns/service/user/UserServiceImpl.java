@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public LoginResponseDto findUserById(int userId) throws Exception{
+    public LoginResponseDto findByUserId(int userId) throws Exception{
         User user = userRepository.findByUserId(userId);
         return LoginResponseDto.builder().user(user).build();
     }
