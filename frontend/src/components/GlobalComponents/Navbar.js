@@ -64,10 +64,10 @@ const Navbar = () => {
           <NavLink to="/conversation" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>쫑알쫑알</NavLink>
         </li>
         <li>
-          <NavLink to="/conversationLog" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>쫑알로그</NavLink>
+          <NavLink to="/conversationLog/loglist" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>쫑알로그</NavLink>
         </li>
         <li>
-          <NavLink to="/growthRecord" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>성장기록</NavLink>
+          <NavLink to="/growthRecord/myProfile" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>성장기록</NavLink>
         </li>
         <li>
           <NavLink to="/community/ranking/sincerity" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>커뮤니티</NavLink>

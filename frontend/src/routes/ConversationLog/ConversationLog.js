@@ -11,7 +11,7 @@ import { css } from "@emotion/react";
 
 function ConversationLog({}) {
   const SidebarItems = [
-    { name: "쫑알로그", route: "/conversationLog" },
+    { name: "쫑알로그", route: "/conversationLog/loglist" },
     { name: "즐겨찾기", route: "/conversationLog/bookmarks" },
     { name: "쫑알단어", route: "/conversationLog/words" },
   ];
@@ -37,7 +37,7 @@ function ConversationLog({}) {
             `}
           >
             <Switch>
-              <Route exact path="/conversationLog" component={Log} />
+              <Route exact path="/conversationLog/loglist" component={Log} />
               <Route
                 exact
                 path="/conversationLog/bookmarks"
