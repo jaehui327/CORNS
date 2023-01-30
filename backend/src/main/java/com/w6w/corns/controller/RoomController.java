@@ -1,6 +1,5 @@
 package com.w6w.corns.controller;
 
-import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomResponseDto;
@@ -18,9 +17,9 @@ import java.util.*;
 
 @RestController()
 @RequestMapping("room")
-public class RoomRestController {
+public class RoomController {
 
-    private final Logger logger = LoggerFactory.getLogger(RoomRestController.class);
+    private final Logger logger = LoggerFactory.getLogger(RoomController.class);
 
     @Autowired
     RoomService roomService;
@@ -47,7 +46,7 @@ public class RoomRestController {
 
     @ApiOperation(value = "쫑알쫑알 전체 목록 보기", notes = "필터링 추가해야 함")
     @GetMapping
-    private ResponseEntity<?> getAllRooms(Pageable pageable) {
+    private ResponseEntity<?> getAllRooms() {
 
         Map resultMap = new HashMap<>();
         HttpStatus status;

@@ -18,19 +18,25 @@ public class RoomResponseDto {
 
     private int time;
 
+    private int currentMember;
+
     private int maxMember;
 
     private int hostUserId;
 
+    private int roomCd;
+
     private String sessionId;
 
     @Builder
-    public RoomResponseDto(int roomNo, String title, int time, int maxMember, int hostUserId, String sessionId) {
+    public RoomResponseDto(int roomNo, String title, int time, int currentMember, int maxMember, int hostUserId, int roomCd, String sessionId) {
         this.roomNo = roomNo;
         this.title =title;
         this.time = time;
+        this.currentMember = currentMember;
         this.maxMember = maxMember;
         this.hostUserId = hostUserId;
+        this.roomCd = roomCd;
         this.sessionId = sessionId;
     }
 
