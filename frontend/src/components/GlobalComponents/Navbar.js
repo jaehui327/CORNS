@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import NavbarDropdown from "./NavbarDropdown";
 import white_logo from "assets/corns_logo.png";
 
+
 const Navbar = () => {
   const [user, stateUser] = useState(true);
 
@@ -84,7 +85,7 @@ const Navbar = () => {
         ) : (
           <>
             <li>
-              <NavLink to="" style={{ textDecoration: "none", color: "black" }}>로그아웃</NavLink>
+              <NavLink to="/" style={{ textDecoration: "none", color: "black" }}>로그아웃</NavLink>
             </li>
             <li>
               <NavbarDropdown />
