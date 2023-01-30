@@ -1,4 +1,4 @@
-package com.w6w.corns.dto.room;
+package com.w6w.corns.dto.room.response;
 
 import io.swagger.annotations.ApiModel;
 import lombok.*;

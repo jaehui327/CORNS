@@ -1,4 +1,4 @@
-package com.w6w.corns.dto.room;
+package com.w6w.corns.dto.room.request;
 
 import io.swagger.annotations.ApiModel;
 import lombok.*;
@@ -17,4 +17,5 @@ public class CreateRoomRequestDto {
     private RoomRequestDto room;
 
     private RoomUserRequestDto roomUser;
+
 }

@@ -4,9 +4,9 @@ import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.domain.room.RoomRepository;
 import com.w6w.corns.domain.roomuser.RoomUser;
 import com.w6w.corns.domain.roomuser.RoomUserRepository;
-import com.w6w.corns.dto.room.CreateRoomRequestDto;
-import com.w6w.corns.dto.room.RoomRequestDto;
-import com.w6w.corns.dto.room.RoomUserRequestDto;
+import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
+import com.w6w.corns.dto.room.response.RoomListResponseDto;
+import com.w6w.corns.dto.room.response.RoomResponseDto;
 import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,15 +59,25 @@ public class RoomServiceImpl implements RoomService {
         return false;
     }
 
-    public List<Room> findAll() {
+    public List<RoomListResponseDto> findAll() {
         List<Room> rooms = new ArrayList<>();
         roomRepository.findAll().forEach(e -> rooms.add(e));
-        return rooms;
+        return null;
     }
 
-    public Optional<Room> findByRoomNo(int roomNo) {
-        Optional<Room> room = roomRepository.findById(roomNo);
-        return room;
+    public RoomResponseDto findByRoomNo(int roomNo) {
+        Optional<Room> result = roomRepository.findById(roomNo);
+        if (result.isEmpty()) return null;
+
+        Room room = result.get();
+        return RoomResponseDto.builder()
+                .roomNo(room.getRoomNo())
+                .title(room.getTitle())
+                .time(room.getTime())
+                .maxMember(room.getMaxMember())
+                .hostUserId(room.getHostUserId())
+                .sessionId(room.getSessionId())
+                .build();
     }
 
 }

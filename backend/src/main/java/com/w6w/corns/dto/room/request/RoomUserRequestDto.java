@@ -1,4 +1,4 @@
-package com.w6w.corns.dto.room;
+package com.w6w.corns.dto.room.request;
 
 import com.w6w.corns.domain.roomuser.RoomUser;
 import io.swagger.annotations.ApiModel;

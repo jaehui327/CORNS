@@ -1,9 +1,9 @@
 package com.w6w.corns.controller;
 
 import com.w6w.corns.domain.room.Room;
-import com.w6w.corns.dto.room.CreateRoomRequestDto;
-import com.w6w.corns.dto.room.RoomRequestDto;
-import com.w6w.corns.dto.room.RoomUserRequestDto;
+import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
+import com.w6w.corns.dto.room.response.RoomListResponseDto;
+import com.w6w.corns.dto.room.response.RoomResponseDto;
 import com.w6w.corns.service.room.RoomService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -25,9 +25,8 @@ public class RoomRestController {
     @Autowired
     RoomService roomService;
 
-
     @ApiOperation(value = "쫑알룸 생성하기", notes = "방 정보와 OpenVidu 관련 정보를 body에 담아서 요청")
-    @PostMapping()
+    @PostMapping(value = "/create")
     private ResponseEntity<?> save(@RequestBody CreateRoomRequestDto body) {
         logger.debug("request body: {}", body);
         Map resultMap = new HashMap<>();
@@ -47,14 +46,14 @@ public class RoomRestController {
     }
 
     @ApiOperation(value = "쫑알쫑알 전체 목록 보기", notes = "필터링 추가해야 함")
-    @GetMapping()
+    @GetMapping
     private ResponseEntity<?> getAllRooms(Pageable pageable) {
 
         Map resultMap = new HashMap<>();
         HttpStatus status;
 
         try {
-            List<Room> rooms = roomService.findAll();
+            List<RoomListResponseDto> rooms = roomService.findAll();
             logger.debug("rooms: {}", rooms);
             if (rooms.isEmpty()) {
                 status = HttpStatus.NO_CONTENT;
@@ -79,9 +78,9 @@ public class RoomRestController {
         HttpStatus status;
 
         try {
-            Optional<Room> room = roomService.findByRoomNo(roomNo);
+            RoomResponseDto room = roomService.findByRoomNo(roomNo);
             logger.debug("room: {}", room);
-            if (room.isEmpty()) {
+            if (room == null) {
                 status = HttpStatus.NO_CONTENT;
             } else {
                 resultMap.put("room", room);

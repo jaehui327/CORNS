@@ -2,9 +2,9 @@ package com.w6w.corns.service.room;
 
 
 import com.w6w.corns.domain.room.Room;
-import com.w6w.corns.dto.room.CreateRoomRequestDto;
-import com.w6w.corns.dto.room.RoomRequestDto;
-import com.w6w.corns.dto.room.RoomUserRequestDto;
+import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
+import com.w6w.corns.dto.room.response.RoomListResponseDto;
+import com.w6w.corns.dto.room.response.RoomResponseDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +15,8 @@ public interface RoomService {
 
     public boolean isAvailable(int userId);
 
-    public List<Room> findAll();
+    public List<RoomListResponseDto> findAll();
 
-    public Optional<Room> findByRoomNo(int roomNo);
+    public RoomResponseDto findByRoomNo(int roomNo);
 
 }
