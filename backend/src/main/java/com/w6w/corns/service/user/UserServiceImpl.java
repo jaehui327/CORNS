@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService{
 
             requestUser.setSalt(salt);
             requestUser.setPassword(newPass);
-            requestUser.setSocial(1); //기본 회원가입 설정
+            requestUser.setSocial(1);
             userRepository.save(requestUser.toEntity()); //회원 저장
             return 1;
         }
@@ -57,9 +57,7 @@ public class UserServiceImpl implements UserService{
         //탈퇴회원 및 이용정지회원은 나중에 처리하기
         if(isSamePassword(requestUser) && user.getUserCd() == 8000){
 
-            //로그인로그 데이터 삽입
-            LoginLogSaveDto loginLogSaveDto = LoginLogSaveDto.builder().userId(user.getUserId()).build();
-            loginLogRepository.save(loginLogSaveDto.toEntity());
+            makeLoginLog(user.getUserId());
             
             //따봉, 친구, 출석, 발화량 나중에 추가 필요
             return LoginResponseDto.builder()
@@ -67,6 +65,14 @@ public class UserServiceImpl implements UserService{
                     .build();
         }
         return null;
+    }
+    @Override
+    @Transactional
+    public void makeLoginLog(int userId) throws Exception{
+
+        //로그인로그 데이터 삽입
+        LoginLogSaveDto loginLogSaveDto = LoginLogSaveDto.builder().userId(userId).build();
+        loginLogRepository.save(loginLogSaveDto.toEntity());
     }
     @Override
     @Transactional(readOnly = true)

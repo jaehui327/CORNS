@@ -52,6 +52,7 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody UserJoinRequestDto user){
         try {
+            user.setSocial(1);
             int result = userService.signUp(user);
             if(result < 0) return new ResponseEntity<>(HttpStatus.CONFLICT); //중복 이메일
             else return new ResponseEntity<HttpStatus>(HttpStatus.OK);
@@ -131,10 +132,6 @@ public class UserController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //Authorization code 받기 -> OAuth 서버에 토큰 요청
-        //access token으로 이름, 이메일, 프로필url 요청
-        //db에 존재한다면 업데이트, 아니면 새로 등록
-        //유저 primary key 값으로 jwt 토큰 생성
     }
 
     /**
@@ -149,9 +146,31 @@ public class UserController {
 
         SocialType socialType = SocialType.valueOf(socialPath.toUpperCase());
         try {
-            GetSocialOauthRes result = oAuthService.oAuthLogin(socialType, code);
+            Map<String, Object> resultMap = new HashMap<>();
 
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            LoginResponseDto loginResponseDto = oAuthService.oAuthLogin(socialType, code);
+
+            String accessToken = jwtService.createAccessToken("id", loginResponseDto.getUserId());
+            String refreshToken = jwtService.createRefreshToken("id", loginResponseDto.getUserId());
+
+            log.debug("accessToken = " + accessToken);
+            log.debug("refreshToken = " + refreshToken);
+
+              //경험치도 줘야함!
+            userService.saveRefreshToken(loginResponseDto.getUserId(), refreshToken);
+            userService.updateLastLoginTm(loginResponseDto.getUserId());
+            loginResponseDto.setRefreshToken(refreshToken);
+
+            //last login time
+
+            // 로그인로그
+            userService.makeLoginLog(loginResponseDto.getUserId());
+
+            resultMap.put("accessToken", accessToken);
+            resultMap.put("refreshToken", refreshToken);
+            resultMap.put("loginUser", loginResponseDto);
+
+            return new ResponseEntity<>(resultMap, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
         }

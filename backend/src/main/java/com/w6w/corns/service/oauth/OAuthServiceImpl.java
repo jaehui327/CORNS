@@ -6,7 +6,9 @@ import com.w6w.corns.dto.oauth.GetSocialOauthRes;
 import com.w6w.corns.dto.oauth.GoogleOAuthToken;
 import com.w6w.corns.dto.oauth.GoogleUserDto;
 import com.w6w.corns.dto.user.LoginResponseDto;
+import com.w6w.corns.dto.user.UserJoinRequestDto;
 import com.w6w.corns.service.jwt.JwtService;
+import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.Constant.SocialType;
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ public class OAuthServiceImpl implements OAuthService{
     }
 
     @Override
-    public GetSocialOauthRes oAuthLogin(SocialType socialType, String code) throws IOException {
+    public LoginResponseDto oAuthLogin(SocialType socialType, String code) throws Exception {
 
         switch (socialType){
             case GOOGLE:
@@ -62,23 +64,32 @@ public class OAuthServiceImpl implements OAuthService{
                 GoogleUserDto googleUser = googleOauth.getUserInfo(userInfoResponse);
                 System.out.println("googleUser = " + googleUser);
 
-                LoginResponseDto user = LoginResponseDto
-                        .builder()
-                        .user(userRepository.findByEmail(googleUser.getEmail()))
+                User user = userRepository.findByEmail(googleUser.getEmail());
+
+                if(user == null){ //새로운 회원
+
+                    UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto()
+                            .builder()
+                            .email(googleUser.getEmail())
+                            .social(2)
+                            .build();
+
+                    userRepository.save(userJoinRequestDto.toEntity());
+
+                }else if((user.getSocial() & (1 << 1)) == 0){ //기본 로그인 회원 -> 통합 사실 알리기
+
+                    userRepository.updateSocial(user.getUserId(), (user.getSocial() & (1 << 1)));
+                }
+                user = userRepository.findByEmail(googleUser.getEmail());
+
+                LoginResponseDto loginResponseDto = LoginResponseDto.loginBuilder()
+                        .userId(user.getUserId())
+                        .email(user.getEmail())
+                        .nickname(user.getNickname())
+                        .imgUrl(googleUser.getImgUrl())
                         .build();
 
-                if(user != null){
-                    //jwt Token 발급
-                    String jwtToken = jwtService.createRefreshToken("id", user.getUserId());
-                    GetSocialOauthRes getSocialOauthRes = new GetSocialOauthRes(
-                            jwtToken,
-                            user.getUserId(),
-                            oAuthToken.getAccess_token(),
-                            oAuthToken.getToken_type()
-                    );
-
-                    return getSocialOauthRes;
-                }
+                return loginResponseDto;
 
             default:
                 throw new IllegalArgumentException();

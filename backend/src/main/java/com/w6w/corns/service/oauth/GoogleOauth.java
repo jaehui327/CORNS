@@ -87,13 +87,10 @@ public class GoogleOauth implements SocialOauth{
         params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
         params.put("grant_type", "authorization_code");
 
-        System.out.println("params = " + params);
-
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 GOOGLE_TOKEN_REQUEST_URL,
                 params,
                 String.class);
-        System.out.println("responseEntity = " + responseEntity);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity;
@@ -108,11 +105,9 @@ public class GoogleOauth implements SocialOauth{
      * @throws JsonProcessingException
      */
     public GoogleOAuthToken getAccessToken(ResponseEntity<String> response) throws JsonProcessingException {
-        System.out.println("response.getBody() = " + response.getBody());
-        //직렬화 이슈 해결하기!
+
         GoogleOAuthToken googleOAuthToken= objectMapper.readValue(response.getBody(),GoogleOAuthToken.class);
         return googleOAuthToken;
-
     }
 
     public ResponseEntity<String> requestUserInfo(GoogleOAuthToken oAuthToken) {
@@ -134,7 +129,6 @@ public class GoogleOauth implements SocialOauth{
                 request,
                 String.class);
 
-        System.out.println("response.getBody() = " + response.getBody());
         return response;
     }
 
