@@ -17,9 +17,9 @@ function GrowthRecord() {
     <>
       <Navbar />
 
-      <Grid container spacing = {1}>
-        <Grid item xs = {2}>
-          <Sidebar Items={SidebarItems}/>
+      <Grid container spacing={1} sx={{margin: '124px 0 0 0'}}>
+        <Grid item xs={2}>
+          <Sidebar Items={SidebarItems} />
         </Grid>
         <Grid item xs = {10}>
           <Switch>
