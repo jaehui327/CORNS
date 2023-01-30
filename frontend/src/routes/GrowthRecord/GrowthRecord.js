@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 
 function GrowthRecord() {
   const SidebarItems = [
-    { name: "내정보", route: "/growthRecord" },
+    { name: "내정보", route: "/growthRecord/myProfile" },
     { name: "경험치", route: "/growthRecord/experienceDetail" },
     { name: "지표보기", route: "/growthRecord/indicators/weeklyLiner" },
   ];
@@ -23,8 +23,12 @@ function GrowthRecord() {
         </Grid>
         <Grid item xs = {10}>
           <Switch>
-            <Route exact path="/growthRecord" component={MyProfile} />
-            <Route exact path="/growthRecord/experienceDetail" component={ExperienceDetail} />
+            <Route exact path="/growthRecord/myProfile" component={MyProfile} />
+            <Route
+              exact
+              path="/growthRecord/experienceDetail"
+              component={ExperienceDetail}
+            />
             <Route path="/growthRecord/indicators" component={Indicators} />
           </Switch>
         </Grid>
