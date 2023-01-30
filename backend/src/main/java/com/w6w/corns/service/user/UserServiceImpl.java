@@ -1,9 +1,10 @@
 package com.w6w.corns.service.user;
 
+import com.w6w.corns.domain.loginlog.LoginLogRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
-import com.w6w.corns.dto.user.LoginResponseDto;
-import com.w6w.corns.dto.user.UserRequestDto;
+import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
+import com.w6w.corns.dto.user.*;
 import com.w6w.corns.util.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,16 +15,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final LoginLogRepository loginLogRepository;
 
     @Override
     @Transactional
-    public int signUp(UserRequestDto requestUser) throws Exception {
+    public int signUp(UserJoinRequestDto requestUser) throws Exception {
 
         //이메일 검증
         int result = validateDuplicateUser(requestUser.getEmail());
 
         if (result == 1) return -1;
          else {
+            String salt = SHA256Util.generateSalt();
+            String newPass = SHA256Util.getEncrypt(requestUser.getPassword(), salt);
+
+            requestUser.setSalt(salt);
+            requestUser.setPassword(newPass);
             requestUser.setSocial(1); //기본 회원가입 설정
             userRepository.save(requestUser.toEntity()); //회원 저장
             return 1;
@@ -42,7 +49,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = true)
-    public LoginResponseDto login(UserRequestDto requestUser) throws Exception{
+    public LoginResponseDto login(UserLoginRequestDto requestUser) throws Exception{
 
         //해당 이메일을 가진 객체를 db에서 찾음
         User user = userRepository.findByEmail(requestUser.getEmail());
@@ -50,6 +57,10 @@ public class UserServiceImpl implements UserService{
         //탈퇴회원 및 이용정지회원은 나중에 처리하기
         if(isSamePassword(requestUser) && user.getUserCd() == 8000){
 
+            //로그인로그 데이터 삽입
+            LoginLogSaveDto loginLogSaveDto = LoginLogSaveDto.builder().userId(user.getUserId()).build();
+            loginLogRepository.save(loginLogSaveDto.toEntity());
+            
             //따봉, 친구, 출석, 발화량 나중에 추가 필요
             return LoginResponseDto.builder()
                     .user(user)
@@ -86,21 +97,24 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public LoginResponseDto findByUserId(int userId) throws Exception{
         User user = userRepository.findByUserId(userId);
         return LoginResponseDto.builder().user(user).build();
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public LoginResponseDto findByEmail(String email) throws Exception{
         User user = userRepository.findByEmail(email);
         return LoginResponseDto.builder().user(user).build();
     }
 
     @Override
-    public boolean isSamePassword(UserRequestDto requestUser) throws Exception {
+    @Transactional(readOnly = true)
+    public boolean isSamePassword(UserLoginRequestDto requestUser) throws Exception {
 
-        User user = userRepository.findByUserId(requestUser.getUserId());
+        User user = userRepository.findByEmail(requestUser.getEmail());
 
         if(user != null){
             String userSalt = user.getSalt();
@@ -112,5 +126,33 @@ public class UserServiceImpl implements UserService{
             if(newPass.equals(user.getPassword())) return true;
         }
         return false;
+    }
+
+    @Override
+    @Transactional
+    public UserModifyRequestDto updateUserInfo(UserModifyRequestDto requestUser) throws Exception{
+
+        User user = userRepository.findByUserId(requestUser.getUserId());
+
+        if(requestUser.getNickname() != null){
+            userRepository.updateNickname(requestUser.getUserId(), requestUser.getNickname());
+
+        }else if(requestUser.getImgUrl() != null){
+            userRepository.updateImgUrl(requestUser.getUserId(), requestUser.getImgUrl());
+
+        }else if(requestUser.getPassword() != null){
+            String salt = user.getSalt();
+            String newPass = SHA256Util.getEncrypt(requestUser.getPassword(), salt);
+            userRepository.updatePassword(requestUser.getUserId(), newPass);
+        }
+
+        return new UserModifyRequestDto().builder().user(user).build();
+    }
+
+    @Override
+    @Transactional
+    public void updateUserCd(int userId, int userCd) throws Exception{
+
+        userRepository.updateUserCd(userId, userCd);
     }
 }

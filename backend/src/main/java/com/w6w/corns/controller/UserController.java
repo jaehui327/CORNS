@@ -3,13 +3,13 @@ package com.w6w.corns.controller;
 //import com.w6w.corns.auth.OAuthService;
 import com.w6w.corns.dto.oauth.GetSocialOauthRes;
 import com.w6w.corns.dto.oauth.GoogleUserDto;
+import com.w6w.corns.dto.user.*;
 import com.w6w.corns.service.jwt.JwtService;
-import com.w6w.corns.dto.user.LoginResponseDto;
-import com.w6w.corns.dto.user.UserRequestDto;
 import com.w6w.corns.service.oauth.OAuthService;
 import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.Constant.SocialType;
 import com.w6w.corns.util.SHA256Util;
+import com.w6w.corns.util.code.UserCode;
 import io.swagger.annotations.Api;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -50,13 +50,8 @@ public class UserController {
      * @return
      */
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody UserRequestDto user){
+    public ResponseEntity<?> join(@RequestBody UserJoinRequestDto user){
         try {
-            String salt = SHA256Util.generateSalt();
-            String newPass = SHA256Util.getEncrypt(user.getPassword(), salt);
-            user.setPassword(newPass);
-            user.setSalt(salt);
-
             int result = userService.signUp(user);
             if(result < 0) return new ResponseEntity<>(HttpStatus.CONFLICT); //중복 이메일
             else return new ResponseEntity<HttpStatus>(HttpStatus.OK);
@@ -85,7 +80,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserRequestDto requestUser){
+    public ResponseEntity<?> login(@RequestBody UserLoginRequestDto requestUser){
 
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
@@ -180,18 +175,18 @@ public class UserController {
 
     /**
      * 토큰 재발급
-     * @param user
+     * @param userId
      * @param request
      * @return
      */
     @PostMapping("/refresh")
-    public ResponseEntity<?> reissueToken(@RequestBody UserRequestDto user, HttpServletRequest request){
+    public ResponseEntity<?> reissueToken(@RequestBody int userId, HttpServletRequest request){
 
         HttpStatus status = null;
         String token = request.getHeader("refreshToken");
         try{
-            if(jwtService.checkToken(token) && token.equals(userService.getRefreshToken(user.getUserId()))){
-                String accessToken = jwtService.createAccessToken("id", user.getUserId());
+            if(jwtService.checkToken(token) && token.equals(userService.getRefreshToken(userId))){
+                String accessToken = jwtService.createAccessToken("id", userId);
                 log.debug("토큰 재발급");
                 Map<String, Object> result = new HashMap<>();
                 result.put("accessToken",accessToken);
@@ -223,13 +218,19 @@ public class UserController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<?> modifyUserInfo(@RequestBody UserRequestDto user){
-        return null;
+    @PatchMapping
+    public ResponseEntity<?> modifyUserInfo(@RequestBody UserModifyRequestDto user){
+
+        try {
+            return new ResponseEntity<>(userService.updateUserInfo(user), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return exceptionHandling(e);
+        }
     }
 
     @PostMapping("/check")
-    public ResponseEntity<?> checkPassword(@RequestBody UserRequestDto user){
+    public ResponseEntity<?> checkPassword(@RequestBody UserLoginRequestDto user){
 
         try {
             if(userService.isSamePassword(user)) return new ResponseEntity<>(HttpStatus.OK);
@@ -241,5 +242,17 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/{userId}")
+    public ResponseEntity<?> withdraw(@RequestParam int userId){
 
+        try {
+            userService.updateUserCd(userId, UserCode.USER_UNREGISTER.getCode());
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return exceptionHandling(e);
+        }
+
+    }
 }

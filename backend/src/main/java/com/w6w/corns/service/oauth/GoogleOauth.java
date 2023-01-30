@@ -109,6 +109,7 @@ public class GoogleOauth implements SocialOauth{
      */
     public GoogleOAuthToken getAccessToken(ResponseEntity<String> response) throws JsonProcessingException {
         System.out.println("response.getBody() = " + response.getBody());
+        //직렬화 이슈 해결하기!
         GoogleOAuthToken googleOAuthToken= objectMapper.readValue(response.getBody(),GoogleOAuthToken.class);
         return googleOAuthToken;
 
