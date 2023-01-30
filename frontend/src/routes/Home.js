@@ -44,7 +44,7 @@ function Home() {
         </Box>
         <Box>
           <Typography variant="h5">랭킹</Typography>
-          <Link to="/community/ranking" sx={{ cursor: "pointer" }}>
+          <Link to="/community/ranking/sincerity" sx={{ cursor: "pointer" }}>
             더보기
           </Link>
           <RankingList />
