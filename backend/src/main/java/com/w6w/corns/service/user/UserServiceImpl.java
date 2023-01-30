@@ -70,6 +70,7 @@ public class UserServiceImpl implements UserService{
         return userRepository.updateRefreshToken(userId, refreshToken);
     }
 
+    //Dto 로 수정 필요
     @Override
     @Transactional(readOnly = true)
     public Object getRefreshToken(int userId) throws Exception {
@@ -88,6 +89,11 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public LoginResponseDto findUserById(int userId) throws Exception{
         User user = userRepository.findByUserId(userId);
+        return LoginResponseDto.builder().user(user).build();
+    }
+
+    public LoginResponseDto findByEmail(String email) throws Exception{
+        User user = userRepository.findByEmail(email);
         return LoginResponseDto.builder().user(user).build();
     }
 

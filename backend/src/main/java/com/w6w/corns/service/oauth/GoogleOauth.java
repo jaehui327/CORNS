@@ -3,21 +3,30 @@ package com.w6w.corns.service.oauth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.w6w.corns.dto.oauth.GoogleOAuthToken;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.w6w.corns.dto.oauth.GoogleUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
 //@ConfigurationProperties("OAuth2")
 public class GoogleOauth implements SocialOauth{
+
+//    private final RestTemplate restTemplate;
 
     @Value("${OAuth2.google.url}")
     private String GOOGLE_SNS_LOGIN_URL;
@@ -62,9 +71,17 @@ public class GoogleOauth implements SocialOauth{
 
     public ResponseEntity<String> requestAccessToken(String code) {
 
-        String GOOGLE_TOKEN_REQUEST_URL = "https://oauth2.googleapis.com/token";
+        String GOOGLE_TOKEN_REQUEST_URL="https://oauth2.googleapis.com/token";
 
-        RestTemplate restTemplate = new RestTemplate(); //다른 서버의 APIendpoint 호출시 사용
+        RestTemplate restTemplate = new RestTemplate(); //다른 서버의 API endpoint 호출시 사용
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler(){
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+
+                return response.getStatusCode().series() == HttpStatus.Series.SERVER_ERROR;
+            }
+        });
         Map<String, Object> params = new HashMap<>();
 
         params.put("code", code);
@@ -73,8 +90,13 @@ public class GoogleOauth implements SocialOauth{
         params.put("redirect_uri", GOOGLE_SNS_CALLBACK_URL);
         params.put("grant_type", "authorization_code");
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_REQUEST_URL,
-                params, String.class);
+        System.out.println("params = " + params);
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                GOOGLE_TOKEN_REQUEST_URL,
+                params,
+                String.class);
+        System.out.println("responseEntity = " + responseEntity);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity;
@@ -93,5 +115,33 @@ public class GoogleOauth implements SocialOauth{
         GoogleOAuthToken googleOAuthToken= objectMapper.readValue(response.getBody(),GoogleOAuthToken.class);
         return googleOAuthToken;
 
+    }
+
+    public ResponseEntity<String> requestUserInfo(GoogleOAuthToken oAuthToken) {
+
+        String GOOGLE_USERINFO_REQUEST_URL="https://www.googleapis.com/oauth2/v1/userinfo";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header에 accessToken을 담는다.
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization","Bearer "+oAuthToken.getAccess_token());
+
+        //HttpEntity를 하나 생성해 헤더를 담아서 restTemplate으로 구글과 통신하게 된다.
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response=restTemplate.exchange(
+                GOOGLE_USERINFO_REQUEST_URL,
+                HttpMethod.GET,
+                request,
+                String.class);
+
+        System.out.println("response.getBody() = " + response.getBody());
+        return response;
+    }
+
+    public GoogleUserDto getUserInfo(ResponseEntity<String> userInfoResponse) throws JsonProcessingException {
+        //유저가 이미 있는 경우 로그인에 성공한 것으로 판단하여 jwt 토큰 발급해야 함
+        return objectMapper.readValue(userInfoResponse.getBody(), GoogleUserDto.class);
     }
 }

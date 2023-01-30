@@ -1,6 +1,8 @@
 package com.w6w.corns.controller;
 
 //import com.w6w.corns.auth.OAuthService;
+import com.w6w.corns.dto.oauth.GetSocialOauthRes;
+import com.w6w.corns.dto.oauth.GoogleUserDto;
 import com.w6w.corns.service.jwt.JwtService;
 import com.w6w.corns.dto.user.LoginResponseDto;
 import com.w6w.corns.dto.user.UserRequestDto;
@@ -149,10 +151,15 @@ public class UserController {
     @GetMapping("/auth/{socialType}/callback")
     public ResponseEntity<?> callback(@PathVariable(name = "socialType") String socialPath,
             @RequestParam(name = "code") String code){
-//        System.out.println("hello");
+
         SocialType socialType = SocialType.valueOf(socialPath.toUpperCase());
-//        oAuthService
-        return null;
+        try {
+            GetSocialOauthRes result = oAuthService.oAuthLogin(socialType, code);
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
     }
     /**
      * 로그아웃

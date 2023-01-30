@@ -13,5 +13,6 @@ public interface UserService {
     Object getRefreshToken(int userId) throws Exception;
     void deleteRefreshToken(int userId) throws Exception;
     LoginResponseDto findUserById(int userId) throws Exception;
+    LoginResponseDto findByEmail(String email) throws Exception;
     boolean isSamePassword(UserRequestDto requestUser) throws Exception;
 }
