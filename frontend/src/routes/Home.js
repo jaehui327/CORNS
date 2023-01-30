@@ -4,7 +4,7 @@ import Navbar from "../components/GlobalComponents/Navbar";
 import hero from "assets/hero.png";
 import backgroundImage from "assets/backgroundImage.png";
 import RoomList from "components/Conversation/RoomList";
-import RankingCard from "components/GlobalComponents/RankingCard";
+import RankingList from "components/GlobalComponents/RankingList";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
@@ -44,8 +44,8 @@ function Home() {
         </Box>
         <Box>
           <Typography variant="h5">랭킹</Typography>
-          <Link>더보기</Link>
-          <RankingCard />
+          <Link to="/">더보기</Link>
+          <RankingList />
         </Box>
       </Box>
 
