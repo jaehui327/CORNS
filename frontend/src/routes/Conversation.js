@@ -8,13 +8,20 @@ import RoomList from "../components/Conversation/RoomList";
 import RoomCreateModal from "../components/Conversation/RoomCreateForm";
 import SelfEvaluationModal from "../components/Conversation/SelfEvaluationModal";
 
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+
 function Conversation() {
   const user = true;
 
   return (
     <>
       <Navbar />
-      <div css={css`margin: 124px 0 0 0`}>
+      <div
+        css={css`
+          margin: 124px 0 0 0;
+        `}
+      >
         {user ? <LogInUserArea /> : <AnonymousUserArea />}
         <h2>쫑알룸리스트</h2>
         <ConversationRoomFilter />
@@ -22,7 +29,7 @@ function Conversation() {
         <RoomCreateModal />
         <SelfEvaluationModal />
       </div>
-    </div>
+    </>
   );
 }
 
