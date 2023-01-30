@@ -33,7 +33,7 @@ function ConversationLog({}) {
             css={css`
               box-sizing: border-box;
               border: 3px solid #111111;
-              padding: 0 32px;
+              padding: 10px 32px 32px 32px;
             `}
           >
             <Switch>
