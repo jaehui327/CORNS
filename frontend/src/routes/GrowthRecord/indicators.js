@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Switch} from "react-router-dom";
+import {Route, Switch, Redirect} from "react-router-dom";
 import Tabmenu from "../../components/GlobalComponents/Tabmenu";
 
 import WeeklyLiner from "./WeeklyLiner";
@@ -34,6 +34,7 @@ function Indicators({ location }) {
         <Route exact path="/growthRecord/indicators/weeklyLiner" component={WeeklyLiner} />
         <Route exact path="/growthRecord/indicators/subjectCircle" component={SubjectCircle} />
         <Route exact path="/growthRecord/indicators/dailyBar" component={DailyBar} />
+        <Redirect to ="/NotFound" />
       </Switch>
     </>
   );
