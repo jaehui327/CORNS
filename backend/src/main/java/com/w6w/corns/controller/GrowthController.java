@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +52,10 @@ public class GrowthController {
     }
 
     @GetMapping("/exp/list/{userId}")
-    public ResponseEntity<?> listExp(@PathVariable int userId){
+    public ResponseEntity<?> listExp(@PathVariable int userId, @RequestParam int page,
+                                     @RequestParam int size, @RequestParam String baseTime){
+
+
 
 
         return null;
