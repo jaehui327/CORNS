@@ -1,5 +1,6 @@
 package com.w6w.corns.domain.room;
 
+import com.w6w.corns.domain.subject.Subject;
 import com.w6w.corns.util.BaseTime;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,7 +24,11 @@ public class Room extends BaseTime {
 
     private int maxMember;
 
-    private int subjectNo;
+    @ManyToOne
+    @JoinColumn(name = "subject_no")
+    private Subject subject;
+
+//    private int subjectNo;
 
     private int hostUserId;
 
@@ -38,7 +43,7 @@ public class Room extends BaseTime {
         this.title = title;
         this.time = time;
         this.maxMember = maxMember;
-        this.subjectNo = subjectNo;
+//        this.subjectNo = subjectNo;
         this.sessionId = sessionId;
     }
 

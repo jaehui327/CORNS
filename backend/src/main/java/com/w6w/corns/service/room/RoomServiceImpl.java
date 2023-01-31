@@ -17,9 +17,12 @@ import com.w6w.corns.service.subject.SubjectService;
 import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,9 +78,14 @@ public class RoomServiceImpl implements RoomService {
                                 .sessionId(m.getSessionId())
                                 .build())
                         // subject - select by subject no
-                        .subject(subjectService.findById(m.getSubjectNo()))
+//                        .subject(subjectService.findById(m.getSubjectNo()))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Slice<Room> searchBySlice(ArrayList<Integer> subjects, int minTime, int maxTime, boolean isAvail, Pageable pageable) {
+        return roomRepository.searchBySlice(subjects, minTime, maxTime, isAvail, pageable);
     }
 
     // 방 상세 정보

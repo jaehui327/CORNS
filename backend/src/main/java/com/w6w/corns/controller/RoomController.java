@@ -1,5 +1,6 @@
 package com.w6w.corns.controller;
 
+import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.request.EnterRoomRequestDto;
 import com.w6w.corns.dto.room.request.StartEndRoomRequestDto;
@@ -12,6 +13,10 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,18 +54,26 @@ public class RoomController {
 
     @ApiOperation(value = "쫑알쫑알 전체 목록 보기(필터링 추가해야 함)", notes = "page, size, baseTime, subject, minTime, maxTime, showAvail 값을 쿼리 스트링으로 전달")
     @GetMapping
-    private ResponseEntity<?> getAllRooms() {
-
+    private ResponseEntity<?> getAllRooms(@RequestParam(defaultValue = "1%2%3%4%5%6") String subject,
+                                          @RequestParam(defaultValue = "0") int minTime,
+                                          @RequestParam(defaultValue = "30") int maxTime,
+                                          @RequestParam(defaultValue = "false") boolean isAvail,
+                                          @PageableDefault(size=18, direction = Sort.Direction.ASC)  Pageable pageable) {
         Map resultMap = new HashMap<>();
         HttpStatus status;
 
         try {
-            List<RoomListResponseDto> rooms = roomService.findAll();
-            logger.debug("rooms: {}", rooms);
-            if (rooms.isEmpty()) {
+            StringTokenizer st = new StringTokenizer(subject, "%");
+            ArrayList<Integer> subjects = new ArrayList<>();
+            while (!st.hasMoreTokens()) subjects.add(Integer.parseInt(st.nextToken()));
+
+
+            Slice<Room> slice = roomService.searchBySlice(subjects, minTime, maxTime, isAvail, pageable);
+            logger.debug("slice: {}", slice);
+            if (slice.isEmpty()) {
                 status = HttpStatus.NO_CONTENT;
             } else {
-                resultMap.put("rooms", rooms);
+                resultMap.put("rooms", slice);
                 status = HttpStatus.OK;
             }
         } catch (Exception e) {

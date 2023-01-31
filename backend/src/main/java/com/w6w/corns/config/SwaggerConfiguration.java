@@ -1,7 +1,10 @@
 package com.w6w.corns.config;
 
+import com.fasterxml.classmate.TypeResolver;
+import com.w6w.corns.util.MyPageable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Pageable;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -18,16 +21,18 @@ import java.util.Set;
 public class SwaggerConfiguration  {
 
     private String version="V1";
+    TypeResolver typeResolver = new TypeResolver();
 
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
+                .directModelSubstitute(Pageable.class, MyPageable.class)
                 .consumes(getConsumeContentTypes()).produces(getProduceContentTypes())
+                .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo());
+                .build();
 
     }
 
