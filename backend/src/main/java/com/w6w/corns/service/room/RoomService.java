@@ -25,12 +25,12 @@ public interface RoomService {
     public boolean isNotUserInConversation(int userId);
     // 쫑알룸 정원 체크
     public int isAvailableEnterRoom(int roomNo);
-    // 방 입장
+    // 쫑알룸 입장 처리
     public List<RoomUserListResponseDto> enterRoom(EnterRoomRequestDto body);
     //
     // 대화 시작
     public int startConversation(StartEndRoomRequestDto body);
-    // 방 나가기
+    // 쫑알룸 퇴장
     public void exitRoom(UpdateRoomRequestDto body);
     // 대화 종료
     public void endConversation(StartEndRoomRequestDto body);

@@ -36,6 +36,7 @@ public class RoomServiceImpl implements RoomService {
 
     private final UserRepository userRepository;
 
+    // 방 생성
     @Override
     @Transactional
     public int save(CreateRoomRequestDto body) {
@@ -58,6 +59,7 @@ public class RoomServiceImpl implements RoomService {
         return 1;
     }
 
+    // 전체 리스트 - 페이징 필요함
     @Override
     @Transactional(readOnly = true)
     public List<RoomListResponseDto> findAll() {
@@ -78,6 +80,7 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
     }
 
+    // 방 상세 정보
     @Override
     @Transactional(readOnly = true)
     public RoomResponseDto findRoomByRoomNo(int roomNo) {
@@ -95,6 +98,7 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
+    // 대화방 내 유저 목록
     @Override
     @Transactional(readOnly = true)
     public List<RoomUserListResponseDto> findRoomUserByRoomNo(int roomNo) {
@@ -114,15 +118,16 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
     }
 
-    // 유저가 대화 참여 가능하면 true 반환
+    // 유저가 대화중인지 체크
     @Override
     @Transactional(readOnly = true)
     public boolean isNotUserInConversation(int userId) {
-        // 유저가 6000(대기중), 6001(대기중)일 때 true
+        //// 유저가 대화 참여 가능하면 true 반환 - 6000(대기중), 6001(대기중)이 아닐 때
         if (roomUserRepository.findByUserIdAndRoomUserCd(userId).isEmpty()) return true;
         return false;
     }
 
+    // 쫑알룸 정원 체크
     @Override
     @Transactional(readOnly = true)
     public int isAvailableEnterRoom(int roomNo) {
@@ -149,6 +154,7 @@ public class RoomServiceImpl implements RoomService {
         return findRoomUserByRoomNo(body.getRoomNo());
     }
 
+    // 대화 시작
     @Override
     @Transactional
     public int startConversation(StartEndRoomRequestDto body) {
@@ -191,6 +197,7 @@ public class RoomServiceImpl implements RoomService {
         }
     }
 
+    // 대화 종료
     @Override
     @Transactional
     public void endConversation(StartEndRoomRequestDto body) {
