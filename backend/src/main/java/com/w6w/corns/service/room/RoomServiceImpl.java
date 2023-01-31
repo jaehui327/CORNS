@@ -6,6 +6,9 @@ import com.w6w.corns.domain.roomuser.RoomUser;
 import com.w6w.corns.domain.roomuser.RoomUserRepository;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
+import com.w6w.corns.dto.room.request.EnterRoomRequestDto;
+import com.w6w.corns.dto.room.request.StartEndRoomRequestDto;
+import com.w6w.corns.dto.room.request.UpdateRoomRequestDto;
 import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomResponseDto;
 import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
@@ -15,8 +18,8 @@ import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +40,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     public int save(CreateRoomRequestDto body) {
         // check room user code
-        if (!isAvailable(body.getUserId())) return -1;
+        if (!isNotUserInConversation(body.getUserId())) return -1;
 
         // save room - set hostUserId, roomCd
         Room room = body.getRoom().toEntity();
@@ -45,7 +48,6 @@ public class RoomServiceImpl implements RoomService {
         room.setRoomCd(RoomCode.ROOM_WAITING.getCode());
         roomRepository.save(room);
 
-        System.out.println(room);
         // save roomUser - set roomNo, userId, roomUserCd
         RoomUser roomUser = body.getRoomUser().toEntity();
         roomUser.setRoomNo(room.getRoomNo());
@@ -57,12 +59,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean isAvailable(int userId) {
-        // 참가 가능한 상태면 true 반환 - 6000(대기중), 6001(대기중)인 상태가 없을 때
-        if (roomUserRepository.findByUserIdAndRoomUserCd(userId).isEmpty()) return true;
-        return false;
-    }
-
+    @Transactional(readOnly = true)
     public List<RoomListResponseDto> findAll() {
         return roomRepository.findAll().stream()
                 .map(m -> RoomListResponseDto.builder()
@@ -81,6 +78,8 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public RoomResponseDto findRoomByRoomNo(int roomNo) {
         Optional<Room> result = roomRepository.findById(roomNo);
         if (result.isEmpty()) return null;
@@ -96,6 +95,8 @@ public class RoomServiceImpl implements RoomService {
                 .build();
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<RoomUserListResponseDto> findRoomUserByRoomNo(int roomNo) {
         List<RoomUser> roomUsers = roomUserRepository.findByRoomNo(roomNo);
         if (roomUsers.isEmpty()) return null;
@@ -111,6 +112,95 @@ public class RoomServiceImpl implements RoomService {
                                 .toUserResponseBuilder())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    // 유저가 대화 참여 가능하면 true 반환
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isNotUserInConversation(int userId) {
+        // 유저가 6000(대기중), 6001(대기중)일 때 true
+        if (roomUserRepository.findByUserIdAndRoomUserCd(userId).isEmpty()) return true;
+        return false;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int isAvailableEnterRoom(int roomNo) {
+        Optional<Room> room = roomRepository.findById(roomNo);
+        if (room.isEmpty()) // 방 폭파
+            return 0;
+        else if (room.get().getMaxMember() == roomUserRepository.findByRoomNo(roomNo).size()) // 인원 마감
+            return 1;
+        else // 입장 가능
+            return 2;
+    }
+
+    // 쫑알룸 입장 처리
+    @Override
+    @Transactional
+    public List<RoomUserListResponseDto> enterRoom(EnterRoomRequestDto body) {
+        // save roomUser - set roomNo, userId, roomUserCd
+        RoomUser roomUser = body.getRoomUser().toEntity();
+        roomUser.setRoomNo(body.getRoomNo());
+        roomUser.setUserId(body.getUserId());
+        roomUser.setUserCd(RoomUserCode.ROOM_USER_WAITING.getCode());
+        roomUserRepository.save(roomUser);
+
+        return findRoomUserByRoomNo(body.getRoomNo());
+    }
+
+    @Override
+    @Transactional
+    public int startConversation(StartEndRoomRequestDto body) {
+        Room room = roomRepository.findById(body.getRoomNo()).get();
+        List<RoomUser> roomUsers = roomUserRepository.findByRoomNo(body.getRoomNo());
+
+        if (roomUsers.size() == 1) { // 혼자일 때 대화 시작 불가
+            return 0;
+        } else {
+            room.setRoomCd(RoomCode.ROOM_START.getCode());
+            roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode()));
+            roomUserRepository.saveAll(roomUsers);
+            return 1;
+        }
+    }
+
+    // 쫑알룸 퇴장
+    @Override
+    @Transactional
+    public void exitRoom(UpdateRoomRequestDto body) {
+        Room room = roomRepository.findById(body.getRoomNo()).get();
+
+        if (room.getRoomCd() == RoomCode.ROOM_WAITING.getCode()) { // 대기방일 때
+            // room_user table 에서 삭제
+            roomUserRepository.deleteByUserIdAndRoomNo(body.getUserId(), body.getRoomNo());
+            // 대기방에 아무도 남아있지 않을 때 room table 에서 삭제
+            if (roomUserRepository.findByRoomNo(body.getRoomNo()).isEmpty()) {
+                roomRepository.deleteById(body.getRoomNo());
+            }
+            // 방장일 때 방장 교체
+            else if (roomRepository.findById(body.getRoomNo()).get().getHostUserId() == body.getUserId()) {
+                int userId = roomUserRepository.findByRoomNo(body.getRoomNo()).stream().findFirst().get().getUserId();
+                room.setHostUserId(userId);
+                roomRepository.save(room);
+            }
+        } else if (room.getRoomCd() == RoomCode.ROOM_START.getCode()) { // 대화 중일 때
+            RoomUser roomUser = roomUserRepository.findByUserIdAndRoomNo(body.getUserId(), body.getRoomNo());
+            roomUser.setUserCd(RoomUserCode.ROOM_USER_EXIT.getCode());
+            roomUserRepository.save(roomUser);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void endConversation(StartEndRoomRequestDto body) {
+        Room room = roomRepository.findById(body.getRoomNo()).get();
+        room.setRoomCd(RoomCode.ROOM_END.getCode());
+        roomRepository.save(room);
+
+        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+        roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_END.getCode()));
+        roomUserRepository.saveAll(roomUsers);
     }
 
 }
