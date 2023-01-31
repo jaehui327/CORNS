@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<Room, Integer> {
 
     // 대기중, 대화중인 방 리스트만 보여줌
-    @Query(value = "SELECT r FROM Room r WHERE r.roomCd <= 1001")
-    List<Room> findAll();
+    @Query(value = "SELECT r FROM Room r WHERE r.roomCd <= :roomCd")
+    List<Room> findAllByRoomCd(int roomCd);
 
 
 

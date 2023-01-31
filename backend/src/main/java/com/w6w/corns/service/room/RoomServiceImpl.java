@@ -63,7 +63,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional(readOnly = true)
     public List<RoomListResponseDto> findAll() {
-        return roomRepository.findAll().stream()
+        return roomRepository.findAllByRoomCd(RoomCode.ROOM_START.getCode()).stream()
                 .map(m -> RoomListResponseDto.builder()
                         // room
                         .room(RoomResponseDto.builder()
