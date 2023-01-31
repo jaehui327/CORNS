@@ -65,6 +65,7 @@ public class OAuthServiceImpl implements OAuthService{
                 System.out.println("googleUser = " + googleUser);
 
                 User user = userRepository.findByEmail(googleUser.getEmail());
+                System.out.println("user = " + user);
 
                 if(user == null){ //새로운 회원
 
@@ -82,7 +83,7 @@ public class OAuthServiceImpl implements OAuthService{
                 }
                 user = userRepository.findByEmail(googleUser.getEmail());
 
-                LoginResponseDto loginResponseDto = LoginResponseDto.loginBuilder()
+                LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                         .userId(user.getUserId())
                         .email(user.getEmail())
                         .nickname(user.getNickname())

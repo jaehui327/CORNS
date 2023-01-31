@@ -65,8 +65,10 @@ public class UserController {
     @GetMapping("/email-check/{email}")
     public ResponseEntity<?> checkDuplicateEmail(@PathVariable String email){
 
+        System.out.println("email = " + email);
         try {
             int result = userService.validateDuplicateUser(email);
+            System.out.println("result = " + result);
             if(result == 0) return new ResponseEntity<>(HttpStatus.OK);
             else return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (Exception e) {
@@ -88,19 +90,18 @@ public class UserController {
         LoginResponseDto loginUser = null;
         try {
             loginUser = userService.login(requestUser);
-            System.out.println("loginUser = " + loginUser);
+
             if(loginUser == null) status = HttpStatus.UNAUTHORIZED;
             else{
                 String accessToken = jwtService.createAccessToken("id", loginUser.getUserId());
                 String refreshToken = jwtService.createRefreshToken("id", loginUser.getUserId());
 
-                log.debug("accessToken = " + accessToken);
-                log.debug("refreshToken = " + refreshToken);
-
-                //경험치도 줘야함!
-                userService.saveRefreshToken(loginUser.getUserId(), refreshToken);
+                //lastLoginTm 갱신
                 userService.updateLastLoginTm(loginUser.getUserId());
+
+                userService.saveRefreshToken(loginUser.getUserId(), refreshToken);
                 loginUser.setRefreshToken(refreshToken);
+
                 resultMap.put("accessToken", accessToken);
                 resultMap.put("refreshToken", refreshToken);
                 resultMap.put("loginUser", loginUser);
@@ -156,12 +157,13 @@ public class UserController {
             log.debug("accessToken = " + accessToken);
             log.debug("refreshToken = " + refreshToken);
 
-              //경험치도 줘야함!
+            //경험치도 줘야함!, 리팩토링 필요
             userService.saveRefreshToken(loginResponseDto.getUserId(), refreshToken);
             userService.updateLastLoginTm(loginResponseDto.getUserId());
             loginResponseDto.setRefreshToken(refreshToken);
 
-            //last login time
+            //lastLoginTm 갱신
+            userService.updateLastLoginTm(loginResponseDto.getUserId());
 
             // 로그인로그
             userService.makeLoginLog(loginResponseDto.getUserId());
@@ -181,7 +183,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/logout/{userId}")
-    public ResponseEntity<?> logout(@RequestParam int userId){
+    public ResponseEntity<?> logout(@PathVariable int userId){
 
         try {
             userService.deleteRefreshToken(userId);
@@ -224,7 +226,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserInfo(@RequestParam int userId){
+    public ResponseEntity<?> getUserInfo(@PathVariable int userId){
 
         try {
             LoginResponseDto user = userService.findByUserId(userId);
@@ -262,16 +264,16 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<?> withdraw(@RequestParam int userId){
+    public ResponseEntity<?> withdraw(@PathVariable int userId){
 
         try {
             userService.updateUserCd(userId, UserCode.USER_UNREGISTER.getCode());
+            userService.deleteRefreshToken(userId);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
             log.error(e.getMessage());
             return exceptionHandling(e);
         }
-
     }
 }

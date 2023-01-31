@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public int validateDuplicateUser(String email){
         User findUser = userRepository.findByEmail(email);
-
+        System.out.println("findUser = " + findUser);
         if(findUser == null) return 0; //중복 x
         else return 1; //중복
     }
@@ -56,14 +56,17 @@ public class UserServiceImpl implements UserService{
 
         //탈퇴회원 및 이용정지회원은 나중에 처리하기
         if(isSamePassword(requestUser) && user.getUserCd() == 8000){
-
+            System.out.println("here");
+            //경험치 추가 필요
             makeLoginLog(user.getUserId());
-            
+
             //따봉, 친구, 출석, 발화량 나중에 추가 필요
-            return LoginResponseDto.builder()
-                    .user(user)
-                    .build();
+            LoginResponseDto temp = LoginResponseDto.fromEntity(user);
+
+            System.out.println("temp = " + temp);
+            return temp;
         }
+        System.out.println("fail");
         return null;
     }
     @Override
@@ -106,14 +109,14 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public LoginResponseDto findByUserId(int userId) throws Exception{
         User user = userRepository.findByUserId(userId);
-        return LoginResponseDto.builder().user(user).build();
+        return LoginResponseDto.fromEntity(user);
     }
 
     @Override
     @Transactional(readOnly = true)
     public LoginResponseDto findByEmail(String email) throws Exception{
         User user = userRepository.findByEmail(email);
-        return LoginResponseDto.builder().user(user).build();
+        return LoginResponseDto.fromEntity(user);
     }
 
     @Override
@@ -138,6 +141,7 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public UserModifyRequestDto updateUserInfo(UserModifyRequestDto requestUser) throws Exception{
 
+        System.out.println("requestUser = " + requestUser);
         User user = userRepository.findByUserId(requestUser.getUserId());
 
         if(requestUser.getNickname() != null){
@@ -147,6 +151,7 @@ public class UserServiceImpl implements UserService{
             userRepository.updateImgUrl(requestUser.getUserId(), requestUser.getImgUrl());
 
         }else if(requestUser.getPassword() != null){
+
             String salt = user.getSalt();
             String newPass = SHA256Util.getEncrypt(requestUser.getPassword(), salt);
             userRepository.updatePassword(requestUser.getUserId(), newPass);
