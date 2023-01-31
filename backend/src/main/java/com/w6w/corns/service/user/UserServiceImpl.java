@@ -6,6 +6,7 @@ import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
 import com.w6w.corns.dto.user.*;
 import com.w6w.corns.util.SHA256Util;
+import com.w6w.corns.util.code.UserCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService{
 
         //탈퇴회원 및 이용정지회원은 나중에 처리하기
         //이메일, 비밀번호 일치 확인 && 회원코드 확인
-        if(isSamePassword(requestUser) && user.getUserCd() == 8000){
+        if(isSamePassword(requestUser) && user.getUserCd() == UserCode.USER_DEFAULT.getCode()){
 
             //추후 경험치 추가 필요
 
