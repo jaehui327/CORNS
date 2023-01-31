@@ -28,7 +28,7 @@ public class RoomController {
     RoomService roomService;
 
     @ApiOperation(value = "쫑알룸 생성하기", notes = "방 정보와 OpenVidu 관련 정보를 body에 담아서 요청")
-    @PostMapping(value = "/create")
+    @PostMapping
     private ResponseEntity<?> save(@RequestBody CreateRoomRequestDto body) {
         logger.debug("request body: {}", body);
         Map resultMap = new HashMap<>();
@@ -118,7 +118,7 @@ public class RoomController {
     }
 
     @ApiOperation(value = "쫑알룸 입장", notes = "")
-    @PostMapping(value = "/enter")
+    @PostMapping(value = "/user")
     private ResponseEntity<?> enterRoom(@RequestBody EnterRoomRequestDto body) {
         logger.debug("body: {}", body);
         Map resultMap = new HashMap<>();
@@ -151,7 +151,7 @@ public class RoomController {
     }
 
     @ApiOperation(value = "쫑알룸 나가기", notes = "room no, user id를 요청")
-    @PatchMapping(value = "/exit")
+    @PatchMapping(value = "/user")
     private ResponseEntity<?> exitRoom(@RequestBody UpdateRoomRequestDto body) {
         Map resultMap = new HashMap<>();
         HttpStatus status;
