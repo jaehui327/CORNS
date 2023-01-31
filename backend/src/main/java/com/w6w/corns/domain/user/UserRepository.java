@@ -22,5 +22,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("update User set social=:updateSocial where userId=:userId")
     int updateSocial(int userId, int updateSocial);
 
+    @Query(value = "select rank() over(order by exp_total desc) from user where user_cd = 8000 and user_id=:userId", nativeQuery = true)
+    int rankByExp(int userId);
 
+    @Query(value = "select count(*) from user where user_cd = 8000", nativeQuery = true)
+    int countAll();
 }
