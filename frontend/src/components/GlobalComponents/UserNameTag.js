@@ -12,11 +12,8 @@ function UserNameTag({ nickname, user_id }) {
       <Box onClick={handleOpen} sx={{ cursor: "pointer" }}>
         {nickname}#{user_id}
       </Box>
-      
-      <Modal
-        open={open}
-        onClose={handleClose}
-      >
+
+      <Modal open={open} onClose={handleClose}>
         <Box>
           <UserProfileModal />
         </Box>
