@@ -10,7 +10,7 @@ public interface UserService {
     void makeLoginLog(int userId) throws Exception;
     void updateLastLoginTm(int userId) throws Exception;
     int saveRefreshToken(int userId, String refreshToken) throws Exception;
-    Object getRefreshToken(int userId) throws Exception;
+    String getRefreshToken(int userId) throws Exception;
     void deleteRefreshToken(int userId) throws Exception;
     LoginResponseDto findByUserId(int userId) throws Exception;
     LoginResponseDto findByEmail(String email) throws Exception;

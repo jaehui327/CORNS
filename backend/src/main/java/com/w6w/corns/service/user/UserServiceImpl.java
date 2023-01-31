@@ -21,16 +21,18 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public int signUp(UserJoinRequestDto requestUser) throws Exception {
 
-        //이메일 검증
+        //최종적으로 이메일 검증
         int result = validateDuplicateUser(requestUser.getEmail());
 
         if (result == 1) return -1;
          else {
+             //암호화
             String salt = SHA256Util.generateSalt();
             String newPass = SHA256Util.getEncrypt(requestUser.getPassword(), salt);
 
-            requestUser.setSalt(salt);
+            requestUser.setSalt(salt); 
             requestUser.setPassword(newPass);
+            //기본 회원가입 사용자로 설정
             requestUser.setSocial(1);
             userRepository.save(requestUser.toEntity()); //회원 저장
             return 1;
@@ -41,7 +43,6 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public int validateDuplicateUser(String email){
         User findUser = userRepository.findByEmail(email);
-        System.out.println("findUser = " + findUser);
         if(findUser == null) return 0; //중복 x
         else return 1; //중복
     }
@@ -55,18 +56,17 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByEmail(requestUser.getEmail());
 
         //탈퇴회원 및 이용정지회원은 나중에 처리하기
+        //이메일, 비밀번호 일치 확인 && 회원코드 확인
         if(isSamePassword(requestUser) && user.getUserCd() == 8000){
-            System.out.println("here");
-            //경험치 추가 필요
+
+            //추후 경험치 추가 필요
+
+            //로그인로그 insert
             makeLoginLog(user.getUserId());
 
             //따봉, 친구, 출석, 발화량 나중에 추가 필요
-            LoginResponseDto temp = LoginResponseDto.fromEntity(user);
-
-            System.out.println("temp = " + temp);
-            return temp;
+            return LoginResponseDto.fromEntity(user);
         }
-        System.out.println("fail");
         return null;
     }
     @Override
@@ -80,6 +80,8 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public void updateLastLoginTm(int userId) throws Exception{
+        
+        //last_login_tm 변경
         User user = userRepository.getReferenceById(userId);
         user.updateLastLoginTM();
     }
@@ -90,10 +92,9 @@ public class UserServiceImpl implements UserService{
         return userRepository.updateRefreshToken(userId, refreshToken);
     }
 
-    //Dto 로 수정 필요
     @Override
     @Transactional(readOnly = true)
-    public Object getRefreshToken(int userId) throws Exception {
+    public String getRefreshToken(int userId) throws Exception {
         User user = userRepository.findByUserId(userId);
         return user.getRefreshToken();
     }
@@ -101,7 +102,6 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void deleteRefreshToken(int userId) throws Exception {
-
         userRepository.updateRefreshToken(userId, null);
     }
 
@@ -163,7 +163,6 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void updateUserCd(int userId, int userCd) throws Exception{
-
         userRepository.updateUserCd(userId, userCd);
     }
 }
