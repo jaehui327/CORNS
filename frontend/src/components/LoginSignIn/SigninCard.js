@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+
 import axios from "axios";
 
 import SigninEmail from "./SigninEmail";
@@ -11,46 +12,51 @@ import yellow_logo from "assets/corns_logo_yellow.png";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-function SigninCard() {
+function SigninCard({ checked }) {
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
   const [nickname, setNickname] = useState("");
 
   const [stateEmail, setStateEmail] = useState(false);
-  const [statePassword, setStatePassword] = useState(false);
+  const [statePassword1, setStatePassword1] = useState(false);
+  const [statePassword2, setStatePassword2] = useState(false);
   const [stateNickname, setStateNickname] = useState(false);
 
-
-  // 회원가입 -> fetch
+  // 회원가입
+  // CORS 에러 -> 해결해야함
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    if (!stateEmail || !statePassword1 || !statePassword2 || !stateNickname) {
+      console.log(stateEmail, statePassword1, statePassword2, stateNickname);
+      alert("항목을 확인해주세요.");
+      return;
+    }
+    if (!checked) {
+      alert("약관에 동의해주세요.");
+      return;
+    }
     try {
-      console.log(email, password1);
-
-      // POST 요청
-      const res = await fetch("/user/join", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password1,
-          nickname,
-        }),
-      });
-      console.log(res.json());
-    } catch (err) {
-      console.log(err);
+      console.log("Sign in!");
+      const response = await axios.post(
+        `${process.env.REACT_APP_HOST}/user/join`,
+        {
+          email: email,
+          password: password1,
+          nickname: nickname,
+        }
+      );
+      console.log(response);
+    } catch (e) {
+      console.log(e);
     }
   };
 
   return (
     <Box
       sx={{
-        padding: "32px 48px",
+        padding: "32px 32px",
         border: "3px solid #111",
         display: "flex",
         flexDirection: "column",
@@ -81,8 +87,10 @@ function SigninCard() {
         setPassword1={setPassword1}
         password2={password2}
         setPassword2={setPassword2}
-        statePassword={statePassword}
-        setStatePassword={setStatePassword}
+        statePassword1={statePassword1}
+        setStatePassword1={setStatePassword1}
+        statePassword2={statePassword2}
+        setStatePassword2={setStatePassword2}
       />
 
       <SigninNickname
