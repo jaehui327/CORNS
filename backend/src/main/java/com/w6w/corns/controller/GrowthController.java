@@ -1,16 +1,21 @@
 package com.w6w.corns.controller;
 
+import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 import com.w6w.corns.dto.user.UserRequestDto;
 import com.w6w.corns.service.growth.GrowthService;
 import io.swagger.annotations.Api;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,12 +57,17 @@ public class GrowthController {
     }
 
     @GetMapping("/exp/list/{userId}")
-    public ResponseEntity<?> listExp(@PathVariable int userId, @RequestParam int page,
-                                     @RequestParam int size, @RequestParam String baseTime){
+    public ResponseEntity<?> listExp(@PathVariable int userId, @PageableDefault(sort = "regTm", direction = Sort.Direction.DESC)  Pageable pageable /*, @RequestParam String baseTime*/){
 
-
-
-
+        System.out.println("pageable = " + pageable);
+        try {
+            List<ExpLogResponseDto> exps = growthService.getExpLogList(userId, pageable);
+            for (ExpLogResponseDto exp : exps) {
+                System.out.println("exp = " + exp);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 

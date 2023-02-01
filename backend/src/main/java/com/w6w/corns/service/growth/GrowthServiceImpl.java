@@ -1,10 +1,16 @@
 package com.w6w.corns.service.growth;
 
+import com.w6w.corns.domain.explog.ExpLog;
+import com.w6w.corns.domain.explog.ExpLogRepository;
 import com.w6w.corns.domain.level.LevelRepository;
-import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
+import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +19,7 @@ public class GrowthServiceImpl implements GrowthService {
 
     private final LevelRepository levelRepository;
     private final UserRepository userRepository;
+    private final ExpLogRepository expLogRepository;
 
     public int calExpPercentile(int userId) throws Exception{
 
@@ -29,5 +36,19 @@ public class GrowthServiceImpl implements GrowthService {
 //        User user = userRepository.findByUserId(userId);
 //        return LevelDto.fromEntity(user.getLevel());
         return null;
+    }
+
+    public List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable/*, String baseTime*/) throws Exception{
+        //baseTime -> LocalDate 타입으로
+//        Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThan(userId, pageable, baseTime);
+        Slice<ExpLog> slice = expLogRepository.findByUserId(userId, pageable);
+        System.out.println("slice = " + slice.getContent());
+
+        List<ExpLogResponseDto> list = new ArrayList<>();
+        for(ExpLog expLog : slice.getContent())
+            list.add(ExpLogResponseDto.fromEntity(expLog));
+
+        return list;
+//        return new Slice<>(slice, pageable, slice.getSize());
     }
 }
