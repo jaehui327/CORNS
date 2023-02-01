@@ -1,4 +1,5 @@
 import * as roomListsAPI from "../api/RoomLists";
+import { reducerUtils } from "lib/asyncUtils";
 
 // action
 
@@ -27,11 +28,7 @@ export const getRoomLists = () => async (dispatch) => {
 };
 
 const initialState = {
-  roomLists: {
-    loading: false,
-    data: null,
-    error: null,
-  },
+  roomLists: reducerUtils.initial(),
 };
 
 // reducer
@@ -41,29 +38,17 @@ export default function roomLists(state = initialState, action) {
     case GET_ROOMLISTS:
       return {
         ...state,
-        roomLists: {
-          loading: true,
-          data: null,
-          error: null,
-        },
+        roomLists: reducerUtils.loading(),
       };
     case GET_ROOMLISTS_SUCCESS:
       return {
         ...state,
-        roomLists: {
-          loading: false,
-          data: action.roomLists,
-          error: null,
-        },
+        roomLists: reducerUtils.success(action.roomLists),
       };
     case GET_ROOMLISTS_ERROR:
       return {
         ...state,
-        roomLists: {
-          loading: false,
-          data: null,
-          error: action.error,
-        },
+        roomLists: reducerUtils.error(action.error),
       };
     default:
       return state;
