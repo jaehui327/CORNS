@@ -3,6 +3,7 @@ package com.w6w.corns.service.growth;
 import com.w6w.corns.domain.explog.ExpLog;
 import com.w6w.corns.domain.explog.ExpLogRepository;
 import com.w6w.corns.domain.level.LevelRepository;
+import com.w6w.corns.domain.loginlog.LoginLogRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
@@ -25,6 +26,7 @@ public class GrowthServiceImpl implements GrowthService {
 
     private final UserRepository userRepository;
     private final ExpLogRepository expLogRepository;
+    private final LoginLogRepository loginLogRepository;
 
     public int calExpPercentile(int userId) throws Exception{
 
@@ -63,5 +65,16 @@ public class GrowthServiceImpl implements GrowthService {
     public void giveExp(ExpLogRequestDto expLogRequestDto){
 
         expLogRepository.save(expLogRequestDto.toEntity());
+    }
+
+    //출석률 반환
+    @Override
+    public int calAttendanceRate(int userId) throws Exception {
+
+        List<String> list = loginLogRepository.findByRegTmAndUserId(userId);
+        System.out.println(list);
+
+        double rate = (double)list.size() / 30;
+        return (int)(rate * 100);
     }
 }

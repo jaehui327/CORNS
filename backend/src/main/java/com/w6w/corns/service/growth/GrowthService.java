@@ -16,4 +16,6 @@ public interface GrowthService {
     List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception;
     //Dto를 이용해서 유저에게 경험치 부여
     void giveExp(ExpLogRequestDto expLogRequestDto);
+    //출석률 반환
+    int calAttendanceRate(int userId) throws Exception;
 }
