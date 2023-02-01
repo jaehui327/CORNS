@@ -57,18 +57,25 @@ public class GrowthController {
     }
 
     @GetMapping("/exp/list/{userId}")
-    public ResponseEntity<?> listExp(@PathVariable int userId, @PageableDefault(sort = "regTm", direction = Sort.Direction.DESC)  Pageable pageable /*, @RequestParam String baseTime*/){
+    public ResponseEntity<?> listExp(@PathVariable int userId,
+                                     @PageableDefault(sort = "expLogSq", direction = Sort.Direction.DESC)  Pageable pageable,
+                                     @RequestParam String baseTime){
 
+        Map<String, Object> result = new HashMap<>();
         System.out.println("pageable = " + pageable);
         try {
-            List<ExpLogResponseDto> exps = growthService.getExpLogList(userId, pageable);
-            for (ExpLogResponseDto exp : exps) {
-                System.out.println("exp = " + exp);
-            }
+            List<ExpLogResponseDto> expLogs = growthService.getExpLogList(userId, pageable, baseTime);
+
+            result.put("expLogs", expLogs);
+            log.debug("expLogs : {}",expLogs);
+
+            if(expLogs != null && expLogs.size() > 0) return new ResponseEntity<>(result, HttpStatus.OK);
+            else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
+            return exceptionHandling(e);
         }
-        return null;
     }
 
     @GetMapping("/exp/{fromId}/{toId}")

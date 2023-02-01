@@ -6,9 +6,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 @Repository
 public interface ExpLogRepository extends JpaRepository<ExpLog, Integer> {
 
-//    Slice<ExpLog> findByUserIdAndRegTmLessThan(int userId, Pageable pageable, String baseTime);
-    Slice<ExpLog> findByUserId(int userId, Pageable pageable);
+    Slice<ExpLog> findByUserIdAndRegTmLessThan(int userId, Pageable pageable, LocalDateTime localDateTime);
 }

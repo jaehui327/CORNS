@@ -6,6 +6,9 @@ import com.w6w.corns.domain.level.LevelRepository;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +41,12 @@ public class GrowthServiceImpl implements GrowthService {
         return null;
     }
 
-    public List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable/*, String baseTime*/) throws Exception{
+    public List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception{
         //baseTime -> LocalDate 타입으로
-//        Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThan(userId, pageable, baseTime);
-        Slice<ExpLog> slice = expLogRepository.findByUserId(userId, pageable);
+        LocalDateTime localDateTime = LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        System.out.println("localDateTime = " + localDateTime);
+
+        Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThan(userId, pageable, localDateTime);
         System.out.println("slice = " + slice.getContent());
 
         List<ExpLogResponseDto> list = new ArrayList<>();
@@ -49,6 +54,5 @@ public class GrowthServiceImpl implements GrowthService {
             list.add(ExpLogResponseDto.fromEntity(expLog));
 
         return list;
-//        return new Slice<>(slice, pageable, slice.getSize());
     }
 }

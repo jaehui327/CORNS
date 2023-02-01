@@ -12,5 +12,5 @@ public interface GrowthService {
     //유저의 레벨 정보 반환
     LevelDto getUserLevel(int userId) throws Exception;
     //유저의 경험치 목록 반환
-    List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable) throws Exception;
+    List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception;
 }
