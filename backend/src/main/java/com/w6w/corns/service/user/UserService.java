@@ -2,6 +2,8 @@ package com.w6w.corns.service.user;
 
 import com.w6w.corns.dto.user.*;
 
+import java.util.Map;
+
 public interface UserService {
 
     int signUp(UserJoinRequestDto requestUser) throws Exception;
@@ -15,6 +17,7 @@ public interface UserService {
     LoginResponseDto findByUserId(int userId) throws Exception;
     LoginResponseDto findByEmail(String email) throws Exception;
     boolean isSamePassword(UserLoginRequestDto requestUser) throws Exception;
+    boolean updateUserPassword(Map<String, Object> body) throws Exception;
     UserModifyRequestDto updateUserInfo(UserModifyRequestDto requestUser) throws Exception;
     void updateUserCd(int userId, int userCd) throws Exception;
 }

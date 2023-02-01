@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -39,6 +40,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying(clearAutomatically = true)
     @Query("update User set userCd=:updateUserCd where userId=:userId")
     int updateUserCd(int userId, int updateUserCd);
+
+   @Modifying(clearAutomatically = true)
+    @Query("update User set lastLoginTm=:lastLoginTm where userId=:userId")
+    int updateUserLastLoginTm(int userId, LocalDateTime lastLoginTm);
 
     @Query(value = "select rank() over(order by exp_total desc) from user where user_cd = 8000 and user_id=:userId", nativeQuery = true)
     int rankByExp(int userId);

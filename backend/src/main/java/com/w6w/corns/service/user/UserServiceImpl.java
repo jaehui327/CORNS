@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
@@ -31,11 +34,14 @@ public class UserServiceImpl implements UserService{
             String salt = SHA256Util.generateSalt();
             String newPass = SHA256Util.getEncrypt(requestUser.getPassword(), salt);
 
-            requestUser.setSalt(salt); 
-            requestUser.setPassword(newPass);
-            //기본 회원가입 사용자로 설정
-            requestUser.setSocial(1);
-            userRepository.save(requestUser.toEntity()); //회원 저장
+            userRepository.save(
+                    User.userRegister()
+                            .email(requestUser.getEmail())
+                            .nickname(requestUser.getNickname())
+                            .password(newPass) //암호화된 비밀번호 저장
+                            .salt(salt) 
+                            .social(1) //기본 회원가입 사용자로 설정
+                            .build()); //회원 저장
             return 1;
         }
     }
@@ -60,8 +66,6 @@ public class UserServiceImpl implements UserService{
         //이메일, 비밀번호 일치 확인 && 회원코드 확인
         if(isSamePassword(requestUser) && user.getUserCd() == UserCode.USER_DEFAULT.getCode()){
 
-            //추후 경험치 추가 필요
-
             //로그인로그 insert
             makeLoginLog(user.getUserId());
 
@@ -83,8 +87,9 @@ public class UserServiceImpl implements UserService{
     public void updateLastLoginTm(int userId) throws Exception{
         
         //last_login_tm 변경
-        User user = userRepository.getReferenceById(userId);
-        user.updateLastLoginTM();
+        User user = userRepository.findByUserId(userId);
+        userRepository.updateUserLastLoginTm(userId, LocalDateTime.now());
+        System.out.println("user = " + user);
     }
 
     @Override
@@ -138,6 +143,26 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
+    public boolean updateUserPassword(Map<String, Object> body) throws Exception{
+
+        int userId = (int) body.get("userId");
+        String pass = (String) body.get("password");
+        String newPass = (String) body.get("newPassword");
+
+        User user = userRepository.findByUserId(userId);
+        UserLoginRequestDto requestDto = new UserLoginRequestDto(user.getEmail(), pass);
+
+        //비밀번호 확인
+        if(!isSamePassword(requestDto)) return false;
+
+        //비밀번호 변경
+        String salt = SHA256Util.generateSalt();
+        String encryptPass = SHA256Util.getEncrypt(newPass, salt);
+        user.ssetPassword(encryptPass);
+
+        userRepository.save(user);
+        return true;
+    }
     @Override
     @Transactional
     public UserModifyRequestDto updateUserInfo(UserModifyRequestDto requestUser) throws Exception{
@@ -151,13 +176,7 @@ public class UserServiceImpl implements UserService{
         }else if(requestUser.getImgUrl() != null){
             userRepository.updateImgUrl(requestUser.getUserId(), requestUser.getImgUrl());
 
-        }else if(requestUser.getPassword() != null){
-
-            String salt = user.getSalt();
-            String newPass = SHA256Util.getEncrypt(requestUser.getPassword(), salt);
-            userRepository.updatePassword(requestUser.getUserId(), newPass);
         }
-
         return new UserModifyRequestDto().builder().user(user).build();
     }
 

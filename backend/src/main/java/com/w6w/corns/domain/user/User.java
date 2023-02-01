@@ -3,6 +3,7 @@ package com.w6w.corns.domain.user;
 import com.w6w.corns.domain.level.Level;
 import com.w6w.corns.dto.user.UserResponseDto;
 import com.w6w.corns.util.BaseTime;
+import com.w6w.corns.util.LocalDateTimeConverter;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -46,7 +47,7 @@ public class User extends BaseTime {
     @Column(columnDefinition = "SMALLINT", insertable = false)
     private int friendTotal;
 
-    @Column(columnDefinition = "TIMESTAMP")
+    @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastLoginTm;
 
     @Column(columnDefinition = "TINYINT", nullable = false)
@@ -61,6 +62,14 @@ public class User extends BaseTime {
     @Column(columnDefinition = "SMALLINT", insertable = false)
     private int reportTotal;
 
+    @Convert(converter = LocalDateTimeConverter.class)
+    public void setLastLoginTm(){
+        lastLoginTm=LocalDateTime.now();
+    }
+
+    public void ssetPassword(String password){
+        this.password = password;
+    }
     @Builder(builderClassName = "UserRegister", builderMethodName = "userRegister")
     public User(String email, String password, String salt, String nickname, int social) {
         this.email = email;
@@ -68,17 +77,6 @@ public class User extends BaseTime {
         this.salt=salt;
         this.nickname=nickname;
         this.social = social;
-    }
-
-    public User update(String email, String imgUrl, int social){
-        this.email=email;
-        this.imgUrl=imgUrl;
-        this.social=social;
-        return this;
-    }
-
-    public void updateLastLoginTM(){
-        this.lastLoginTm=LocalDateTime.now();
     }
 
     public UserResponseDto toUserResponseBuilder() {

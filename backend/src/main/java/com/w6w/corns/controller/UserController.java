@@ -1,9 +1,6 @@
 package com.w6w.corns.controller;
 
-//import com.w6w.corns.auth.OAuthService;
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
-import com.w6w.corns.dto.oauth.GetSocialOauthRes;
-import com.w6w.corns.dto.oauth.GoogleUserDto;
 import com.w6w.corns.dto.user.*;
 import com.w6w.corns.util.code.ExpCode;
 import com.w6w.corns.service.growth.GrowthService;
@@ -11,7 +8,6 @@ import com.w6w.corns.service.jwt.JwtService;
 import com.w6w.corns.service.oauth.OAuthService;
 import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.Constant.SocialType;
-import com.w6w.corns.util.SHA256Util;
 import com.w6w.corns.util.code.UserCode;
 import io.swagger.annotations.Api;
 import java.io.IOException;
@@ -101,11 +97,12 @@ public class UserController {
         try {
             loginUser = userService.login(requestUser);
 
-            //로그인 실패
-            if(loginUser == null) status = HttpStatus.UNAUTHORIZED;
+            if(loginUser == null) status = HttpStatus.UNAUTHORIZED; //로그인 실패
             else{
                 //로그인 시간 확인 후 경험치 부여
-                if(loginUser.getLastLoginTm().toLocalDate().equals(LocalDate.now())) {
+                if(loginUser.getLastLoginTm() == null
+                        || loginUser.getLastLoginTm().toLocalDate().equals(LocalDate.now())
+                     ) {
 
                     ExpLogRequestDto expLogRequestDto = ExpLogRequestDto.builder()
                             .userId(loginUser.getUserId())
@@ -114,7 +111,6 @@ public class UserController {
                             .build();
                     growthService.giveExp(expLogRequestDto);
                 }
-
 
                 //토큰 부여
                 String accessToken = jwtService.createAccessToken("id", loginUser.getUserId());
@@ -125,6 +121,9 @@ public class UserController {
 
                 //lastLoginTm 갱신
                 userService.updateLastLoginTm(loginUser.getUserId());
+                loginUser.setLastLoginTm(LocalDateTime.now());
+
+                System.out.println("loginUser = " + loginUser);
 
                 resultMap.put("accessToken", accessToken);
                 resultMap.put("refreshToken", refreshToken);
@@ -270,7 +269,7 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "user 정보 수정", notes = "닉네임, 이미지, 비밀번호 수정")
+    @ApiOperation(value = "user 정보 수정", notes = "닉네임, 이미지 수정")
     @PatchMapping
     public ResponseEntity<?> modifyUserInfo(@RequestBody UserModifyRequestDto user){
 
@@ -282,17 +281,31 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "비밀번호 확인", notes = "회원 탈퇴, 비밀번호 수정 요청 시 비밀번호 확인")
-    @PostMapping("/check")
-    public ResponseEntity<?> checkPassword(@RequestBody UserLoginRequestDto user){
+    //사용 안함
+//    @ApiOperation(value = "비밀번호 확인", notes = "회원 탈퇴, 비밀번호 수정 요청 시 비밀번호 확인")
+//    @PostMapping("/check")
+//    public ResponseEntity<?> checkPassword(@RequestBody UserLoginRequestDto user){
+//
+//        //소셜 로그인 이용자는 비밀번호 확인 처리 어떻게 할지 고민
+//        try {
+//            if(userService.isSamePassword(user)) return new ResponseEntity<>(HttpStatus.OK);
+//            else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            return exceptionHandling(e);
+//        }
+//    }
+    @ApiOperation(value = "비밀번호 확인 및 변경", notes = "userId, 비밀번호, 새로운 비밀번호를 넘겨 인증 후 변경")
+    @PostMapping
+    public ResponseEntity<?> modifyPassword(@RequestBody Map<String, Object> body){
 
-        //소셜 로그인 이용자는 비밀번호 확인 처리 어떻게 할지 고민
-        try {
-            if(userService.isSamePassword(user)) return new ResponseEntity<>(HttpStatus.OK);
-            else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        //비밀번호 변경 함수로 가기
+        try{
+            if(!userService.updateUserPassword(body)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            else return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
-            log.error(e.getMessage());
             return exceptionHandling(e);
         }
     }

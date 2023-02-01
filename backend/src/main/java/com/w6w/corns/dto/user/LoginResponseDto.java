@@ -5,7 +5,6 @@ import com.w6w.corns.domain.user.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -41,6 +40,7 @@ public class LoginResponseDto {
                 .expTotal(user.getExpTotal())
                 .social(user.getSocial())
                 .refreshToken(user.getRefreshToken())
+                .lastLoginTm(user.getLastLoginTm())
                 .build();
 
     }

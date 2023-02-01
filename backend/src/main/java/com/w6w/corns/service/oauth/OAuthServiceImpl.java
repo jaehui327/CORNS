@@ -69,13 +69,10 @@ public class OAuthServiceImpl implements OAuthService{
 
                 if(user == null){ //새로운 회원
 
-                    UserJoinRequestDto userJoinRequestDto = new UserJoinRequestDto()
-                            .builder()
+                    userRepository.save(User.userRegister()
                             .email(googleUser.getEmail())
                             .social(2)
-                            .build();
-
-                    userRepository.save(userJoinRequestDto.toEntity());
+                            .build());
 
                 }else if((user.getSocial() & (1 << 1)) == 0){
                     //후에 소셜로그인 enum으로 관리하면 함수 따로 만들기
