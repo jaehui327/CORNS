@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 
 import backgroundImage from "../assets/backgroundImage.png";
 
-function Login() {
+function Signin() {
   return (
     <Box
       sx={{
@@ -27,4 +27,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signin;
