@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import axios from "axios";
+import SocialLogin from "./SocialLogin";
 
+import { Box, Button } from "@mui/material";
 import yellow_logo from "assets/corns_logo_yellow.png";
-
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-function LoginCard() {
+function LoginCard({ history }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -24,36 +24,36 @@ function LoginCard() {
   // 로그인
   const onLogin = async (e) => {
     e.preventDefault();
+
+    if (!email) {
+      setErrorMsg("이메일을 입력해주세요.");
+      return;
+    }
+    if (!password) {
+      setErrorMsg("비밀번호를 입력해주세요.");
+      return;
+    }
     try {
-      const res = await fetch("/user/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-      if (!res.ok) throw new Error("Request fail");
-      else console.log(res.json());
-    } catch (err) {
-      console.log(err);
-      setErrorMsg("이메일 또는 비밀번호가 일치하지 않습니다.");
+      console.log("Log in!");
+      const response = await axios.post(
+        `${process.env.REACT_APP_HOST}/user/login`,
+        {
+          email: email,
+          password: password,
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        // 로그인 성공
+        // 세션에 저장 후 이전 페이지로 back
+        history.goBack();
+      } else if (response.status === 401) {
+        setErrorMsg("아이디 또는 비밀번호를 잘못입력했습니다.");
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
-
-  const handleCallbackResponse = (response) => {
-    console.log("Encoded JWT ID token: " + response.credential);
-  };
-
-  useEffect(() => {
-    window.google.accounts.id.initialize({
-      client_id: process.env.REACT_APP_GOOGLE_ID,
-      callback: handleCallbackResponse,
-    });
-    window.google.accounts.id.renderButton(
-      document.getElementById("socialLogin"),
-      { theme: "outline", size: "large" }
-    );
-  }, []);
 
   return (
     <Box
@@ -135,10 +135,7 @@ function LoginCard() {
         로그인
       </Button>
 
-      <Box sx={{ width: "80%" }}>
-        <h3>소셜로그인</h3>
-        <div id="socialLogin"></div>
-      </Box>
+      <SocialLogin />
     </Box>
   );
 }

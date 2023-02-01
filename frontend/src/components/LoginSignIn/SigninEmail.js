@@ -37,11 +37,9 @@ function SigninEmail({ email, setEmail, stateEmail, setStateEmail }) {
       const response = await axios.get(
         `${process.env.REACT_APP_HOST}/user/email-check/${email}`
       );
-      const result = response.status;
-      if (result === 200) {
-        console.log(result); // 나중에 삭제
+      if (response.status === 200) {
         setStateEmail(true);
-      } else if (result === 409) {
+      } else if (response.status === 409) {
         alert("이미 존재하는 이메일입니다.");
       } else {
         throw new Error();

@@ -44,7 +44,7 @@ function SigninCard({ checked }) {
         {
           email: email,
           password: password1,
-          nickname: nickname,
+          nickname: nickname
         }
       );
       console.log(response);
