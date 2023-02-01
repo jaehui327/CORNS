@@ -5,7 +5,6 @@ import { css } from "@emotion/react";
 import NavbarDropdown from "./NavbarDropdown";
 import white_logo from "assets/corns_logo.png";
 
-
 const Navbar = () => {
   const [user, stateUser] = useState(true);
 
@@ -23,6 +22,7 @@ const Navbar = () => {
         position: absolute;
         top: 0;
         left: 105px;
+        border: 3px solid #111;
       `}
     >
       <div
@@ -30,7 +30,7 @@ const Navbar = () => {
           flex: none;
           order: 0;
           flex-grow: 0;
-          color: 'black'
+          color: "black";
         `}
       >
         <NavLink to="/">
@@ -61,31 +61,70 @@ const Navbar = () => {
         `}
       >
         <li>
-          <NavLink to="/conversation" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>쫑알쫑알</NavLink>
+          <NavLink
+            to="/conversation"
+            style={{ textDecoration: "none", color: "black" }}
+            activeStyle={{ fontWeight: "bold" }}
+          >
+            쫑알쫑알
+          </NavLink>
         </li>
         <li>
-          <NavLink to="/conversationLog" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>쫑알로그</NavLink>
+          <NavLink
+            to="/conversationLog/loglist"
+            style={{ textDecoration: "none", color: "black" }}
+            activeStyle={{ fontWeight: "bold" }}
+          >
+            쫑알로그
+          </NavLink>
         </li>
         <li>
-          <NavLink to="/growthRecord" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>성장기록</NavLink>
+          <NavLink
+            to="/growthRecord/myProfile"
+            style={{ textDecoration: "none", color: "black" }}
+            activeStyle={{ fontWeight: "bold" }}
+          >
+            성장기록
+          </NavLink>
         </li>
         <li>
-          <NavLink to="/community/ranking/sincerity" style={{ textDecoration: "none", color: "black" }} activeStyle={{fontWeight: 'bold'}}>커뮤니티</NavLink>
+          <NavLink
+            to="/community/ranking/sincerity"
+            style={{ textDecoration: "none", color: "black" }}
+            activeStyle={{ fontWeight: "bold" }}
+          >
+            커뮤니티
+          </NavLink>
         </li>
 
         {user ? (
           <>
             <li>
-              <NavLink to="/login" style={{ textDecoration: "none", color: "black" }}>로그인</NavLink>
+              <NavLink
+                to="/login"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                로그인
+              </NavLink>
             </li>
             <li>
-              <NavLink to="/signin" style={{ textDecoration: "none", color: "black" }}>회원가입</NavLink>
+              <NavLink
+                to="/signin"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                회원가입
+              </NavLink>
             </li>
           </>
         ) : (
           <>
             <li>
-              <NavLink to="/" style={{ textDecoration: "none", color: "black" }}>로그아웃</NavLink>
+              <NavLink
+                to="/"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                로그아웃
+              </NavLink>
             </li>
             <li>
               <NavbarDropdown />
