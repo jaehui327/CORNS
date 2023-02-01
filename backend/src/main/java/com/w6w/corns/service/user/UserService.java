@@ -17,7 +17,7 @@ public interface UserService {
     LoginResponseDto findByUserId(int userId) throws Exception;
     LoginResponseDto findByEmail(String email) throws Exception;
     boolean isSamePassword(UserLoginRequestDto requestUser) throws Exception;
-    boolean updateUserPassword(Map<String, Object> body) throws Exception;
-    UserModifyRequestDto updateUserInfo(UserModifyRequestDto requestUser) throws Exception;
+    boolean updateUserPassword(UserPassModifyRequestDto requestDto) throws Exception;
+    void updateUserInfo(UserModifyRequestDto requestUser) throws Exception;
     void updateUserCd(int userId, int userCd) throws Exception;
 }

@@ -67,9 +67,22 @@ public class User extends BaseTime {
         lastLoginTm=LocalDateTime.now();
     }
 
-    public void ssetPassword(String password){
+    public void setPassword(String password){
         this.password = password;
     }
+
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void setSalt(String salt){
+        this.salt = salt;
+    }
+
+    public void setImgUrl(String imgUrl){
+        this.imgUrl = imgUrl;
+    }
+
     @Builder(builderClassName = "UserRegister", builderMethodName = "userRegister")
     public User(String email, String password, String salt, String nickname, int social) {
         this.email = email;

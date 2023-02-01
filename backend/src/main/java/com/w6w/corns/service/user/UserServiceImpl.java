@@ -143,41 +143,34 @@ public class UserServiceImpl implements UserService{
         return false;
     }
 
-    public boolean updateUserPassword(Map<String, Object> body) throws Exception{
+    public boolean updateUserPassword(UserPassModifyRequestDto requestDto) throws Exception{
 
-        int userId = (int) body.get("userId");
-        String pass = (String) body.get("password");
-        String newPass = (String) body.get("newPassword");
-
-        User user = userRepository.findByUserId(userId);
-        UserLoginRequestDto requestDto = new UserLoginRequestDto(user.getEmail(), pass);
+        User user = userRepository.findByUserId(requestDto.getUserId());
 
         //비밀번호 확인
-        if(!isSamePassword(requestDto)) return false;
+        if(!isSamePassword(new UserLoginRequestDto(user.getEmail(), requestDto.getPassword()))) return false;
 
         //비밀번호 변경
         String salt = SHA256Util.generateSalt();
-        String encryptPass = SHA256Util.getEncrypt(newPass, salt);
-        user.ssetPassword(encryptPass);
+        String encryptPass = SHA256Util.getEncrypt(requestDto.getNewPassword(), salt);
 
+        user.setPassword(encryptPass);
+        user.setSalt(salt);
         userRepository.save(user);
         return true;
     }
     @Override
     @Transactional
-    public UserModifyRequestDto updateUserInfo(UserModifyRequestDto requestUser) throws Exception{
+    public void updateUserInfo(UserModifyRequestDto requestUser) throws Exception{
 
         System.out.println("requestUser = " + requestUser);
         User user = userRepository.findByUserId(requestUser.getUserId());
 
-        if(requestUser.getNickname() != null){
-            userRepository.updateNickname(requestUser.getUserId(), requestUser.getNickname());
+        //설정 안하면 null로 넘어오는지, 아니면 기존 내용이 넘어오는지 아마도 후자?!
+        user.setNickname(requestUser.getNickname());
+        user.setImgUrl(requestUser.getImgUrl());
 
-        }else if(requestUser.getImgUrl() != null){
-            userRepository.updateImgUrl(requestUser.getUserId(), requestUser.getImgUrl());
-
-        }
-        return new UserModifyRequestDto().builder().user(user).build();
+        userRepository.save(user);
     }
 
     @Override

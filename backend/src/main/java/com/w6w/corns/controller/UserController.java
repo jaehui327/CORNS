@@ -250,7 +250,7 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "user 정보 반환", notes = "내정보 및 유저상세에 보여줄 정보")
+    @ApiOperation(value = "회원 정보 반환", notes = "내정보 및 유저상세에 보여줄 정보")
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserInfo(@PathVariable int userId){
 
@@ -270,39 +270,24 @@ public class UserController {
     }
 
     @ApiOperation(value = "user 정보 수정", notes = "닉네임, 이미지 수정")
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<?> modifyUserInfo(@RequestBody UserModifyRequestDto user){
 
         try {
-            return new ResponseEntity<>(userService.updateUserInfo(user), HttpStatus.OK);
+            userService.updateUserInfo(user);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
             return exceptionHandling(e);
         }
     }
 
-    //사용 안함
-//    @ApiOperation(value = "비밀번호 확인", notes = "회원 탈퇴, 비밀번호 수정 요청 시 비밀번호 확인")
-//    @PostMapping("/check")
-//    public ResponseEntity<?> checkPassword(@RequestBody UserLoginRequestDto user){
-//
-//        //소셜 로그인 이용자는 비밀번호 확인 처리 어떻게 할지 고민
-//        try {
-//            if(userService.isSamePassword(user)) return new ResponseEntity<>(HttpStatus.OK);
-//            else return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//            return exceptionHandling(e);
-//        }
-//    }
     @ApiOperation(value = "비밀번호 확인 및 변경", notes = "userId, 비밀번호, 새로운 비밀번호를 넘겨 인증 후 변경")
     @PostMapping
-    public ResponseEntity<?> modifyPassword(@RequestBody Map<String, Object> body){
+    public ResponseEntity<?> modifyPassword(@RequestBody UserPassModifyRequestDto requestDto){
 
-        //비밀번호 변경 함수로 가기
         try{
-            if(!userService.updateUserPassword(body)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            if(!userService.updateUserPassword(requestDto)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             else return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
