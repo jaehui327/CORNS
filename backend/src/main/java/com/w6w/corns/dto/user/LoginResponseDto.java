@@ -2,6 +2,7 @@ package com.w6w.corns.dto.user;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,6 +25,7 @@ public class LoginResponseDto {
     private int attendTotal;
     private int conversationTotal;
     private int ddabongTotal;
+    private LocalDateTime lastLoginTm;
 
     @Builder
     public LoginResponseDto(int userId, String email, String nickname, String imgUrl, String refreshToken) {

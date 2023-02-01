@@ -1,5 +1,6 @@
 package com.w6w.corns.service.growth;
 
+import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 import java.util.List;
@@ -13,4 +14,6 @@ public interface GrowthService {
     LevelDto getUserLevel(int userId) throws Exception;
     //유저의 경험치 목록 반환
     List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception;
+    //Dto를 이용해서 유저에게 경험치 부여
+    void giveExp(ExpLogRequestDto expLogRequestDto);
 }

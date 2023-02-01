@@ -3,7 +3,9 @@ package com.w6w.corns.service.growth;
 import com.w6w.corns.domain.explog.ExpLog;
 import com.w6w.corns.domain.explog.ExpLogRepository;
 import com.w6w.corns.domain.level.LevelRepository;
+import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
+import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 
@@ -15,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class GrowthServiceImpl implements GrowthService {
 
-    private final LevelRepository levelRepository;
     private final UserRepository userRepository;
     private final ExpLogRepository expLogRepository;
 
@@ -36,9 +38,8 @@ public class GrowthServiceImpl implements GrowthService {
 
     public LevelDto getUserLevel(int userId) throws Exception{
 
-//        User user = userRepository.findByUserId(userId);
-//        return LevelDto.fromEntity(user.getLevel());
-        return null;
+        User user = userRepository.findByUserId(userId);
+        return LevelDto.fromEntity(user.getLevel());
     }
 
     public List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception{
@@ -54,5 +55,13 @@ public class GrowthServiceImpl implements GrowthService {
             list.add(ExpLogResponseDto.fromEntity(expLog));
 
         return list;
+    }
+
+    //경험치 부여
+    @Override
+    @Transactional
+    public void giveExp(ExpLogRequestDto expLogRequestDto){
+
+        expLogRepository.save(expLogRequestDto.toEntity());
     }
 }

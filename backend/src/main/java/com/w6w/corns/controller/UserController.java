@@ -1,11 +1,14 @@
 package com.w6w.corns.controller;
 
 //import com.w6w.corns.auth.OAuthService;
+import com.w6w.corns.dto.explog.ExpLogRequestDto;
+import com.w6w.corns.service.growth.GrowthService;
 import com.w6w.corns.service.jwt.JwtService;
 import com.w6w.corns.dto.user.LoginResponseDto;
 import com.w6w.corns.dto.user.UserRequestDto;
 import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.SHA256Util;
+import com.w6w.corns.util.code.ExpCode;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final GrowthService growthService;
 
     private ResponseEntity<?> exceptionHandling(Exception e) {
         Map<String, String> map = new HashMap<>();
@@ -75,16 +81,28 @@ public class UserController {
             System.out.println("loginUser = " + loginUser);
             if(loginUser == null) status = HttpStatus.UNAUTHORIZED;
             else{
+
+                //로그인 시간 확인 후 경험치 부여
+                if(loginUser.getLastLoginTm().toLocalDate().equals(LocalDate.now())) {
+
+                    ExpLogRequestDto expLogRequestDto = ExpLogRequestDto.builder()
+                            .userId(loginUser.getUserId())
+                            .gainExp(3)
+                            .expCd(ExpCode.EXP_ATTEND.getCode())
+                            .build();
+                    growthService.giveExp(expLogRequestDto);
+                }
+
                 String accessToken = jwtService.createAccessToken("id", loginUser.getUserId());
                 String refreshToken = jwtService.createRefreshToken("id", loginUser.getUserId());
 
                 log.debug("accessToken = " + accessToken);
                 log.debug("refreshToken = " + refreshToken);
 
-                //경험치도 줘야함!
                 userService.saveRefreshToken(loginUser.getUserId(), refreshToken);
                 userService.updateLastLoginTm(loginUser.getUserId());
                 loginUser.setRefreshToken(refreshToken);
+
                 resultMap.put("accessToken", accessToken);
                 resultMap.put("refreshToken", refreshToken);
                 resultMap.put("loginUser", loginUser);
