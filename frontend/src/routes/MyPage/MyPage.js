@@ -1,4 +1,4 @@
-import React, { Route, Switch } from "react-router-dom";
+import React, { Route, Switch, Redirect } from "react-router-dom";
 import Navbar from "../../components/GlobalComponents/Navbar";
 import Sidebar from "../../components/GlobalComponents/Sidebar";
 
@@ -18,10 +18,14 @@ function Mypage() {
   ];
 
   return (
-    <>
+    <div
+      css={css`
+        margin: 0 105px;
+      `}
+    >
       <Navbar />
 
-      <Grid container spacing={1}>
+      <Grid container spacing={1} sx={{ margin: "124px 0 0 0" }}>
         <Grid item xs={2}>
           <Sidebar Items={SidebarItems} />
         </Grid>
@@ -30,7 +34,7 @@ function Mypage() {
             css={css`
               box-sizing: border-box;
               border: 3px solid #111111;
-              padding: 0 32px;
+              padding: 0 32px 64px 32px;
             `}
           >
             <Switch>
@@ -45,11 +49,12 @@ function Mypage() {
                 component={ChangePassword}
               />
               <Route exact path="/mypage/withDrawl" component={Withdrawl} />
+              <Redirect to ="/NotFound" />
             </Switch>
           </div>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 }
 

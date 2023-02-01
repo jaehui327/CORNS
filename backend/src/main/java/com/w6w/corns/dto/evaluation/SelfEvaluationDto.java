@@ -1,15 +1,13 @@
 package com.w6w.corns.dto.evaluation;
 
 import com.w6w.corns.domain.selfevaluation.SelfEvaluation;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
+@ToString
 public class SelfEvaluationDto {
     private int roomNo;
     private int userId;
