@@ -75,7 +75,6 @@ public class RoomController {
                 status = HttpStatus.NO_CONTENT;
                 return new ResponseEntity<Map>(resultMap, status);
             } else {
-                resultMap.put("rooms", response.getList());
                 status = HttpStatus.OK;
                 return new ResponseEntity<PageableResponseDto>(response, status);
             }
