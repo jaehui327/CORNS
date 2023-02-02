@@ -1,21 +1,17 @@
 package com.w6w.corns.controller;
 
-import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 import com.w6w.corns.dto.user.UserDetailResponseDto;
-import com.w6w.corns.dto.user.UserRequestDto;
 import com.w6w.corns.service.friend.FriendService;
 import com.w6w.corns.service.growth.GrowthService;
 import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.PageableResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -125,6 +121,15 @@ public class GrowthController {
 
     @GetMapping("/indicator/{userId}/{type}")
     public ResponseEntity<?> showGraph(@PathVariable int userId, @PathVariable int type){
+
+        //type 1 최근 일주일 일별 대화량, 지난주와 비교
+
+
+        //type 2 대화 주제 비율
+
+
+        //type 3
+
 
         return null;
     }

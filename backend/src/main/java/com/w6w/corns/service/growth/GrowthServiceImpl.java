@@ -77,4 +77,11 @@ public class GrowthServiceImpl implements GrowthService {
         double rate = (double)countPerMonth / 30;
         return (int)(rate * 100);
     }
+
+    //주제별 비율 계산
+    @Override
+    public void calSubjectRaio(int userId) throws Exception {
+
+
+    }
 }

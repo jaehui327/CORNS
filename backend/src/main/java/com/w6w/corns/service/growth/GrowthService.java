@@ -20,4 +20,6 @@ public interface GrowthService {
     void giveExp(ExpLogRequestDto expLogRequestDto);
     //출석률 반환
     int calAttendanceRate(int userId) throws Exception;
+    //주제별 비율 계산
+    void calSubjectRaio(int userId) throws Exception;
 }
