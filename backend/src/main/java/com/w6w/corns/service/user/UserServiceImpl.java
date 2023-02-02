@@ -1,20 +1,28 @@
 package com.w6w.corns.service.user;
 
+import com.w6w.corns.domain.explog.ExpLog;
 import com.w6w.corns.domain.friend.FriendRepository;
 import com.w6w.corns.domain.loginlog.LoginLogRepository;
 import com.w6w.corns.domain.thumblog.ThumbLogRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
+import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
 import com.w6w.corns.dto.user.*;
+import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.SHA256Util;
 import com.w6w.corns.util.code.FriendCode;
 import com.w6w.corns.util.code.UserCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -91,14 +99,17 @@ public class UserServiceImpl implements UserService{
         
         //last_login_tm 변경
         User user = userRepository.findByUserId(userId);
-        userRepository.updateUserLastLoginTm(userId, LocalDateTime.now());
+        user.setLastLoginTm();
+        userRepository.save(user);
         System.out.println("user = " + user);
     }
 
     @Override
     @Transactional
-    public int saveRefreshToken(int userId, String refreshToken) throws Exception {
-        return userRepository.updateRefreshToken(userId, refreshToken);
+    public void saveRefreshToken(int userId, String refreshToken) throws Exception {
+        User user = userRepository.findByUserId(userId);
+        user.setRefreshToken(null);
+        userRepository.save(user);
     }
 
     @Override
@@ -111,7 +122,9 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void deleteRefreshToken(int userId) throws Exception {
-        userRepository.updateRefreshToken(userId, null);
+        User user = userRepository.findByUserId(userId);
+        user.setRefreshToken(null);
+        userRepository.save(user);
     }
 
     @Override
@@ -190,6 +203,32 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void updateUserCd(int userId, int userCd) throws Exception{
-        userRepository.updateUserCd(userId, userCd);
+
+        User user = userRepository.findByUserId(userId);
+        user.setUserCd(userCd);
+        userRepository.save(user);
+    }
+
+    @Override
+    public PageableResponseDto findAllUserByCondition(Pageable pageable, String baseTime, String filter, String keyword) throws Exception {
+
+        //baseTime -> LocalDate 타입으로
+        LocalDateTime localDateTime = LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        Slice<User> slice = userRepository.findByFilterRegTmLessThanEqual(pageable, localDateTime, filter, keyword);
+
+        List<UserListResponseDto> exps = new ArrayList<>();
+        for(User user : slice.getContent())
+            exps.add(UserListResponseDto.builder()
+                            .userId(user.getUserId())
+                            .imgUrl(user.getImgUrl())
+                            .nickname(user.getNickname())
+                            .level(user.getLevel().getLevelNo())
+                            .build());
+
+        return PageableResponseDto.builder()
+                .list(exps)
+                .hasNext(slice.hasNext())
+                .build();
     }
 }

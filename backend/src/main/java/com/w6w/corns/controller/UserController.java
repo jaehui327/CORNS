@@ -2,6 +2,7 @@ package com.w6w.corns.controller;
 
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.user.*;
+import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.code.ExpCode;
 import com.w6w.corns.service.growth.GrowthService;
 import com.w6w.corns.service.jwt.JwtService;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -308,6 +310,20 @@ public class UserController {
 
         } catch (Exception e) {
             log.error(e.getMessage());
+            return exceptionHandling(e);
+        }
+    }
+
+    @ApiOperation(value = "회원 검색", notes = "조건에 맞는 회원을 검색해서 반환")
+    @GetMapping
+    public ResponseEntity<?> search(Pageable pageable, @RequestParam String baseTime, @RequestParam String filter, @RequestParam String keyword){
+
+        try {
+            PageableResponseDto responseDto = userService.findAllUserByCondition(pageable, baseTime, filter, keyword);
+
+            if(responseDto != null && responseDto.getList().size() > 0) return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
             return exceptionHandling(e);
         }
     }
