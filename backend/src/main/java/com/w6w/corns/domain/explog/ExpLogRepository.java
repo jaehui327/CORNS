@@ -11,5 +11,5 @@ import java.time.LocalDateTime;
 @Repository
 public interface ExpLogRepository extends JpaRepository<ExpLog, Integer> {
 
-    Slice<ExpLog> findByUserIdAndRegTmLessThan(int userId, Pageable pageable, LocalDateTime localDateTime);
+    Slice<ExpLog> findByUserIdAndRegTmLessThanEqual(int userId, Pageable pageable, LocalDateTime localDateTime);
 }

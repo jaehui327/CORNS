@@ -120,7 +120,7 @@ public class UserController {
                 loginUser.setRefreshToken(refreshToken);
 
                 //lastLoginTm 갱신
-                userService.updateLastLoginTm(loginUser.getUserId());
+//                userService.updateLastLoginTm(loginUser.getUserId());
                 loginUser.setLastLoginTm(LocalDateTime.now());
 
                 System.out.println("loginUser = " + loginUser);
@@ -174,28 +174,29 @@ public class UserController {
         try {
             Map<String, Object> resultMap = new HashMap<>();
 
-            UserDetailResponseDto loginResponseDto = oAuthService.oAuthLogin(socialType, code);
+            UserDetailResponseDto responseDto = oAuthService.oAuthLogin(socialType, code);
 
 
             //토큰 부여
-            String accessToken = jwtService.createAccessToken("id", loginResponseDto.getUserId());
-            String refreshToken = jwtService.createRefreshToken("id", loginResponseDto.getUserId());
+            String accessToken = jwtService.createAccessToken("id", responseDto.getUserId());
+            String refreshToken = jwtService.createRefreshToken("id", responseDto.getUserId());
 
-            userService.saveRefreshToken(loginResponseDto.getUserId(), refreshToken);
-            userService.updateLastLoginTm(loginResponseDto.getUserId());
-            loginResponseDto.setRefreshToken(refreshToken);
+            userService.saveRefreshToken(responseDto.getUserId(), refreshToken);
+//            userService.updateLastLoginTm(responseDto.getUserId());
+            responseDto.setRefreshToken(refreshToken);
+            responseDto.setGoogle(true);
 
             //경험치도 줘야함!, 리팩토링 필요 + 이메일 중복 통합 처리
 
             //lastLoginTm 갱신
-            userService.updateLastLoginTm(loginResponseDto.getUserId());
+//            userService.updateLastLoginTm(responseDto.getUserId());
 
             // 로그인로그 insert
-            userService.makeLoginLog(loginResponseDto.getUserId());
+            userService.makeLoginLog(responseDto.getUserId());
 
             resultMap.put("accessToken", accessToken);
             resultMap.put("refreshToken", refreshToken);
-            resultMap.put("loginUser", loginResponseDto);
+            resultMap.put("loginUser", responseDto);
 
             return new ResponseEntity<>(resultMap, HttpStatus.OK);
         } catch (Exception e) {
@@ -255,8 +256,8 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@PathVariable int userId){
 
         try {
-            //friendTotal, attendTotal, conversationTotal, ddabongTotal, rank 추가 필요
-            UserDetailResponseDto user = userService.findByUserId(userId);
+            //friendTotal, attendTotal, conversationTotal, thumbTotal, rank 추가 필요
+            UserDetailResponseDto user = userService.getUser(userId);
 
             Map<String, UserDetailResponseDto> result = new HashMap<>();
             result.put("user",user);

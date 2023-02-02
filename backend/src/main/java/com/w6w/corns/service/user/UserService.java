@@ -12,7 +12,7 @@ public interface UserService {
     int saveRefreshToken(int userId, String refreshToken) throws Exception;
     String getRefreshToken(int userId) throws Exception;
     void deleteRefreshToken(int userId) throws Exception;
-    UserDetailResponseDto findByUserId(int userId) throws Exception;
+    UserDetailResponseDto getUser(int userId) throws Exception;
     UserDetailResponseDto findByEmail(String email) throws Exception;
     boolean isSamePassword(UserLoginRequestDto requestUser) throws Exception;
     boolean updateUserPassword(UserPassModifyRequestDto requestDto) throws Exception;

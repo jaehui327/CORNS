@@ -17,19 +17,20 @@ public class UserDetailResponseDto {
     private String email;
     private String nickname;
     private String imgUrl;
-    private int expTotal;
+    private long expTotal;
     private int level;
-    private int friendTotal;
+    private long friendTotal;
     private int social;
+    private boolean isGoogle;
     private String refreshToken;
-    private int attendTotal;
-    private int conversationTotal;
-    private int ddabongTotal;
+    private long attendTotal;
+    private long conversationTotal;
+    private long thumbTotal;
     private LocalDateTime lastLoginTm;
 
     public static UserDetailResponseDto fromEntity(User user){
 
-        //attendTotal, friendTotal, conv, ddabong, rank 가져오기
+        //attendTotal, friendTotal, conv, thumb, rank 가져오기
         return UserDetailResponseDto.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())

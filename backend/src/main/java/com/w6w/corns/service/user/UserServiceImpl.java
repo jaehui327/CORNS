@@ -1,11 +1,14 @@
 package com.w6w.corns.service.user;
 
+import com.w6w.corns.domain.friend.FriendRepository;
 import com.w6w.corns.domain.loginlog.LoginLogRepository;
+import com.w6w.corns.domain.thumblog.ThumbLogRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
 import com.w6w.corns.dto.user.*;
 import com.w6w.corns.util.SHA256Util;
+import com.w6w.corns.util.code.FriendCode;
 import com.w6w.corns.util.code.UserCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final LoginLogRepository loginLogRepository;
+    private final ThumbLogRepository thumbLogRepository;
+    private final FriendRepository friendRepository;
 
     @Override
     @Transactional
@@ -68,8 +73,7 @@ public class UserServiceImpl implements UserService{
             //로그인로그 insert
             makeLoginLog(user.getUserId());
 
-            //따봉, 친구, 출석, 발화량 나중에 추가 필요
-            return UserDetailResponseDto.fromEntity(user);
+            return getUser(user.getUserId());
         }
         return null;
     }
@@ -112,10 +116,20 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetailResponseDto findByUserId(int userId) throws Exception{
+    public UserDetailResponseDto getUser(int userId) throws Exception{
         User user = userRepository.findByUserId(userId);
 
-        return UserDetailResponseDto.fromEntity(user);
+        //발화량, 랭킹 나중에 추가
+        long attendanceTotal = loginLogRepository.findByRegTmAndUserId(userId);
+        long thumbTotal = thumbLogRepository.countByToUserId(userId);
+        long friendTotal = friendRepository.countByUserIdAAndFriendCdOrUserIdBAndFriendCd(userId, FriendCode.FRIEND_ACCEPT.getCode(), userId, FriendCode.FRIEND_ACCEPT.getCode());
+
+        UserDetailResponseDto responseDto = UserDetailResponseDto.fromEntity(user);
+        responseDto.setAttendTotal(attendanceTotal);
+        responseDto.setThumbTotal(thumbTotal);
+        responseDto.setFriendTotal(friendTotal);
+
+        return responseDto;
     }
 
     @Override

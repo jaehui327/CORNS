@@ -48,7 +48,7 @@ public class GrowthServiceImpl implements GrowthService {
         LocalDateTime localDateTime = LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         System.out.println("localDateTime = " + localDateTime);
 
-        Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThan(userId, pageable, localDateTime);
+        Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThanEqual(userId, pageable, localDateTime);
         System.out.println("slice = " + slice.getContent());
 
         List<ExpLogResponseDto> list = new ArrayList<>();
@@ -70,7 +70,7 @@ public class GrowthServiceImpl implements GrowthService {
     @Override
     public int calAttendanceRate(int userId) throws Exception {
 
-        int countPerMonth = loginLogRepository.findByRegTmAndUserIdPerMonth(userId);
+        long countPerMonth = loginLogRepository.findByRegTmAndUserIdPerMonth(userId);
         System.out.println(countPerMonth);
 
         double rate = (double)countPerMonth / 30;
