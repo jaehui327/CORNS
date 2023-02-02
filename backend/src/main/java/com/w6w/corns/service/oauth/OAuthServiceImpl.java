@@ -2,17 +2,12 @@ package com.w6w.corns.service.oauth;
 
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
-import com.w6w.corns.dto.oauth.GetSocialOauthRes;
 import com.w6w.corns.dto.oauth.GoogleOAuthToken;
 import com.w6w.corns.dto.oauth.GoogleUserDto;
-import com.w6w.corns.dto.user.LoginResponseDto;
-import com.w6w.corns.dto.user.UserJoinRequestDto;
+import com.w6w.corns.dto.user.UserDetailResponseDto;
 import com.w6w.corns.service.jwt.JwtService;
-import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.Constant.SocialType;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +39,7 @@ public class OAuthServiceImpl implements OAuthService{
     }
 
     @Override
-    public LoginResponseDto oAuthLogin(SocialType socialType, String code) throws Exception {
+    public UserDetailResponseDto oAuthLogin(SocialType socialType, String code) throws Exception {
 
         switch (socialType){
             case GOOGLE:
@@ -81,7 +76,7 @@ public class OAuthServiceImpl implements OAuthService{
                 }
                 user = userRepository.findByEmail(googleUser.getEmail());
 
-                LoginResponseDto loginResponseDto = LoginResponseDto.builder()
+                UserDetailResponseDto loginResponseDto = UserDetailResponseDto.builder()
                         .userId(user.getUserId())
                         .email(user.getEmail())
                         .nickname(user.getNickname())

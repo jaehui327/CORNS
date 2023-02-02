@@ -1,6 +1,5 @@
 package com.w6w.corns.dto.user;
 
-import com.mysql.cj.log.Log;
 import com.w6w.corns.domain.user.User;
 import lombok.*;
 
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class LoginResponseDto {
+public class UserDetailResponseDto {
 
     private int userId;
     private String email;
@@ -28,10 +27,10 @@ public class LoginResponseDto {
     private int ddabongTotal;
     private LocalDateTime lastLoginTm;
 
-    public static LoginResponseDto fromEntity(User user){
+    public static UserDetailResponseDto fromEntity(User user){
 
         //attendTotal, friendTotal, conv, ddabong, rank 가져오기
-        return LoginResponseDto.builder()
+        return UserDetailResponseDto.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())

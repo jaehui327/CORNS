@@ -8,8 +8,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LoginLogRepository extends JpaRepository<LoginLog, Integer> {
 
-    @Query(value="select distinct date(reg_tm) from login_log"
+    @Query(value="select count(distinct date(reg_tm)) from login_log"
             +" where user_id = :userId and year(reg_tm) = year(now()) and month(reg_tm) = month(now())"
             , nativeQuery = true)
-    List<String> findByRegTmAndUserId(int userId);
+    int findByRegTmAndUserIdPerMonth(int userId);
+
+    @Query(value="select count(distinct dage(reg_tm)) from login_log"
+        + " where user_id = :userId", nativeQuery = true)
+    int findByRegTmAndUserId(int userId);
 }

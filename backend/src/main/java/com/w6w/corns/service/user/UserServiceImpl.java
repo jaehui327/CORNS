@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +56,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = true)
-    public LoginResponseDto login(UserLoginRequestDto requestUser) throws Exception{
+    public UserDetailResponseDto login(UserLoginRequestDto requestUser) throws Exception{
 
         //해당 이메일을 가진 객체를 db에서 찾음
         User user = userRepository.findByEmail(requestUser.getEmail());
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService{
             makeLoginLog(user.getUserId());
 
             //따봉, 친구, 출석, 발화량 나중에 추가 필요
-            return LoginResponseDto.fromEntity(user);
+            return UserDetailResponseDto.fromEntity(user);
         }
         return null;
     }
@@ -113,16 +112,17 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional(readOnly = true)
-    public LoginResponseDto findByUserId(int userId) throws Exception{
+    public UserDetailResponseDto findByUserId(int userId) throws Exception{
         User user = userRepository.findByUserId(userId);
-        return LoginResponseDto.fromEntity(user);
+
+        return UserDetailResponseDto.fromEntity(user);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public LoginResponseDto findByEmail(String email) throws Exception{
+    public UserDetailResponseDto findByEmail(String email) throws Exception{
         User user = userRepository.findByEmail(email);
-        return LoginResponseDto.fromEntity(user);
+        return UserDetailResponseDto.fromEntity(user);
     }
 
     @Override

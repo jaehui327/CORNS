@@ -2,7 +2,6 @@ package com.w6w.corns.service.growth;
 
 import com.w6w.corns.domain.explog.ExpLog;
 import com.w6w.corns.domain.explog.ExpLogRepository;
-import com.w6w.corns.domain.level.LevelRepository;
 import com.w6w.corns.domain.loginlog.LoginLogRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
@@ -71,10 +70,10 @@ public class GrowthServiceImpl implements GrowthService {
     @Override
     public int calAttendanceRate(int userId) throws Exception {
 
-        List<String> list = loginLogRepository.findByRegTmAndUserId(userId);
-        System.out.println(list);
+        int countPerMonth = loginLogRepository.findByRegTmAndUserIdPerMonth(userId);
+        System.out.println(countPerMonth);
 
-        double rate = (double)list.size() / 30;
+        double rate = (double)countPerMonth / 30;
         return (int)(rate * 100);
     }
 }

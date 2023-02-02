@@ -93,7 +93,7 @@ public class UserController {
 
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
-        LoginResponseDto loginUser = null;
+        UserDetailResponseDto loginUser = null;
         try {
             loginUser = userService.login(requestUser);
 
@@ -174,7 +174,7 @@ public class UserController {
         try {
             Map<String, Object> resultMap = new HashMap<>();
 
-            LoginResponseDto loginResponseDto = oAuthService.oAuthLogin(socialType, code);
+            UserDetailResponseDto loginResponseDto = oAuthService.oAuthLogin(socialType, code);
 
 
             //토큰 부여
@@ -256,9 +256,9 @@ public class UserController {
 
         try {
             //friendTotal, attendTotal, conversationTotal, ddabongTotal, rank 추가 필요
-            LoginResponseDto user = userService.findByUserId(userId);
+            UserDetailResponseDto user = userService.findByUserId(userId);
 
-            Map<String, LoginResponseDto> result = new HashMap<>();
+            Map<String, UserDetailResponseDto> result = new HashMap<>();
             result.put("user",user);
 
             return new ResponseEntity<>(result, HttpStatus.OK);
