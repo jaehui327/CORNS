@@ -2,8 +2,11 @@ package com.w6w.corns.controller;
 
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
+import com.w6w.corns.dto.user.UserDetailResponseDto;
 import com.w6w.corns.dto.user.UserRequestDto;
+import com.w6w.corns.service.friend.FriendService;
 import com.w6w.corns.service.growth.GrowthService;
+import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.PageableResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +32,8 @@ import java.util.Map;
 public class GrowthController {
 
     private final GrowthService growthService;
+    private final FriendService friendService;
+    private final UserService userService;
 
     private ResponseEntity<?> exceptionHandling(Exception e) {
         Map<String, String> map = new HashMap<>();
@@ -98,10 +103,24 @@ public class GrowthController {
         }
     }
 
+    @ApiOperation(value = "알맹 상세 정보", notes = "from이 to의 상세정보를 봤을 때의 정보와 친구 관계를 반환")
     @GetMapping("/{fromId}/{toId}")
     public ResponseEntity<?> showDetail(@PathVariable int fromId, @PathVariable int toId){
 
-        return null;
+        try {
+            //유저정보 불러오기
+            UserDetailResponseDto responseDto = userService.getUser(toId);
+
+            //관계 반환
+            int relation = friendService.getFriendRelation(fromId, toId);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("toUser", responseDto);
+            result.put("relation", relation);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
     }
 
     @GetMapping("/indicator/{userId}/{type}")
