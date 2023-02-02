@@ -59,7 +59,7 @@ public class RoomController {
                                           @RequestParam int minTime,
                                           @RequestParam int maxTime,
                                           @RequestParam(defaultValue = "false") boolean isAvail,
-                                          @PageableDefault(sort = "reg_tm", direction = Sort.Direction.DESC)  Pageable pageable) {
+                                          @PageableDefault Pageable pageable) {
         Map resultMap = new HashMap<>();
         HttpStatus status;
         logger.debug("baseTime: {}, subject: {}, minTime: {}, maxTime: {}, isAvail: {}, pageable: {}", baseTime, subject, minTime, maxTime, isAvail, pageable);
