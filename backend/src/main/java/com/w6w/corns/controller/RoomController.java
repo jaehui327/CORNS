@@ -1,26 +1,26 @@
 package com.w6w.corns.controller;
 
-import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.request.EnterRoomRequestDto;
 import com.w6w.corns.dto.room.request.StartEndRoomRequestDto;
 import com.w6w.corns.dto.room.request.UpdateRoomRequestDto;
-import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomResponseDto;
 import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
 import com.w6w.corns.service.room.RoomService;
+import com.w6w.corns.util.PageableResponseDto;
+import com.w6w.corns.util.code.RoomUserCode;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController()
@@ -52,36 +52,38 @@ public class RoomController {
         return new ResponseEntity<Map>(resultMap, status);
     }
 
-    @ApiOperation(value = "쫑알쫑알 전체 목록 보기(필터링 추가해야 함)", notes = "page, size, baseTime, subject, minTime, maxTime, showAvail 값을 쿼리 스트링으로 전달")
+    @ApiOperation(value = "쫑알쫑알 목록 (페이징)", notes = "page, size, baseTime, subject, minTime, maxTime, showAvail 값을 쿼리 스트링으로 전달")
     @GetMapping
-    private ResponseEntity<?> getAllRooms(@RequestParam(defaultValue = "1%2%3%4%5%6") String subject,
-                                          @RequestParam(defaultValue = "0") int minTime,
-                                          @RequestParam(defaultValue = "30") int maxTime,
+    private ResponseEntity<?> getAllRooms(@RequestParam String baseTime,
+                                          @RequestParam String subject,
+                                          @RequestParam int minTime,
+                                          @RequestParam int maxTime,
                                           @RequestParam(defaultValue = "false") boolean isAvail,
-                                          @PageableDefault(size=18, direction = Sort.Direction.ASC)  Pageable pageable) {
+                                          @PageableDefault(sort = "reg_tm", direction = Sort.Direction.DESC)  Pageable pageable) {
         Map resultMap = new HashMap<>();
         HttpStatus status;
+        logger.debug("baseTime: {}, subject: {}, minTime: {}, maxTime: {}, isAvail: {}, pageable: {}", baseTime, subject, minTime, maxTime, isAvail, pageable);
 
         try {
             StringTokenizer st = new StringTokenizer(subject, "%");
             ArrayList<Integer> subjects = new ArrayList<>();
-            while (!st.hasMoreTokens()) subjects.add(Integer.parseInt(st.nextToken()));
+            while (st.hasMoreTokens()) subjects.add(Integer.parseInt(st.nextToken()));
+            logger.debug("subjects: {}", subjects);
 
-
-            Slice<Room> slice = roomService.searchBySlice(subjects, minTime, maxTime, isAvail, pageable);
-            logger.debug("slice: {}", slice);
-            if (slice.isEmpty()) {
+            PageableResponseDto response = roomService.searchBySlice(baseTime, subjects, minTime, maxTime, isAvail, pageable);
+            if (response.getList().isEmpty()) {
                 status = HttpStatus.NO_CONTENT;
+                return new ResponseEntity<Map>(resultMap, status);
             } else {
-                resultMap.put("rooms", slice);
+                resultMap.put("rooms", response.getList());
                 status = HttpStatus.OK;
+                return new ResponseEntity<PageableResponseDto>(response, status);
             }
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+            return new ResponseEntity<Map>(resultMap, status);
         }
-
-        return new ResponseEntity<Map>(resultMap, status);
     }
 
     @ApiOperation(value = "쫑알룸 정보 가져오기", notes = "쫑알룸 room_no를 path variable로 넘기면 쫑알룸 정보를 리턴")
@@ -138,10 +140,13 @@ public class RoomController {
         HttpStatus status;
 
         try {
-            if (!roomService.isNotUserInConversation(body.getUserId())) {
-                resultMap.put("message", "이미 대화 중인 방");
+            if (!roomService.isNotUserInConversation(body.getUserId(), RoomUserCode.ROOM_USER_CONVERSATION.getCode())) {
+                resultMap.put("message", "이미 대화중인 유저");
                 status = HttpStatus.CONFLICT;
-            } else {
+            } else if (!roomService.isNotStartRoomInConversation(body.getRoomNo())) {
+                resultMap.put("message", "이미 대화중인 방");
+                status = HttpStatus.CONFLICT;
+            }else {
                 int code = roomService.isAvailableEnterRoom(body.getRoomNo());
                 if (code == 0) {
                     status = HttpStatus.NO_CONTENT;

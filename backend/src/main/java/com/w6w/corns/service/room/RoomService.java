@@ -9,6 +9,7 @@ import com.w6w.corns.dto.room.request.UpdateRoomRequestDto;
 import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomResponseDto;
 import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
+import com.w6w.corns.util.PageableResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -21,16 +22,16 @@ public interface RoomService {
     List<Integer> getUserList(int roomNo);
     // 방 생성
     public int save(CreateRoomRequestDto body);
-    // 전체 리스트 - 페이징 필요함
-    public List<RoomListResponseDto> findAll();
     // 필터링
-    public Slice<Room> searchBySlice(ArrayList<Integer> subjects, int minTime, int maxTime, boolean isAvail, Pageable pageable);
+    public PageableResponseDto searchBySlice(String baseTime, ArrayList<Integer> subjects, int minTime, int maxTime, boolean isAvail, Pageable pageable);
     // 방 상세 정보
     public RoomResponseDto findRoomByRoomNo(int roomNo);
     // 대화방 내 유저 목록
     public List<RoomUserListResponseDto> findRoomUserByRoomNo(int roomNo);
     // 유저가 대화중인지 체크
-    public boolean isNotUserInConversation(int userId);
+    public boolean isNotUserInConversation(int userId, int roomCd);
+    // 쫑알룸 대화가 시작되었는지 체크
+    public boolean isNotStartRoomInConversation(int roomNo);
     // 쫑알룸 정원 체크
     public int isAvailableEnterRoom(int roomNo);
     // 쫑알룸 입장 처리

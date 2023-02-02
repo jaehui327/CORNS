@@ -24,11 +24,7 @@ public class Room extends BaseTime {
 
     private int maxMember;
 
-    @ManyToOne
-    @JoinColumn(name = "subject_no")
-    private Subject subject;
-
-//    private int subjectNo;
+    private int subjectNo;
 
     private int hostUserId;
 
@@ -43,7 +39,7 @@ public class Room extends BaseTime {
         this.title = title;
         this.time = time;
         this.maxMember = maxMember;
-//        this.subjectNo = subjectNo;
+        this.subjectNo = subjectNo;
         this.sessionId = sessionId;
     }
 

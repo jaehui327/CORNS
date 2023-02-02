@@ -1,8 +1,5 @@
 package com.w6w.corns.domain.room;
 
-import com.w6w.corns.domain.room.Room;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room, Integer>, RoomCustomRepository {
+public interface RoomRepository extends JpaRepository<Room, Integer>, CustomRoomRepository {
 
     // 대기중, 대화중인 방 리스트만 보여줌
     @Query(value = "SELECT r FROM Room r WHERE r.roomCd <= :roomCd")

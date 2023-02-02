@@ -14,15 +14,12 @@ import com.w6w.corns.dto.room.response.RoomResponseDto;
 import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
 import com.w6w.corns.dto.room.response.RoomUserResponseDto;
 import com.w6w.corns.service.subject.SubjectService;
+import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-=======
-import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> 365de6626331bc677defc060d0fbecabfde99a95
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +53,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     public int save(CreateRoomRequestDto body) {
         // check room user code
-        if (!isNotUserInConversation(body.getUserId())) return -1;
+        if (!isNotUserInConversation(body.getUserId(), RoomUserCode.ROOM_USER_CONVERSATION.getCode())) return -1;
 
         // save room - set hostUserId, roomCd
         Room room = body.getRoom().toEntity();
@@ -74,30 +71,27 @@ public class RoomServiceImpl implements RoomService {
         return 1;
     }
 
-    // 전체 리스트 - 페이징 필요함
+    // 쫑알룸 목록 (페이징)
     @Override
-    @Transactional(readOnly = true)
-    public List<RoomListResponseDto> findAll() {
-        return roomRepository.findAllByRoomCd(RoomCode.ROOM_START.getCode()).stream()
+    public PageableResponseDto searchBySlice(String baseTime, ArrayList<Integer> subjects, int minTime, int maxTime, boolean isAvail, Pageable pageable) {
+        Slice<Room> slice = roomRepository.searchBySlice(baseTime, subjects, minTime, maxTime, isAvail, pageable);
+        List<RoomListResponseDto> roomList = slice.stream()
                 .map(m -> RoomListResponseDto.builder()
                         // room
                         .room(RoomResponseDto.builder()
                                 .roomNo(m.getRoomNo())
                                 .title(m.getTitle())
                                 .time(m.getTime())
+                                .currentMember(roomUserRepository.findByRoomNo(m.getRoomNo()).size())
                                 .maxMember(m.getMaxMember())
                                 .roomCd(m.getRoomCd())
                                 .sessionId(m.getSessionId())
                                 .build())
                         // subject - select by subject no
-//                        .subject(subjectService.findById(m.getSubjectNo()))
+                        .subject(subjectService.findById(m.getSubjectNo()))
                         .build())
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public Slice<Room> searchBySlice(ArrayList<Integer> subjects, int minTime, int maxTime, boolean isAvail, Pageable pageable) {
-        return roomRepository.searchBySlice(subjects, minTime, maxTime, isAvail, pageable);
+        return new PageableResponseDto(slice.hasNext(), roomList);
     }
 
     // 방 상세 정보
@@ -141,9 +135,15 @@ public class RoomServiceImpl implements RoomService {
     // 유저가 대화중인지 체크
     @Override
     @Transactional(readOnly = true)
-    public boolean isNotUserInConversation(int userId) {
+    public boolean isNotUserInConversation(int userId, int roomCd) {
         //// 유저가 대화 참여 가능하면 true 반환 - 6000(대기중), 6001(대기중)이 아닐 때
-        if (roomUserRepository.findByUserIdAndRoomUserCd(userId).isEmpty()) return true;
+        if (roomUserRepository.findUserInRoom(userId, roomCd).isEmpty()) return true;
+        return false;
+    }
+
+    // 쫑알룸 대화가 시작되었는지 체크
+    public boolean isNotStartRoomInConversation(int roomNo) {
+        if (roomRepository.findById(roomNo).get().getRoomCd() == RoomCode.ROOM_WAITING.getCode()) return true;
         return false;
     }
 
