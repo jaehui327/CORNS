@@ -18,6 +18,10 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        String url = request.getRequestURI();
+        if(url.contains("swagger") || url.contains("api-docs") || url.contains("webjars"))
+            return true;
+
         String token = authorizationExtractor.extract(request, "Bearer");
 
         if(token.isEmpty() || token == null || !jwtService.checkToken(token)) {
