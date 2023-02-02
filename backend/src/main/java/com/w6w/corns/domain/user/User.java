@@ -83,6 +83,17 @@ public class User extends BaseTime {
         this.imgUrl = imgUrl;
     }
 
+    public void setRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
+
+    public void setSocial(int social){
+        this.social = social;
+    }
+
+    public void setUserCd(int userCd){
+        this.userCd = userCd;
+    }
     @Builder(builderClassName = "UserRegister", builderMethodName = "userRegister")
     public User(String email, String password, String salt, String nickname, int social) {
         this.email = email;

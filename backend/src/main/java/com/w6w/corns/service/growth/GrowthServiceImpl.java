@@ -52,11 +52,11 @@ public class GrowthServiceImpl implements GrowthService {
         Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThanEqual(userId, pageable, localDateTime);
         System.out.println("slice = " + slice.getContent());
 
-        List<ExpLogResponseDto> list = new ArrayList<>();
+        List<ExpLogResponseDto> users = new ArrayList<>();
         for(ExpLog expLog : slice.getContent())
-            list.add(ExpLogResponseDto.fromEntity(expLog));
+            users.add(ExpLogResponseDto.fromEntity(expLog));
 
-        return PageableResponseDto.builder().list(list).hasNext(slice.hasNext()).build();
+        return PageableResponseDto.builder().list(users).hasNext(slice.hasNext()).build();
     }
 
     //경험치 부여

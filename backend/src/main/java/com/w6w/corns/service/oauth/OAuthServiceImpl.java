@@ -72,7 +72,8 @@ public class OAuthServiceImpl implements OAuthService{
                 }else if((user.getSocial() & (1 << 1)) == 0){
                     //후에 소셜로그인 enum으로 관리하면 함수 따로 만들기
                     //기본 로그인 회원 -> 통합 사실 알리기
-                    userRepository.updateSocial(user.getUserId(), (user.getSocial() & (1 << 1)));
+                    user.setUserCd(user.getSocial() & (1 << 1));
+                    userRepository.save(user);
                 }
                 user = userRepository.findByEmail(googleUser.getEmail());
 
