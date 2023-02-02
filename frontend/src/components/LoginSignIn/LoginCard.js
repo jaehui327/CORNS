@@ -37,6 +37,7 @@ function LoginCard({ history }) {
       console.log("Log in!");
       const response = await axios.post(
         `${process.env.REACT_APP_HOST}/user/login`,
+        { validateStatus: (status) => status === 200 || status === 401 },
         {
           email: email,
           password: password,
