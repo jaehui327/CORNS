@@ -35,13 +35,16 @@ function SigninEmail({ email, setEmail, stateEmail, setStateEmail }) {
     }
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_HOST}/user/email-check/${email}`
+        `${process.env.REACT_APP_HOST}/user/email-check/${email}`, {
+          validateStatus: (status) => (status === 200 || status === 409)
+        }
       );
       if (response.status === 200) {
         setStateEmail(true);
       } else if (response.status === 409) {
-        alert("이미 존재하는 이메일입니다.");
-      } else {
+        alert('이미 존재하는 이메일입니다.')
+      }
+      else {
         throw new Error();
       }
     } catch (e) {
