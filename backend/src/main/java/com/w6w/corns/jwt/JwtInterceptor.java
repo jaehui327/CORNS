@@ -1,4 +1,4 @@
-package com.w6w.corns.interceptor;
+package com.w6w.corns.jwt;
 
 import com.w6w.corns.service.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class JwtInterceptor implements HandlerInterceptor {
 
-    private JwtService jwtService;
-
+    private final JwtService jwtService;
+    private final AuthorizationExtractor authorizationExtractor;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        if(!(handler instanceof HandlerMethod)) return true;
+        String token = authorizationExtractor.extract(request, "Bearer");
 
-        String token = request.getHeader("Authorization");
-        if(token!= null && jwtService.checkToken(token)) return true;
-        else return false;
+        if(token.isEmpty() || token == null || !jwtService.checkToken(token)) {
+            response.setStatus(401);
+            return false;
+        }
+        return true;
     }
 }
