@@ -44,10 +44,14 @@ function SigninCard({ checked }) {
         {
           email: email,
           password: password1,
-          nickname: nickname
+          nickname: nickname,
         }
       );
       console.log(response);
+      if (response.status === 200) {
+        console.log("회원가입!");
+        // 로그인 처리하고 이전페이지로 redirect
+      }
     } catch (e) {
       console.log(e);
     }

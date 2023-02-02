@@ -35,7 +35,9 @@ function SigninEmail({ email, setEmail, stateEmail, setStateEmail }) {
     }
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_HOST}/user/email-check/${email}`, {
+        `${process.env.REACT_APP_HOST}/user/email-check/${email}`, 
+        // `/user/email-check/${email}`, 
+        {
           validateStatus: (status) => (status === 200 || status === 409)
         }
       );

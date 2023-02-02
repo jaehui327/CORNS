@@ -8,7 +8,7 @@ import yellow_logo from "assets/corns_logo_yellow.png";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-function LoginCard({ history }) {
+function LoginCard({history}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -34,20 +34,29 @@ function LoginCard({ history }) {
       return;
     }
     try {
-      console.log("Log in!");
       const response = await axios.post(
         `${process.env.REACT_APP_HOST}/user/login`,
-        { validateStatus: (status) => status === 200 || status === 401 },
         {
           email: email,
           password: password,
+        },
+        {
+          validateStatus: (status) => status === 200 || status === 401,
         }
       );
-      console.log(response);
+      
       if (response.status === 200) {
         // 로그인 성공
-        // 세션에 저장 후 이전 페이지로 back
-        history.goBack();
+        console.log("Log in!");
+        
+        // 로컬 스토리지에 access token 저장
+        // 일단 refresh token도 로컬에 저장 -> redis 설정되면 추후 세션으로 이동 고민
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+        
+        // 이전 페이지로 back
+        // history.goback();
+
       } else if (response.status === 401) {
         setErrorMsg("아이디 또는 비밀번호를 잘못입력했습니다.");
       }
@@ -104,15 +113,19 @@ function LoginCard({ history }) {
         >
           비밀번호
         </h5>
-        <input
-          placeholder="비밀번호를 입력하세요."
-          value={password}
-          onChange={onChangePassword}
-          css={css`
-            width: 95%;
-            height: 45px;
-          `}
-        />
+        <form>
+          <input
+            type="password"
+            placeholder="비밀번호를 입력하세요."
+            value={password}
+            onChange={onChangePassword}
+            css={css`
+              width: 95%;
+              height: 45px;
+            `}
+          />
+        </form>
+
         <p
           css={css`
             color: #ff0000;

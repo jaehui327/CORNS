@@ -12,6 +12,7 @@ function SocialLogin() {
     e.preventDefault();
     try{
       const response = await axios.get(`${process.env.REACT_APP_HOST}/user/login/auth/google`)
+      // const response = await axios.get('/user/login/auth/google')
       if (response.status === 200) {
         console.log(response)
       }
