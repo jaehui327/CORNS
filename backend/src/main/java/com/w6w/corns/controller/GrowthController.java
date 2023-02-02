@@ -4,6 +4,7 @@ import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 import com.w6w.corns.dto.user.UserRequestDto;
 import com.w6w.corns.service.growth.GrowthService;
+import com.w6w.corns.util.PageableResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
@@ -58,7 +59,7 @@ public class GrowthController {
     }
     @ApiOperation(value = "경험치 레벨바", notes = "경험치 페이지 내에서 회원의 경험치 백분위와 레벨바를 보여줌")
     @GetMapping("/exp/{userId}")
-    public ResponseEntity<?> showlevelBar(@PathVariable int userId){
+    public ResponseEntity<?> showLevelBar(@PathVariable int userId){
 
         try {
             Map<String, Object> result = new HashMap<>();
@@ -85,15 +86,10 @@ public class GrowthController {
                                      @PageableDefault(sort = "expLogSq", direction = Sort.Direction.DESC)  Pageable pageable,
                                      @RequestParam String baseTime){
 
-        Map<String, Object> result = new HashMap<>();
-        System.out.println("pageable = " + pageable);
         try {
-            List<ExpLogResponseDto> expLogs = growthService.getExpLogList(userId, pageable, baseTime);
+            PageableResponseDto responseDto = growthService.getExpLogList(userId, pageable, baseTime);
 
-            result.put("expLogs", expLogs);
-            log.debug("expLogs : {}",expLogs);
-
-            if(expLogs != null && expLogs.size() > 0) return new ResponseEntity<>(result, HttpStatus.OK);
+            if(responseDto != null && responseDto.getList().size() > 0) return new ResponseEntity<>(responseDto, HttpStatus.OK);
             else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } catch (Exception e) {

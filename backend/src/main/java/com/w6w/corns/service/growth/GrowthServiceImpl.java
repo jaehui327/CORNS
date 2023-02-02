@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.w6w.corns.util.PageableResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -43,10 +45,9 @@ public class GrowthServiceImpl implements GrowthService {
         return LevelDto.fromEntity(user.getLevel());
     }
 
-    public List<ExpLogResponseDto> getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception{
+    public PageableResponseDto getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception{
         //baseTime -> LocalDate 타입으로
         LocalDateTime localDateTime = LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        System.out.println("localDateTime = " + localDateTime);
 
         Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThanEqual(userId, pageable, localDateTime);
         System.out.println("slice = " + slice.getContent());
@@ -55,7 +56,7 @@ public class GrowthServiceImpl implements GrowthService {
         for(ExpLog expLog : slice.getContent())
             list.add(ExpLogResponseDto.fromEntity(expLog));
 
-        return list;
+        return PageableResponseDto.builder().list(list).hasNext(slice.hasNext()).build();
     }
 
     //경험치 부여
