@@ -63,7 +63,7 @@ public class CustomRoomRepositoryImpl implements CustomRoomRepository {
                 .where(builder)
                 .orderBy(room.regTm.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
         return checkLastPage(pageable, rooms);

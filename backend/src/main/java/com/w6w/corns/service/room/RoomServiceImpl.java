@@ -106,6 +106,7 @@ public class RoomServiceImpl implements RoomService {
                 .roomNo(room.getRoomNo())
                 .title(room.getTitle())
                 .time(room.getTime())
+                .currentMember(roomUserRepository.findByRoomNo(room.getRoomNo()).size())
                 .maxMember(room.getMaxMember())
                 .hostUserId(room.getHostUserId())
                 .sessionId(room.getSessionId())
