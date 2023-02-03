@@ -24,7 +24,7 @@ public class UserDetailResponseDto {
     private boolean isGoogle;
     private String refreshToken;
     private long attendTotal;
-    private long conversationTotal;
+    private long speakingTotal;
     private long thumbTotal;
     private LocalDateTime lastLoginTm;
 

@@ -65,6 +65,8 @@ public class GrowthServiceImpl implements GrowthService {
     public void giveExp(ExpLogRequestDto expLogRequestDto){
 
         expLogRepository.save(expLogRequestDto.toEntity());
+
+        //expTotal 증가
     }
 
     //출석률 반환
