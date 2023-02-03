@@ -3,6 +3,7 @@ package com.w6w.corns.domain.room;
 import com.w6w.corns.domain.subject.Subject;
 import com.w6w.corns.util.BaseTime;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
@@ -24,6 +25,8 @@ public class Room extends BaseTime {
 
     private int maxMember;
 
+    private int currentMember;
+
     private int subjectNo;
 
     private int hostUserId;
@@ -42,6 +45,8 @@ public class Room extends BaseTime {
         this.subjectNo = subjectNo;
         this.sessionId = sessionId;
     }
+
+    public void setCurrentMember(int currentMember) { this.currentMember = currentMember; }
 
     public void setHostUserId(int hostUserId) {
         this.hostUserId = hostUserId;

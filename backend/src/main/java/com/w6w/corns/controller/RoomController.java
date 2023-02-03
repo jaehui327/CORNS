@@ -4,7 +4,8 @@ import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.request.EnterRoomRequestDto;
 import com.w6w.corns.dto.room.request.StartEndRoomRequestDto;
 import com.w6w.corns.dto.room.request.UpdateRoomRequestDto;
-import com.w6w.corns.dto.room.response.RoomResponseDto;
+import com.w6w.corns.dto.room.response.RoomAndRoomUserListResponseDto;
+import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
 import com.w6w.corns.service.room.RoomService;
 import com.w6w.corns.util.PageableResponseDto;
@@ -14,13 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController()
@@ -40,15 +39,18 @@ public class RoomController {
         HttpStatus status;
 
         try {
-            if (roomService.save(body) == 1)
+            RoomAndRoomUserListResponseDto response = roomService.save(body);
+            if (response != null) {
                 status = HttpStatus.OK;
-            else
+                return new ResponseEntity<RoomAndRoomUserListResponseDto>(response, status);
+            }
+            else {
                 status = HttpStatus.CONFLICT;
+            }
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-
         return new ResponseEntity<Map>(resultMap, status);
     }
 
@@ -73,7 +75,6 @@ public class RoomController {
             PageableResponseDto response = roomService.searchBySlice(baseTime, subjects, minTime, maxTime, isAvail, pageable);
             if (response.getList().isEmpty()) {
                 status = HttpStatus.NO_CONTENT;
-                return new ResponseEntity<Map>(resultMap, status);
             } else {
                 status = HttpStatus.OK;
                 return new ResponseEntity<PageableResponseDto>(response, status);
@@ -81,8 +82,8 @@ public class RoomController {
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
-            return new ResponseEntity<Map>(resultMap, status);
         }
+        return new ResponseEntity<Map>(resultMap, status);
     }
 
     @ApiOperation(value = "쫑알룸 정보 가져오기", notes = "쫑알룸 room_no를 path variable로 넘기면 쫑알룸 정보를 리턴")
@@ -92,7 +93,7 @@ public class RoomController {
         HttpStatus status;
 
         try {
-            RoomResponseDto room = roomService.findRoomByRoomNo(roomNo);
+            RoomListResponseDto room = roomService.findRoomByRoomNo(roomNo);
             logger.debug("room: {}", room);
             if (room == null) {
                 status = HttpStatus.NO_CONTENT;
@@ -115,7 +116,7 @@ public class RoomController {
         HttpStatus status;
 
         try {
-            List<RoomUserListResponseDto> roomUsers = roomService.findRoomUserByRoomNo(roomNo);
+            List<RoomUserListResponseDto> roomUsers = roomService.findRoomUserByRoomNoAndRoomUserCode(roomNo, RoomUserCode.ROOM_USER_CONVERSATION.getCode());
             logger.debug("roomUsers: {}", roomUsers);
             if (roomUsers == null) {
                 status = HttpStatus.NO_CONTENT;
@@ -153,17 +154,16 @@ public class RoomController {
                     resultMap.put("message", "인원 마감");
                     status = HttpStatus.ACCEPTED;
                 } else { // 입장 가능
-                    List<RoomUserListResponseDto> roomUsers = roomService.enterRoom(body);
-                    logger.debug("roomUsers: {}", roomUsers);
-                    resultMap.put("room", roomUsers);
+                    RoomAndRoomUserListResponseDto response = roomService.enterRoom(body);
+                    logger.debug("roomUsers: {}", response);
                     status = HttpStatus.OK;
+                    return new ResponseEntity<RoomAndRoomUserListResponseDto>(response, status);
                 }
             }
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-
         return new ResponseEntity<Map>(resultMap, status);
     }
 
@@ -174,8 +174,9 @@ public class RoomController {
         HttpStatus status;
 
         try {
-            roomService.exitRoom(body);
+            RoomAndRoomUserListResponseDto response = roomService.exitRoom(body);
             status = HttpStatus.OK;
+            return new ResponseEntity<RoomAndRoomUserListResponseDto>(response, status);
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
