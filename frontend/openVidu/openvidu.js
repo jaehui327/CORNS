@@ -14,14 +14,11 @@ function joinSession() {
 	var mySessionId = document.getElementById("sessionId").value;
 	var myUserName = document.getElementById("userName").value;
 
-	// alert(mySessionId)
-
 	// --- 1) Get an OpenVidu object ---
 
 	OV = new OpenVidu();
 
 	// --- 2) Init a session ---
-
 	session = OV.initSession();
 
 	// --- 3) Specify the actions when events take place in the session ---
@@ -138,10 +135,9 @@ function removeUserData(connection) {
 	dataNode.parentNode.removeChild(dataNode);
 }
 
+// var APPLICATION_SERVER_URL =""; // = "http://localhost:5000/";
+var OPENVIDU_URL= "https://3.39.6.81/";
 
-var APPLICATION_SERVER_URL = "http://localhost:5000/";
-
-var OPENVIDU_URL= "http://localhost:4443/";
 var OPENVIDU_SECRET = "MY_SECRET";
 
 function getToken(mySessionId) {
