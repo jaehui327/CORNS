@@ -18,7 +18,7 @@ function Room({match}) {
         id="roomOpenviduID"
         title="Frame test"
         // remove these styles later
-        frameborder='0' 
+        frameBorder='0' 
         style={{ minHeight: '100vh', width: '100vw', border: '0px', display: 'block' }}
       />
     );
@@ -31,7 +31,7 @@ function Room({match}) {
         id="roomOpenviduID"
         title="Frame test"
         // remove these styles later
-        frameborder='0'
+        frameBorder='0'
         style={{ minHeight: '100vh', width: '100vw', border: '0px', display: 'block' }}
       />
     );

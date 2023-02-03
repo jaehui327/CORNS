@@ -139,9 +139,8 @@ function removeUserData(connection) {
 }
 
 
-var APPLICATION_SERVER_URL = "http://localhost:5000/";
+var OPENVIDU_URL= "https://3.39.6.81/";
 
-var OPENVIDU_URL= "http://localhost:4443/";
 var OPENVIDU_SECRET = "MY_SECRET";
 
 function getToken(mySessionId) {
