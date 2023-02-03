@@ -1,8 +1,8 @@
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Navbar from "../components/GlobalComponents/Navbar";
 import hero from "assets/hero.png";
 import backgroundImage from "assets/backgroundImage.png";
-import RoomList from "components/Conversation/RoomList";
+import RoomListsContainer from "redux/containers/RoomListsContainer";
 import RankingList from "components/GlobalComponents/RankingList";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -19,7 +19,7 @@ function Home() {
         <Box sx={{ position: "absolute", top: "45%", right: "15%" }}>
           <Typography variant="h3">CORNS가 처음이세요?</Typography>
           <Typography sx={{ color: "#fff" }}>
-            CORNS 사용법 더 알아보러가기
+            CORNS 사용법 더 알아보러가기(홍빈테스트중!)
           </Typography>
           <Button
             variant="contained"
@@ -39,7 +39,7 @@ function Home() {
           <Link to="/conversation" sx={{ cursor: "pointer" }}>
             더보기
           </Link>
-          <RoomList />
+          <RoomListsContainer />
         </Box>
         <Box>
           <Typography variant="h5">랭킹</Typography>
