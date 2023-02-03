@@ -14,7 +14,7 @@ function joinSession() {
 	var mySessionId = document.getElementById("sessionId").value;
 	var myUserName = document.getElementById("userName").value;
 
-	// alert(mySessionId)
+	alert(mySessionId)
 
 	// --- 1) Get an OpenVidu object ---
 
@@ -141,8 +141,7 @@ function removeUserData(connection) {
 
 var OPENVIDU_URL= "https://3.39.6.81/";
 
-var OPENVIDU_SECRET = "MY_SECRET";
-
+var OPENVIDU_SECRET = btoa("OPENVIDUAPP:a506w6w");
 function getToken(mySessionId) {
 	return createToken(mySessionId);
 	// return createSession(mySessionId).then(sessionId => createToken(sessionId));
@@ -158,7 +157,7 @@ function createSession(sessionId) {
 	// 		url: OPENVIDU_URL + "openvidu/api/sessions",
 	// 		data: JSON.stringify({ customSessionId: sessionId }),
 	// 		headers: { 	"Content-Type": "application/json",
-	// 					 "Authorization" : "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+	// 					 "Authorization" : "Basic " + OPENVIDU_SECRET,
 	// 					 "Access-Control-Allow-Origin" : "*"},
 	// 		success: response => resolve(response), // The sessionId
 	// 		error: (error) => reject(error)
@@ -173,7 +172,7 @@ function createToken(sessionId) {
 			url: OPENVIDU_URL + 'openvidu/api/sessions/' + sessionId + '/connection',
 			data: JSON.stringify({}),
 			headers: { "Content-Type": "application/json",
-						"Authorization" : "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+						"Authorization" : "Basic " + OPENVIDU_SECRET,
 						"Access-Control-Allow-Origin" : "*"},
 			success: (response) => resolve(response), // The token
 			error: (error) => reject(error)
@@ -187,7 +186,7 @@ function getConnection(sessionId){
 		$.ajax({
 			url: OPENVIDU_URL + "openvidu/api/sessions/"+ sessionId + "/connection/",
 			type: "GET",
-			headers: { 	"Authorization" : "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+			headers: { 	"Authorization" : "Basic " + OPENVIDU_SECRET,
 						"Access-Control-Allow-Origin" : "*"},
 			success: (data) => { resolve(data); },
 			error: (data) => { reject(data); }
@@ -201,7 +200,7 @@ function getConnections(sessionId){
 		$.ajax({
 			url: OPENVIDU_URL + "openvidu/api/sessions/"+ sessionId + "/connection/",
 			type: "GET",
-			headers: { 	"Authorization" : "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+			headers: { 	"Authorization" : "Basic " + OPENVIDU_SECRET,
 						"Access-Control-Allow-Origin" : "*"},
 			success: (data) => { resolve(data); },
 			error: (data) => { reject(data); }
