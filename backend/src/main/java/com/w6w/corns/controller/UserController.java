@@ -98,7 +98,7 @@ public class UserController {
         UserDetailResponseDto loginUser = null;
         try {
             loginUser = userService.login(requestUser);
-
+            System.out.println("loginUser = " + loginUser);
             if(loginUser == null) status = HttpStatus.UNAUTHORIZED; //로그인 실패
             else{
                 //로그인 시간 확인 후 경험치 부여

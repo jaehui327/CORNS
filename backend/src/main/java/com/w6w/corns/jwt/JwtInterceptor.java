@@ -23,9 +23,10 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
 
         String token = authorizationExtractor.extract(request, "Bearer");
-
+        System.out.println("token = " + token);
         if(token.isEmpty() || token == null || !jwtService.checkToken(token)) {
             response.setStatus(401);
+            System.out.println("interceptor!");
             return false;
         }
         return true;
