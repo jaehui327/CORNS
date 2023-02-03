@@ -7,7 +7,6 @@ import com.w6w.corns.util.code.RoomCode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -16,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 @Transactional
 public class CustomRoomRepositoryImpl implements CustomRoomRepository {
 
