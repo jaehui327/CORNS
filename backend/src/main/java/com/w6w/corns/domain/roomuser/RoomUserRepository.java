@@ -19,4 +19,7 @@ public interface RoomUserRepository extends JpaRepository<RoomUser, Integer>, Cu
     void deleteByUserIdAndRoomNo(int userId, int roomNo);
     // 대화중인 쫑알룸에서 나갔을 때 코드 변경 위해 조회
     RoomUser findByUserIdAndRoomNo(int userId, int roomNo);
+    // 쫑알룸 활성 멤버 조회
+    @Query(value = "SELECT ru FROM RoomUser ru WHERE ru.roomNo = :roomNo and ru.roomUserCd <= :roomUserCd")
+    List<RoomUser> findRoomUserInRoom(int roomNo, int roomUserCd);
 }

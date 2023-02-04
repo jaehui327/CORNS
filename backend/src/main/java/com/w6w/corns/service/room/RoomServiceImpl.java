@@ -118,7 +118,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional(readOnly = true)
     public List<RoomUserListResponseDto> findRoomUserByRoomNoAndRoomUserCode(int roomNo, int roomUserCd) {
-        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(roomNo, roomUserCd);
+        List<RoomUser> roomUsers = roomUserRepository.findRoomUserInRoom(roomNo, roomUserCd);
         if (roomUsers.isEmpty()) return null;
 
         return roomUsers.stream()
@@ -188,23 +188,26 @@ public class RoomServiceImpl implements RoomService {
         room.setCurrentMember(room.getCurrentMember() + 1);
         roomRepository.save(room);
 
-        return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+        return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_WAITING.getCode());
     }
 
     // 대화 시작
     @Override
     @Transactional
-    public int startConversation(StartEndRoomRequestDto body) {
+    public RoomAndRoomUserListResponseDto startConversation(StartEndRoomRequestDto body) {
         Room room = roomRepository.findById(body.getRoomNo()).get();
         List<RoomUser> roomUsers = roomUserRepository.findByRoomNo(body.getRoomNo());
 
         if (roomUsers.size() == 1) { // 혼자일 때 대화 시작 불가
-            return 0;
+            return null;
         } else {
             room.setRoomCd(RoomCode.ROOM_START.getCode());
-            roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode()));
+            roomUsers.stream().forEach(user -> {
+                user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+                user.setStartTmNow();
+            });
             roomUserRepository.saveAll(roomUsers);
-            return 1;
+            return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
         }
     }
 
@@ -222,13 +225,17 @@ public class RoomServiceImpl implements RoomService {
             // 대화방에 아무도 남아있지 않을 때 room table 에서 삭제
             if (room.getCurrentMember() == 0) {
                 roomRepository.deleteById(body.getRoomNo());
+                return null;
             }
             // 방장일 때 방장 교체
-            else if (roomRepository.findById(body.getRoomNo()).get().getHostUserId() == body.getUserId()) {
-                Integer userId = roomUserRepository.findByRoomNo(body.getRoomNo()).stream().findFirst().get().getUserId();
+            else if (room.getHostUserId() == body.getUserId()) {
+                Integer userId = roomUserRepository.findByRoomNo(body.getRoomNo()).get(0).getUserId();
                 room.setHostUserId(userId);
                 roomRepository.save(room);
             }
+
+            return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_WAITING.getCode());
+
         } else if (room.getRoomCd() == RoomCode.ROOM_START.getCode()) { // 대화 중일 때
             RoomUser roomUser = roomUserRepository.findByUserIdAndRoomNo(body.getUserId(), body.getRoomNo());
             roomUser.setUserCd(RoomUserCode.ROOM_USER_EXIT.getCode());
@@ -240,29 +247,38 @@ public class RoomServiceImpl implements RoomService {
             if (room.getCurrentMember() == 1) {
                 room.setRoomCd(RoomCode.ROOM_END.getCode());
 
-                Integer userId = roomUserRepository.findByRoomNo(body.getRoomNo()).stream().findFirst().get().getUserId();
-                RoomUser user = roomUserRepository.findByUserIdAndRoomNo(userId, body.getRoomNo());
-                user.setUserCd(RoomUserCode.ROOM_USER_END.getCode());
-                roomUserRepository.save(user);
+                RoomUser remainUser = roomUserRepository.findRoomUserInRoom(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode()).get(0);
+                remainUser.setUserCd(RoomUserCode.ROOM_USER_END.getCode());
+                roomUserRepository.save(remainUser);
             }
 
             roomRepository.save(room);
-        }
 
-        return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+            return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());
+        } else {
+            return RoomAndRoomUserListResponseDto.builder()
+                    .room(RoomListResponseDto.builder()
+                            .room(RoomResponseDto.builder()
+                                    .roomCd(RoomCode.ROOM_END.getCode())
+                                    .build())
+                            .build())
+                    .build();
+        }
     }
 
     // 대화 종료
     @Override
     @Transactional
-    public void endConversation(StartEndRoomRequestDto body) {
+    public RoomAndRoomUserListResponseDto endConversation(StartEndRoomRequestDto body) {
         Room room = roomRepository.findById(body.getRoomNo()).get();
         room.setRoomCd(RoomCode.ROOM_END.getCode());
         roomRepository.save(room);
 
-        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());
         roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_END.getCode()));
         roomUserRepository.saveAll(roomUsers);
+
+        return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());
     }
 
 }

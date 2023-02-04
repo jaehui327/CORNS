@@ -9,6 +9,7 @@ import com.w6w.corns.dto.room.response.RoomListResponseDto;
 import com.w6w.corns.dto.room.response.RoomUserListResponseDto;
 import com.w6w.corns.service.room.RoomService;
 import com.w6w.corns.util.PageableResponseDto;
+import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -116,7 +117,7 @@ public class RoomController {
         HttpStatus status;
 
         try {
-            List<RoomUserListResponseDto> roomUsers = roomService.findRoomUserByRoomNoAndRoomUserCode(roomNo, RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+            List<RoomUserListResponseDto> roomUsers = roomService.findRoomUserByRoomNoAndRoomUserCode(roomNo, RoomUserCode.ROOM_USER_END.getCode());
             logger.debug("roomUsers: {}", roomUsers);
             if (roomUsers == null) {
                 status = HttpStatus.NO_CONTENT;
@@ -175,8 +176,16 @@ public class RoomController {
 
         try {
             RoomAndRoomUserListResponseDto response = roomService.exitRoom(body);
-            status = HttpStatus.OK;
-            return new ResponseEntity<RoomAndRoomUserListResponseDto>(response, status);
+            if (response == null) {
+                resultMap.put("message", "대기방 폭파");
+                status = HttpStatus.ACCEPTED;
+            } else if (response.getRoom().getRoom().getRoomCd() == RoomCode.ROOM_END.getCode()) {
+                resultMap.put("message", "종료된 방");
+                status = HttpStatus.ACCEPTED;
+            } else {
+                status = HttpStatus.OK;
+                return new ResponseEntity<RoomAndRoomUserListResponseDto>(response, status);
+            }
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -192,9 +201,10 @@ public class RoomController {
         HttpStatus status;
 
         try {
-            int code = roomService.startConversation(body);
-            if (code == 1) {
+            RoomAndRoomUserListResponseDto response = roomService.startConversation(body);
+            if (response != null) {
                 status = HttpStatus.OK;
+                return new ResponseEntity<RoomAndRoomUserListResponseDto>(response, status);
             } else {
                 resultMap.put("message", "인원 부족");
                 status = HttpStatus.ACCEPTED;

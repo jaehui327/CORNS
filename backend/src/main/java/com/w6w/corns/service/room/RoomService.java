@@ -40,10 +40,10 @@ public interface RoomService {
     // 쫑알룸 입장 처리
     public RoomAndRoomUserListResponseDto enterRoom(EnterRoomRequestDto body);
     // 대화 시작
-    public int startConversation(StartEndRoomRequestDto body);
+    public RoomAndRoomUserListResponseDto startConversation(StartEndRoomRequestDto body);
     // 쫑알룸 퇴장
     public RoomAndRoomUserListResponseDto exitRoom(UpdateRoomRequestDto body);
     // 대화 종료
-    public void endConversation(StartEndRoomRequestDto body);
+    public RoomAndRoomUserListResponseDto endConversation(StartEndRoomRequestDto body);
 
 }
