@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import axios from "axios";
-import {Login} from "./LoginCard";
+import Login from 'auth/Login'
 
 import SigninEmail from "./SigninEmail";
 import SigninPassword from "./SigninPassword";
@@ -47,7 +47,7 @@ function SigninCard({ checked }) {
         }
       );
       if (response.status === 200) {
-        // 로그인 처리 -> 전페이지로 이동
+        // 로그인 처리 -> 홈페이지로 이동
         Login(email, password1);
 
       }
