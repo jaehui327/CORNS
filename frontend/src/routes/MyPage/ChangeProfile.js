@@ -25,8 +25,8 @@ function ChangeProfile() {
     reader.readAsDataURL(file);
     reader.onload = () => {
       setImgSrc(reader.result);
-      console.log(imgSrc);
     };
+    console.log(imgSrc)
   };
 
   const onSubmit = async (e) => {};
