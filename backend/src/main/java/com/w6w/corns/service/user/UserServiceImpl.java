@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService{
     public UserDetailResponseDto getUser(int userId) throws Exception{
         User user = userRepository.findByUserId(userId);
 
-        //발화량, 랭킹 나중에 추가
+        //랭킹 나중에 추가
         UserDetailResponseDto responseDto = UserDetailResponseDto.fromEntity(user);
 
         return responseDto;

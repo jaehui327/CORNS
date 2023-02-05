@@ -257,7 +257,7 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@PathVariable int userId){
 
         try {
-            //friendTotal, attendTotal, conversationTotal, thumbTotal, rank 추가 필요
+            //rank 추가 필요
             UserDetailResponseDto user = userService.getUser(userId);
 
             Map<String, UserDetailResponseDto> result = new HashMap<>();
