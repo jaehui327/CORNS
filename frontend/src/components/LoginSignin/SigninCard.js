@@ -25,7 +25,6 @@ function SigninCard({ checked }) {
   const [stateNickname, setStateNickname] = useState(false);
 
   // 회원가입
-  // CORS 에러 -> 해결해야함
   const onSubmit = async (e) => {
     e.preventDefault();
 
