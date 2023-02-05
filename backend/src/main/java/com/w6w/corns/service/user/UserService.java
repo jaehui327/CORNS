@@ -1,6 +1,7 @@
 package com.w6w.corns.service.user;
 
 import com.w6w.corns.dto.user.*;
+import com.w6w.corns.dto.withdraw.WithdrawRequestDto;
 import com.w6w.corns.util.PageableResponseDto;
 import org.springframework.data.domain.Pageable;
 
@@ -21,4 +22,5 @@ public interface UserService {
     void updateUserInfo(UserModifyRequestDto requestUser) throws Exception;
     void updateUserCd(int userId, int userCd) throws Exception;
     PageableResponseDto findAllUserByCondition(Pageable pageable, String baseTime, String filter, String keyword) throws Exception;
+    void withdrawUser(WithdrawRequestDto requestDto) throws Exception;
 }

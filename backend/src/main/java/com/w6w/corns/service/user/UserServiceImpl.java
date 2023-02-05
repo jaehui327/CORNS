@@ -1,12 +1,15 @@
 package com.w6w.corns.service.user;
 
-import com.w6w.corns.domain.friend.FriendRepository;
 import com.w6w.corns.domain.loginlog.LoginLogRepository;
-import com.w6w.corns.domain.thumblog.ThumbLogRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
+import com.w6w.corns.domain.withdraw.Withdraw;
+import com.w6w.corns.domain.withdraw.WithdrawLog;
+import com.w6w.corns.domain.withdraw.WithdrawLogRepository;
+import com.w6w.corns.domain.withdraw.WithdrawRepository;
 import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
 import com.w6w.corns.dto.user.*;
+import com.w6w.corns.dto.withdraw.WithdrawRequestDto;
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.SHA256Util;
 import com.w6w.corns.util.code.UserCode;
@@ -27,7 +30,8 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final LoginLogRepository loginLogRepository;
-
+    private final WithdrawRepository withdrawRepository;
+    private final WithdrawLogRepository withdrawLogRepository;
     @Override
     @Transactional
     public int signUp(UserJoinRequestDto requestUser) throws Exception {
@@ -219,5 +223,28 @@ public class UserServiceImpl implements UserService{
                 .list(exps)
                 .hasNext(slice.hasNext())
                 .build();
+    }
+
+    @Override
+    public void withdrawUser(WithdrawRequestDto requestDto) throws Exception {
+
+        //user code 변경
+        updateUserCd(requestDto.getUserId(), UserCode.USER_UNREGISTER.getCode());
+
+        //refresh token 제거
+        deleteRefreshToken(requestDto.getUserId());
+        //탈퇴사유 테이블 내용 필요
+
+        //탈퇴사유 번호로 찾기
+        Withdraw withdraw = withdrawRepository.findByWithdrawNo(requestDto.getWithdrawNo());
+
+        //탈퇴로그
+        WithdrawLog withdrawLog = WithdrawLog.builder()
+                        .userId(requestDto.getUserId())
+                        .withdraw(withdraw)
+                        .description(requestDto.getDescription())
+                        .build();
+
+        withdrawLogRepository.save(withdrawLog);
     }
 }

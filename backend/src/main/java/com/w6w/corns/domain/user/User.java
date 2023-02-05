@@ -35,7 +35,7 @@ public class User extends BaseTime {
 //    @Column(columnDefinition = "SMALLINT", insertable = false)
     private int expTotal;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_no")
     private Level level;
 

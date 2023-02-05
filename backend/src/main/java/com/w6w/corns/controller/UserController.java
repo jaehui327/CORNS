@@ -2,6 +2,7 @@ package com.w6w.corns.controller;
 
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.user.*;
+import com.w6w.corns.dto.withdraw.WithdrawRequestDto;
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.code.ExpCode;
 import com.w6w.corns.service.growth.GrowthService;
@@ -284,7 +285,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "비밀번호 확인 및 변경", notes = "userId, 비밀번호, 새로운 비밀번호를 넘겨 인증 후 변경")
-    @PostMapping
+    @PatchMapping
     public ResponseEntity<?> modifyPassword(@RequestBody UserPassModifyRequestDto requestDto){
 
         try{
@@ -297,13 +298,11 @@ public class UserController {
     }
 
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴 요청 시 처리")
-    @PatchMapping("/{userId}")
-    public ResponseEntity<?> withdraw(@PathVariable int userId){
+    @PostMapping
+    public ResponseEntity<?> withdraw(@RequestBody WithdrawRequestDto requestDto){
 
-        //사유도 받아야 함
         try {
-            userService.updateUserCd(userId, UserCode.USER_UNREGISTER.getCode()); //유저코드 변경
-            userService.deleteRefreshToken(userId); //리프레시토큰 제거
+            userService.withdrawUser(requestDto);
             return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
