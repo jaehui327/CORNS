@@ -1,14 +1,25 @@
 import { React, useState } from "react";
 import { Button, Typography } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 
-function SubjectBtn({ active, subject }) {
+import { addSubject } from "store/reducers/roomFilterReducer";
+
+function SubjectBtn({ subject }) {
+  const dispatch = useDispatch();
+  const filter = useSelector((state) => state.roomFilterReducer);
+
+  const { subjectNo, imgUrl, value } = subject;
   const [toggle, setToggle] = useState(false);
 
   // 버튼을 눌렀을 때 색깔이 바뀌게 하는 toggle 함수
   const btnColorToggle = (e) => {
     setToggle((prev) => !prev);
-    console.log(e.target.textContent);
   };
+
+  const checkFilter = () => {
+    dispatch(addSubject(subjectNo, "ADD"));
+  };
+
   return (
     <>
       <Button
@@ -25,9 +36,9 @@ function SubjectBtn({ active, subject }) {
             backgroundColor: "#BAE8A4",
           },
         }}
-        onClick={btnColorToggle}
+        onClick={(btnColorToggle, checkFilter)}
       >
-        {subject}
+        {value}
       </Button>
     </>
   );

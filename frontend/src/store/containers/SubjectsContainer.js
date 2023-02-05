@@ -13,7 +13,7 @@ function SubjectsContainer() {
   }, [dispatch]);
 
   const subjectBtn = subjects.map((item) => (
-    <SubjectBtn subject={item.value} key={item.subjectNo} />
+    <SubjectBtn subject={item} key={item.subjectNo} />
   ));
   return <div>{subjects && subjectBtn}</div>;
 }
