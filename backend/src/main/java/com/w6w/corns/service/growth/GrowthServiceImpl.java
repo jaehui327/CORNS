@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.w6w.corns.util.PageableResponseDto;
+import com.w6w.corns.util.code.UserCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -32,7 +33,7 @@ public class GrowthServiceImpl implements GrowthService {
     public int calExpPercentile(int userId) throws Exception{
 
         //user에서 usercd 탈퇴, 정지를 제외한 나머지 사람들의 총 exp 순위
-        int cntAll = userRepository.countAll();
+        int cntAll = userRepository.countByUserCd(UserCode.USER_DEFAULT.getCode());
 
         int rank = userRepository.rankByExp(userId);
 
@@ -65,6 +66,8 @@ public class GrowthServiceImpl implements GrowthService {
     public void giveExp(ExpLogRequestDto expLogRequestDto){
 
         expLogRepository.save(expLogRequestDto.toEntity());
+
+        //expTotal 증가
     }
 
     //출석률 반환

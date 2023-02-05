@@ -1,17 +1,14 @@
 package com.w6w.corns.service.user;
 
-import com.w6w.corns.domain.explog.ExpLog;
 import com.w6w.corns.domain.friend.FriendRepository;
 import com.w6w.corns.domain.loginlog.LoginLogRepository;
 import com.w6w.corns.domain.thumblog.ThumbLogRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
-import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
 import com.w6w.corns.dto.user.*;
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.SHA256Util;
-import com.w6w.corns.util.code.FriendCode;
 import com.w6w.corns.util.code.UserCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +27,6 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final LoginLogRepository loginLogRepository;
-    private final ThumbLogRepository thumbLogRepository;
-    private final FriendRepository friendRepository;
 
     @Override
     @Transactional
@@ -51,7 +46,7 @@ public class UserServiceImpl implements UserService{
                             .email(requestUser.getEmail())
                             .nickname(requestUser.getNickname())
                             .password(newPass) //암호화된 비밀번호 저장
-                            .salt(salt) 
+                            .salt(salt)
                             .social(1) //기본 회원가입 사용자로 설정
                             .build()); //회원 저장
             return 1;
@@ -66,7 +61,6 @@ public class UserServiceImpl implements UserService{
         else return 1; //중복
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public UserDetailResponseDto login(UserLoginRequestDto requestUser) throws Exception{
@@ -78,6 +72,7 @@ public class UserServiceImpl implements UserService{
         //이메일, 비밀번호 일치 확인 && 회원코드 확인
         if(isSamePassword(requestUser) && user.getUserCd() == UserCode.USER_DEFAULT.getCode()){
 
+            System.out.println(" here! ");
             //로그인로그 insert
             makeLoginLog(user.getUserId());
 
@@ -85,6 +80,7 @@ public class UserServiceImpl implements UserService{
         }
         return null;
     }
+
     @Override
     @Transactional
     public void makeLoginLog(int userId) throws Exception{
@@ -96,10 +92,9 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(readOnly = true)
     public void updateLastLoginTm(int userId) throws Exception{
-        
-        //last_login_tm 변경
+
         User user = userRepository.findByUserId(userId);
-        user.setLastLoginTm();
+        user.setLastLoginTm(LocalDateTime.now());
         userRepository.save(user);
         System.out.println("user = " + user);
     }
@@ -133,14 +128,7 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByUserId(userId);
 
         //발화량, 랭킹 나중에 추가
-        long attendanceTotal = loginLogRepository.findByRegTmAndUserId(userId);
-        long thumbTotal = thumbLogRepository.countByToUserId(userId);
-        long friendTotal = friendRepository.countByUserIdAAndFriendCdOrUserIdBAndFriendCd(userId, FriendCode.FRIEND_ACCEPT.getCode(), userId, FriendCode.FRIEND_ACCEPT.getCode());
-
         UserDetailResponseDto responseDto = UserDetailResponseDto.fromEntity(user);
-        responseDto.setAttendTotal(attendanceTotal);
-        responseDto.setThumbTotal(thumbTotal);
-        responseDto.setFriendTotal(friendTotal);
 
         return responseDto;
     }
@@ -186,6 +174,7 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
         return true;
     }
+
     @Override
     @Transactional
     public void updateUserInfo(UserModifyRequestDto requestUser) throws Exception{

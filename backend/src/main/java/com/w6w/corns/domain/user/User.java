@@ -22,49 +22,47 @@ public class User extends BaseTime {
     @Id
     private int userId;
 
-    @Column(name="nickname", length = 20)
     private String nickname;
 
-    @Column(length = 100)
     private String email;
 
-    @Column(length = 1000)
     private String password;
 
-    @Column(length=500)
     private String salt;
 
-    @Column(length = 1000)
     private String imgUrl;
 
-    @Column(columnDefinition = "SMALLINT", insertable = false)
+//    @Column(columnDefinition = "SMALLINT", insertable = false)
     private int expTotal;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_no")
     private Level level;
 
-    @Column(columnDefinition = "SMALLINT", insertable = false)
+//    @Column(columnDefinition = "SMALLINT", insertable = false)
     private int friendTotal;
 
-    @Convert(converter = LocalDateTimeConverter.class)
+    private int attendTotal;
+
+    private int speakingTotal;
+
+    private int thumbTotal;
+
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime lastLoginTm;
 
-    @Column(columnDefinition = "TINYINT", nullable = false)
     private int social;
 
-    @Column(length = 1000)
     private String refreshToken;
 
     @Column(columnDefinition = "SMALLINT", insertable = false)
     private int userCd;
 
-    @Column(columnDefinition = "SMALLINT", insertable = false)
+//    @Column(columnDefinition = "SMALLINT", insertable = false)
     private int reportTotal;
 
-    @Convert(converter = LocalDateTimeConverter.class)
-    public void setLastLoginTm(){
-        lastLoginTm=LocalDateTime.now();
+    public void setLastLoginTm(LocalDateTime lastLoginTm){
+        this.lastLoginTm = lastLoginTm;
     }
 
     public void setPassword(String password){

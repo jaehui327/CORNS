@@ -98,7 +98,7 @@ public class UserController {
         UserDetailResponseDto loginUser = null;
         try {
             loginUser = userService.login(requestUser);
-
+            System.out.println("loginUser = " + loginUser);
             if(loginUser == null) status = HttpStatus.UNAUTHORIZED; //로그인 실패
             else{
                 //로그인 시간 확인 후 경험치 부여
@@ -119,10 +119,9 @@ public class UserController {
                 String refreshToken = jwtService.createRefreshToken("id", loginUser.getUserId());
 
                 userService.saveRefreshToken(loginUser.getUserId(), refreshToken);
-                loginUser.setRefreshToken(refreshToken);
 
                 //lastLoginTm 갱신
-//                userService.updateLastLoginTm(loginUser.getUserId());
+                userService.updateLastLoginTm(loginUser.getUserId());
                 loginUser.setLastLoginTm(LocalDateTime.now());
 
                 System.out.println("loginUser = " + loginUser);
@@ -184,14 +183,13 @@ public class UserController {
             String refreshToken = jwtService.createRefreshToken("id", responseDto.getUserId());
 
             userService.saveRefreshToken(responseDto.getUserId(), refreshToken);
-//            userService.updateLastLoginTm(responseDto.getUserId());
-            responseDto.setRefreshToken(refreshToken);
-            responseDto.setGoogle(true);
+
+            responseDto.setGoogle(true); //구글로 로그인한 사용자임을 알리기
 
             //경험치도 줘야함!, 리팩토링 필요 + 이메일 중복 통합 처리
 
             //lastLoginTm 갱신
-//            userService.updateLastLoginTm(responseDto.getUserId());
+            userService.updateLastLoginTm(responseDto.getUserId());
 
             // 로그인로그 insert
             userService.makeLoginLog(responseDto.getUserId());
