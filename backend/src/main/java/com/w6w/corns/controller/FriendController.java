@@ -137,7 +137,7 @@ public class FriendController {
         try {
             Slice<FriendListInterface> friendSliceList = friendService.getFriendList(userId, friendListRequestDto, pageable);
 
-            List<FriendListResponseDto> friendList = new ArrayList<>(friendSliceList.getSize());
+            List<FriendListResponseDto> friendList = new ArrayList<>(friendSliceList.getContent().size());
             for (FriendListInterface friend : friendSliceList.getContent()) {
                 friendList.add(FriendListResponseDto.builder()
                                 .userId(friend.getUserId())

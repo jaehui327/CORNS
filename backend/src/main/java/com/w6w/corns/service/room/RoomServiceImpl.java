@@ -4,6 +4,8 @@ import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.domain.room.RoomRepository;
 import com.w6w.corns.domain.roomuser.RoomUser;
 import com.w6w.corns.domain.roomuser.RoomUserRepository;
+import com.w6w.corns.domain.selfevaluation.SelfEvaluation;
+import com.w6w.corns.domain.selfevaluation.SelfEvaluationRepository;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.request.EnterRoomRequestDto;
@@ -34,6 +36,8 @@ public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
 
     private final RoomUserRepository roomUserRepository;
+
+    private final SelfEvaluationRepository selfEvaluationRepository;
 
     private final SubjectService subjectService;
 
@@ -202,10 +206,10 @@ public class RoomServiceImpl implements RoomService {
             return null;
         } else {
             room.setRoomCd(RoomCode.ROOM_START.getCode());
-            roomUsers.stream().forEach(user -> {
-                user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode());
-                user.setStartTmNow();
-            });
+            room.setStartTmNow();
+            roomRepository.save(room);
+
+            roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode()));
             roomUserRepository.saveAll(roomUsers);
             return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
         }
@@ -241,10 +245,8 @@ public class RoomServiceImpl implements RoomService {
             roomUser.setUserCd(RoomUserCode.ROOM_USER_EXIT.getCode());
             roomUserRepository.save(roomUser);
 
-            room.setCurrentMember(room.getCurrentMember() - 1);
-
             // 대화방에 혼자 있을 때 대화 종료
-            if (room.getCurrentMember() == 1) {
+            if (room.getCurrentMember() == 2) {
                 room.setRoomCd(RoomCode.ROOM_END.getCode());
 
                 RoomUser remainUser = roomUserRepository.findRoomUserInRoom(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode()).get(0);
@@ -274,8 +276,11 @@ public class RoomServiceImpl implements RoomService {
         room.setRoomCd(RoomCode.ROOM_END.getCode());
         roomRepository.save(room);
 
-        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());
-        roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_END.getCode()));
+        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+        roomUsers.stream().forEach(user -> {
+            user.setUserCd(RoomUserCode.ROOM_USER_END.getCode());
+            selfEvaluationRepository.save(SelfEvaluation.builder().roomNo(body.getRoomNo()).userId(user.getUserId()).build());
+        });
         roomUserRepository.saveAll(roomUsers);
 
         return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());

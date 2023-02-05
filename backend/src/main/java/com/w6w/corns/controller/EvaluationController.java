@@ -1,9 +1,9 @@
 package com.w6w.corns.controller;
 
-import com.w6w.corns.domain.user.User;
+import com.w6w.corns.dto.conversationlog.RoomMemberDto;
 import com.w6w.corns.dto.evaluation.SelfEvaluationDto;
-import com.w6w.corns.dto.evaluation.ThumbResultResponseDto;
 import com.w6w.corns.dto.evaluation.ThumbLogDto;
+import com.w6w.corns.service.conversationlog.ConversationLogService;
 import com.w6w.corns.service.evaluation.EvaluationService;
 import com.w6w.corns.service.room.RoomService;
 import com.w6w.corns.service.user.UserService;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,9 @@ public class EvaluationController {
 
     @Autowired
     EvaluationService evaluationService;
+
+    @Autowired
+    ConversationLogService conversationLogService;
 
     @Autowired
     RoomService roomService;
@@ -58,7 +60,7 @@ public class EvaluationController {
         HttpStatus status;
 
         try {
-            List<ThumbResultResponseDto> resultList = evaluationService.getThumbResultList(roomNo);
+            List<RoomMemberDto> resultList = conversationLogService.getMemberResultList(roomNo);
             resultmap.put("resultList", resultList);
             status = HttpStatus.OK;
 
@@ -70,8 +72,8 @@ public class EvaluationController {
         return new ResponseEntity<Map>(resultmap, status);
     }
 
-    @ApiOperation("자기평가 등록")
-    @PostMapping("/self")
+    @ApiOperation("자기평가 작성")
+    @PatchMapping("/self")
     public ResponseEntity<?> writeSelfEvaluation(@RequestBody SelfEvaluationDto selfEvalDto) {
         Map resultmap = new HashMap<>();
         HttpStatus status;

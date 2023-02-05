@@ -34,4 +34,9 @@ public class SelfEvaluation extends BaseTime {
         this.description = description;
     }
 
+    public void setScoreAndDesc(int score, String description) {
+        this.score = score;
+        this.description = description;
+    }
+
 }
