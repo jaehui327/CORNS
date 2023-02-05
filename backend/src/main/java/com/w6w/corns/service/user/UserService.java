@@ -11,7 +11,6 @@ public interface UserService {
     int validateDuplicateUser(String emails) throws Exception;
     UserDetailResponseDto login(UserLoginRequestDto requestUser) throws Exception;
     void makeLoginLog(int userId) throws Exception;
-    void updateLastLoginTm(int userId) throws Exception;
     void saveRefreshToken(int userId, String refreshToken) throws Exception;
     String getRefreshToken(int userId) throws Exception;
     void deleteRefreshToken(int userId) throws Exception;
@@ -23,4 +22,5 @@ public interface UserService {
     void updateUserCd(int userId, int userCd) throws Exception;
     PageableResponseDto findAllUserByCondition(Pageable pageable, String baseTime, String filter, String keyword) throws Exception;
     void withdrawUser(WithdrawRequestDto requestDto) throws Exception;
+    void checkAttendance(UserDetailResponseDto responseDto) throws Exception;
 }

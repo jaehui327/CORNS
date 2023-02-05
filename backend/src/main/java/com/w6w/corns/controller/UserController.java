@@ -1,16 +1,13 @@
 package com.w6w.corns.controller;
 
-import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.user.*;
 import com.w6w.corns.dto.withdraw.WithdrawRequestDto;
 import com.w6w.corns.util.PageableResponseDto;
-import com.w6w.corns.util.code.ExpCode;
 import com.w6w.corns.service.growth.GrowthService;
 import com.w6w.corns.service.jwt.JwtService;
 import com.w6w.corns.service.oauth.OAuthService;
 import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.Constant.SocialType;
-import com.w6w.corns.util.code.UserCode;
 import io.swagger.annotations.Api;
 import java.io.IOException;
 
@@ -102,19 +99,6 @@ public class UserController {
             System.out.println("loginUser = " + loginUser);
             if(loginUser == null) status = HttpStatus.UNAUTHORIZED; //로그인 실패
             else{
-                //로그인 시간 확인 후 경험치 부여
-                if(loginUser.getLastLoginTm() == null
-                        || loginUser.getLastLoginTm().toLocalDate().equals(LocalDate.now())
-                     ) {
-
-                    ExpLogRequestDto expLogRequestDto = ExpLogRequestDto.builder()
-                            .userId(loginUser.getUserId())
-                            .gainExp(3)
-                            .expCd(ExpCode.EXP_ATTEND.getCode())
-                            .build();
-                    growthService.giveExp(expLogRequestDto);
-                }
-
                 //토큰 부여
                 String accessToken = jwtService.createAccessToken("id", loginUser.getUserId());
                 String refreshToken = jwtService.createRefreshToken("id", loginUser.getUserId());
@@ -122,9 +106,9 @@ public class UserController {
                 userService.saveRefreshToken(loginUser.getUserId(), refreshToken);
 
                 //lastLoginTm 갱신
-                userService.updateLastLoginTm(loginUser.getUserId());
-                loginUser.setLastLoginTm(LocalDateTime.now());
+                userService.checkAttendance(loginUser);
 
+                loginUser = userService.findByEmail(loginUser.getEmail()); //제일 마지막으로 업데이트된 유저 정보
                 System.out.println("loginUser = " + loginUser);
 
                 resultMap.put("accessToken", accessToken);
@@ -139,7 +123,6 @@ public class UserController {
         }
         return new ResponseEntity<>(resultMap, status);
     }
-
 
     /**
      * 소셜 로그인으로 리다이렉트
@@ -174,10 +157,10 @@ public class UserController {
         SocialType socialType = SocialType.valueOf(socialPath.toUpperCase()); //GOOGLE
 
         try {
-            Map<String, Object> resultMap = new HashMap<>();
+            Map<String, Object> result = new HashMap<>();
 
-            UserDetailResponseDto responseDto = oAuthService.oAuthLogin(socialType, code);
-
+            Map<String, Object> map = oAuthService.oAuthLogin(socialType, code);
+            UserDetailResponseDto responseDto = (UserDetailResponseDto) map.get("responseDto");
 
             //토큰 부여
             String accessToken = jwtService.createAccessToken("id", responseDto.getUserId());
@@ -187,19 +170,19 @@ public class UserController {
 
             responseDto.setGoogle(true); //구글로 로그인한 사용자임을 알리기
 
-            //경험치도 줘야함!, 리팩토링 필요 + 이메일 중복 통합 처리
-
-            //lastLoginTm 갱신
-            userService.updateLastLoginTm(responseDto.getUserId());
+            //출석 경험치 확인 및 lastLoginTm 갱신
+            userService.checkAttendance(responseDto);
+            responseDto.setLastLoginTm(LocalDateTime.now());
 
             // 로그인로그 insert
             userService.makeLoginLog(responseDto.getUserId());
 
-            resultMap.put("accessToken", accessToken);
-            resultMap.put("refreshToken", refreshToken);
-            resultMap.put("loginUser", responseDto);
+            result.put("accessToken", accessToken);
+            result.put("refreshToken", refreshToken);
+            result.put("loginUser", responseDto);
+            if(map.get("message") != null) result.put("isCombine", true);
 
-            return new ResponseEntity<>(resultMap, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
             return exceptionHandling(e);
         }

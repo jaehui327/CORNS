@@ -9,7 +9,9 @@ import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 
+import com.w6w.corns.util.code.ExpCode;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,10 @@ public class GrowthServiceImpl implements GrowthService {
         expLogRepository.save(expLogRequestDto.toEntity());
 
         //expTotal 증가
+        User user = userRepository.findByUserId(expLogRequestDto.getUserId());
+        user.setExpTotal(user.getExpTotal()+expLogRequestDto.getGainExp());
+        System.out.println("exp 증가 후 user = " + user);
+        userRepository.save(user);
     }
 
     //출석률 반환

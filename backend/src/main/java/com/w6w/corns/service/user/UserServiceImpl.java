@@ -7,12 +7,16 @@ import com.w6w.corns.domain.withdraw.Withdraw;
 import com.w6w.corns.domain.withdraw.WithdrawLog;
 import com.w6w.corns.domain.withdraw.WithdrawLogRepository;
 import com.w6w.corns.domain.withdraw.WithdrawRepository;
+import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
 import com.w6w.corns.dto.user.*;
 import com.w6w.corns.dto.withdraw.WithdrawRequestDto;
+import com.w6w.corns.service.growth.GrowthService;
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.SHA256Util;
+import com.w6w.corns.util.code.ExpCode;
 import com.w6w.corns.util.code.UserCode;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -32,6 +36,7 @@ public class UserServiceImpl implements UserService{
     private final LoginLogRepository loginLogRepository;
     private final WithdrawRepository withdrawRepository;
     private final WithdrawLogRepository withdrawLogRepository;
+    private final GrowthService growthService;
     @Override
     @Transactional
     public int signUp(UserJoinRequestDto requestUser) throws Exception {
@@ -76,7 +81,6 @@ public class UserServiceImpl implements UserService{
         //이메일, 비밀번호 일치 확인 && 회원코드 확인
         if(isSamePassword(requestUser) && user.getUserCd() == UserCode.USER_DEFAULT.getCode()){
 
-            System.out.println(" here! ");
             //로그인로그 insert
             makeLoginLog(user.getUserId());
 
@@ -93,21 +97,12 @@ public class UserServiceImpl implements UserService{
         LoginLogSaveDto loginLogSaveDto = LoginLogSaveDto.builder().userId(userId).build();
         loginLogRepository.save(loginLogSaveDto.toEntity());
     }
-    @Override
-    @Transactional(readOnly = true)
-    public void updateLastLoginTm(int userId) throws Exception{
-
-        User user = userRepository.findByUserId(userId);
-        user.setLastLoginTm(LocalDateTime.now());
-        userRepository.save(user);
-        System.out.println("user = " + user);
-    }
 
     @Override
     @Transactional
     public void saveRefreshToken(int userId, String refreshToken) throws Exception {
         User user = userRepository.findByUserId(userId);
-        user.setRefreshToken(null);
+        user.setRefreshToken(refreshToken);
         userRepository.save(user);
     }
 
@@ -203,6 +198,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageableResponseDto findAllUserByCondition(Pageable pageable, String baseTime, String filter, String keyword) throws Exception {
 
         //baseTime -> LocalDate 타입으로
@@ -226,6 +222,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void withdrawUser(WithdrawRequestDto requestDto) throws Exception {
 
         //user code 변경
@@ -246,5 +243,30 @@ public class UserServiceImpl implements UserService{
                         .build();
 
         withdrawLogRepository.save(withdrawLog);
+    }
+
+    @Override
+    @Transactional
+    public void checkAttendance(UserDetailResponseDto responseDto) throws Exception {
+
+        User user = userRepository.findByUserId(responseDto.getUserId());
+
+        //해당 날짜에 처음 출석했다면 경험치
+        if (responseDto.getLastLoginTm() == null ||
+                !responseDto.getLastLoginTm().toLocalDate().equals(LocalDate.now())) {
+
+            ExpLogRequestDto expLogRequestDto = ExpLogRequestDto.builder()
+                    .userId(responseDto.getUserId())
+                    .gainExp(3)
+                    .expCd(ExpCode.EXP_ATTEND.getCode())
+                    .build();
+            growthService.giveExp(expLogRequestDto);
+
+            //attendTotal 1증가
+            user.setAttendTotal(user.getAttendTotal() + 1);
+            System.out.println("attend 증가 후 user = " + user);
+        }
+        user.setLastLoginTm(LocalDateTime.now());
+        userRepository.save(user);
     }
 }
