@@ -1,8 +1,8 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { Button, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
-import { addSubject } from "store/reducers/roomFilterReducer";
+import { add, remove } from "store/reducers/roomFilterReducer";
 
 function SubjectBtn({ subject }) {
   const dispatch = useDispatch();
@@ -17,7 +17,13 @@ function SubjectBtn({ subject }) {
   };
 
   const checkFilter = () => {
-    dispatch(addSubject(subjectNo, "ADD"));
+    if (toggle === false) {
+      dispatch(add({ id: subjectNo, value: value }, "ADD"));
+      console.log(`add:`, filter);
+    } else {
+      dispatch(remove({ id: subjectNo, value: value }, "REMOVE"));
+      console.log(`remove:`, filter);
+    }
   };
 
   return (
@@ -36,7 +42,11 @@ function SubjectBtn({ subject }) {
             backgroundColor: "#BAE8A4",
           },
         }}
-        onClick={(btnColorToggle, checkFilter)}
+        id={subjectNo}
+        onClick={() => {
+          btnColorToggle();
+          checkFilter();
+        }}
       >
         {value}
       </Button>

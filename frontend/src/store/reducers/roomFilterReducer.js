@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const addSubject = (state, action) => {};
-export const removeSubject = (state, action) => {
-  state.subject.filter((sub) => sub.subjectNo !== action.payload);
-};
+// export const addSubject = (state, action) => {};
+// export const removeSubject = (state, action) => {
+//   state.subject.filter((sub) => sub.subjectNo !== action.payload);
+// };
 
 export const roomFilterReducer = createSlice({
   name: "roomFilter",
@@ -18,9 +18,17 @@ export const roomFilterReducer = createSlice({
     isAvail: false,
   },
   reducers: {
-    addSubject,
-    removeSubject,
+    add: (state, action) => {
+      state.subject.push(action.payload);
+    },
+    remove: (state, action) => {
+      const cleaned = state.subject.filter(
+        (sub) => sub.id !== action.payload.id
+      );
+      return { ...state, subject: cleaned };
+    },
   },
 });
 
 export default roomFilterReducer.reducer;
+export const { add, remove } = roomFilterReducer.actions;
