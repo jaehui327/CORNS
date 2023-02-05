@@ -1,9 +1,78 @@
 package com.w6w.corns.service.word;
 
+import com.w6w.corns.domain.room.Room;
+import com.w6w.corns.domain.word.Word;
+import com.w6w.corns.domain.word.WordRepository;
+import com.w6w.corns.dto.word.request.CreateWordRequestDto;
+import com.w6w.corns.dto.word.request.ModifyWordRequestDto;
+import com.w6w.corns.dto.word.request.UpdateStatusWordRequestDto;
+import com.w6w.corns.dto.word.response.WordReponseDto;
+import com.w6w.corns.util.PageableResponseDto;
+import com.w6w.corns.util.code.WordCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class WordServiceImpl implements WordService {
+
+    private final WordRepository wordRepository;
+
+    // 쫑알단어 리스트 (페이징)
+    @Override
+    public PageableResponseDto searchBySlice(String baseTime, int wordStatus, Pageable pageable) {
+        Slice<Word> slice = wordRepository.searchBySlice(baseTime, wordStatus, pageable);
+        return new PageableResponseDto(slice.hasNext(), slice.getContent());
+    }
+
+    // 쫑알단어 추가
+    @Override
+    @Transactional
+    public WordReponseDto saveWord(CreateWordRequestDto request) {
+        Word word = wordRepository.save(request.toEntity());
+        return WordReponseDto.builder()
+                .wordSq(word.getWordSq())
+                .wordEng(word.getWordEng())
+                .wordKor(word.getWordKor())
+                .build();
+    }
+
+    // 쫑알단어 수정
+    @Override
+    @Transactional
+    public WordReponseDto modifyWord(ModifyWordRequestDto request) {
+        Word word = wordRepository.findById(request.getWordSq()).get();
+        word.setWordKor(request.getWordEng());
+        word.setWordKor(request.getWordKor());
+        wordRepository.save(word);
+
+        return WordReponseDto.builder()
+                .wordSq(word.getWordSq())
+                .wordEng(word.getWordEng())
+                .wordKor(word.getWordKor())
+                .build();
+    }
+
+    // 쫑알단어 상태 변경
+    @Override
+    @Transactional
+    public void updateStatusWord(UpdateStatusWordRequestDto request) {
+        Word word = wordRepository.findById(request.getWordSq()).get();
+        if (request.getStatus() == 1) {
+            word.setWordCd(WordCode.WORD_TODO.getCode());
+        } else if (request.getStatus() == 2) {
+            word.setWordCd(WordCode.WORD_DONE.getCode());
+        }
+        wordRepository.save(word);
+    }
+
+    // 쫑알단어 삭제
+    @Override
+    @Transactional
+    public void deleteWord(int wordSq) {
+        wordRepository.deleteById(wordSq);
+    }
 }
