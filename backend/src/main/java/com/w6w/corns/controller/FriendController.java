@@ -8,6 +8,7 @@ import com.w6w.corns.service.friend.FriendService;
 import com.w6w.corns.util.code.FriendLogCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/friend")
 @Api("친구 컨트롤러")
 public class FriendController {
 
-    @Autowired
-    FriendService friendService;
+    private final FriendService friendService;
 
     @ApiOperation("친구 신청")
     @PostMapping("/send")

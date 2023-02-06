@@ -9,6 +9,7 @@ import com.w6w.corns.service.room.RoomService;
 import com.w6w.corns.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,21 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/evaluation")
 @Api("평가 컨트롤러")
 public class EvaluationController {
 
-    @Autowired
-    EvaluationService evaluationService;
+    private final EvaluationService evaluationService;
 
-    @Autowired
-    ConversationLogService conversationLogService;
-
-    @Autowired
-    RoomService roomService;
-
-    @Autowired
-    UserService userService;
+    private final ConversationLogService conversationLogService;
 
 
     @ApiOperation("따봉멤버 투표")

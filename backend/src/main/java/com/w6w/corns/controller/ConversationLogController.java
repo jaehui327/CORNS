@@ -8,6 +8,7 @@ import com.w6w.corns.service.conversationlog.ConversationLogService;
 import com.w6w.corns.util.PageableResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,11 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/corns-log")
 @Api("쫑알로그 컨트롤러")
 public class ConversationLogController {
-    @Autowired
-    ConversationLogService conversationLogService;
+
+    private final ConversationLogService conversationLogService;
 
     @ApiOperation("쫑알로그 목록")
     @GetMapping("/{userId}")
