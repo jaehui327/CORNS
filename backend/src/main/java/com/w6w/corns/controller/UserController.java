@@ -272,7 +272,7 @@ public class UserController {
     public ResponseEntity<?> modifyPassword(@RequestBody UserPassModifyRequestDto requestDto){
 
         try{
-            if(!userService.updateUserPassword(requestDto)) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            if(!userService.updateUserPassword(requestDto)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             else return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
