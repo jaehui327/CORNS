@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-public class AmountResponseDto {
+public class IndicatorResponseDto {
 
     private String x;
     private String y;

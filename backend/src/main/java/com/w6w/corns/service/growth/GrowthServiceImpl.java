@@ -10,17 +10,14 @@ import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
-import com.w6w.corns.dto.indicator.AmountResponseDto;
+import com.w6w.corns.dto.indicator.IndicatorResponseDto;
 import com.w6w.corns.dto.indicator.SubjectRatioResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 
-import com.w6w.corns.dto.subject.SubjectResponseDto;
 import com.w6w.corns.service.subject.SubjectService;
-import com.w6w.corns.util.code.ExpCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,12 +100,29 @@ public class GrowthServiceImpl implements GrowthService {
         return (int)(rate * 100);
     }
 
+    @Override
+    public List<IndicatorResponseDto> calDailySpeakingTotalByWeek(int userId) throws Exception {
+
+        List<IndicatorResponseDto> responseDtos = new ArrayList<>();
+
+        //roomuser에 있는 speaking_sec를 일별로 받아오기 -> 나중에 계산테이블 이용
+        for(int i=0; i<7; i++){
+            LocalDate date = LocalDate.now().minusDays(i);
+            Long sum = roomUserRepository.sumByUserIdAndRegTm(userId, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+            responseDtos.add(IndicatorResponseDto.builder()
+                    .x(date.toString())
+                    .y(sum==null?"0":sum.toString())
+                    .build());
+        }
+
+        return responseDtos;
+    }
+
     //주제별 비율 계산
     @Override
     public List<SubjectRatioResponseDto> calSubjectRatio(int userId) throws Exception {
 
-        //이것도 컬럼으로 갖고있는건..??
-        //주제별로 매번 가져오면 select 너무 많이 함 ㅠㅠ
+        //이것도 컬럼으로 갖고있는건..??(아니면 페이지 들어갈때마다 select해옴) -> 하지만 굳이긴하지..
         List<SubjectRatioResponseDto> subjectRatio = new ArrayList<>();
         System.out.println("here");
         //roomuser에서 userid로 모든 대화 기록 가져오기
@@ -147,14 +161,14 @@ public class GrowthServiceImpl implements GrowthService {
     public Map<String, Object> calDailyGainedExp(int userId) throws Exception {
         //만약 사용자가 가입한지 얼마 안됐다면 날짜를 자를건지, 아니면 0으로 보여줄건지
 
-        List<AmountResponseDto> lastWeek = new ArrayList<>();
-        List<AmountResponseDto> thisWeek = new ArrayList<>();
+        List<IndicatorResponseDto> lastWeek = new ArrayList<>();
+        List<IndicatorResponseDto> thisWeek = new ArrayList<>();
         for(int i=0; i<14; i++){
             LocalDate date = LocalDate.now().minusDays(i);
             System.out.println(date.getYear()+ " "+date.getMonthValue()+" "+date.getDayOfMonth());
             Long sum = expLogRepository.sumByUserIdAndRegTm(userId, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
             System.out.println("sum = " + sum);
-            AmountResponseDto temp = AmountResponseDto.builder()
+            IndicatorResponseDto temp = IndicatorResponseDto.builder()
                     .x(date.toString())
                     .y(sum==null?"0":String.valueOf(sum)).build();
             if(i / 7 > 0) lastWeek.add(temp);

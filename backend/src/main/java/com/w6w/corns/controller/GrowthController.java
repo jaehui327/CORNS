@@ -121,19 +121,21 @@ public class GrowthController {
         }
     }
 
+    @ApiOperation(value = "회원 지표 보기", notes = "type : 1 - 최근 일주일의 일별 대화량, 2 - 주제 비율, 3 - 일일 경험치 획득량")
     @GetMapping("/indicator/{userId}/{type}")
     public ResponseEntity<?> showGraph(@PathVariable int userId, @PathVariable int type) {
 
-        System.out.println("userId = " + userId);
-        System.out.println("type = " + type);
+        log.debug("userId : {}, type : {}", userId, type);
+
         Map<String, Object> result = new HashMap<>();
         try {
             //type 1 최근 일주일 일별 대화량
-            if (type == 1)
-                System.out.println("11");
+            if (type == 1){
+                result.put("dailySpeakingByWeek", growthService.calDailySpeakingTotalByWeek(userId));
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
             //type 2 대화 주제 비율
             if (type == 2) {
-                System.out.println("22");
                 result.put("subjectRatio", growthService.calSubjectRatio(userId));
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
@@ -143,7 +145,6 @@ public class GrowthController {
 
         } catch (Exception e) {
             return exceptionHandling(e);
-
         }
         return null;
     }
