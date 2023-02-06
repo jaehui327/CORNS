@@ -4,14 +4,19 @@ import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.domain.room.RoomRepository;
 import com.w6w.corns.domain.roomuser.RoomUser;
 import com.w6w.corns.domain.roomuser.RoomUserRepository;
+import com.w6w.corns.domain.selfevaluation.SelfEvaluation;
+import com.w6w.corns.domain.selfevaluation.SelfEvaluationRepository;
 import com.w6w.corns.domain.user.UserRepository;
+import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.room.request.CreateRoomRequestDto;
 import com.w6w.corns.dto.room.request.EnterRoomRequestDto;
 import com.w6w.corns.dto.room.request.StartEndRoomRequestDto;
 import com.w6w.corns.dto.room.request.UpdateRoomRequestDto;
 import com.w6w.corns.dto.room.response.*;
+import com.w6w.corns.service.growth.GrowthService;
 import com.w6w.corns.service.subject.SubjectService;
 import com.w6w.corns.util.PageableResponseDto;
+import com.w6w.corns.util.code.ExpCode;
 import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +40,13 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomUserRepository roomUserRepository;
 
-    private final SubjectService subjectService;
+    private final SelfEvaluationRepository selfEvaluationRepository;
 
     private final UserRepository userRepository;
+
+    private final SubjectService subjectService;
+
+    private final GrowthService growthService;
 
     //대화 참여자 리스트
     @Override
@@ -74,20 +83,25 @@ public class RoomServiceImpl implements RoomService {
     public PageableResponseDto searchBySlice(String baseTime, ArrayList<Integer> subjects, int minTime, int maxTime, boolean isAvail, Pageable pageable) {
         Slice<Room> slice = roomRepository.searchBySlice(baseTime, subjects, minTime, maxTime, isAvail, pageable);
         List<RoomListResponseDto> roomList = slice.stream()
-                .map(m -> RoomListResponseDto.builder()
-                        // room
-                        .room(RoomResponseDto.builder()
-                                .roomNo(m.getRoomNo())
-                                .title(m.getTitle())
-                                .time(m.getTime())
-                                .currentMember(m.getCurrentMember())
-                                .maxMember(m.getMaxMember())
-                                .roomCd(m.getRoomCd())
-                                .sessionId(m.getSessionId())
-                                .build())
-                        // subject - select by subject no
-                        .subject(subjectService.findById(m.getSubjectNo()))
-                        .build())
+                .map(m -> {
+                    boolean isAvailable = true;
+                    if (m.getCurrentMember() == m.getMaxMember()) isAvailable = false;
+                    if (m.getRoomCd() != RoomCode.ROOM_WAITING.getCode()) isAvailable = false;
+                    return RoomListResponseDto.builder()
+                            // room
+                            .room(RoomResponseDto.builder()
+                                    .roomNo(m.getRoomNo())
+                                    .title(m.getTitle())
+                                    .time(m.getTime())
+                                    .currentMember(m.getCurrentMember())
+                                    .maxMember(m.getMaxMember())
+                                    .isAvail(isAvailable)
+                                    .sessionId(m.getSessionId())
+                                    .build())
+                            // subject - select by subject no
+                            .subject(subjectService.findById(m.getSubjectNo()))
+                            .build();
+                })
                 .collect(Collectors.toList());
         return new PageableResponseDto(slice.hasNext(), roomList);
     }
@@ -100,6 +114,9 @@ public class RoomServiceImpl implements RoomService {
         if (result.isEmpty()) return null;
 
         Room room = result.get();
+        boolean isAvailable = true;
+        if (room.getCurrentMember() == room.getMaxMember()) isAvailable = false;
+        if (room.getRoomCd() != RoomCode.ROOM_WAITING.getCode()) isAvailable = false;
         return RoomListResponseDto.builder()
                 .room(RoomResponseDto.builder()
                         .roomNo(room.getRoomNo())
@@ -107,6 +124,7 @@ public class RoomServiceImpl implements RoomService {
                         .time(room.getTime())
                         .currentMember(room.getCurrentMember())
                         .maxMember(room.getMaxMember())
+                        .isAvail(isAvailable)
                         .hostUserId(room.getHostUserId())
                         .sessionId(room.getSessionId())
                         .build())
@@ -202,10 +220,10 @@ public class RoomServiceImpl implements RoomService {
             return null;
         } else {
             room.setRoomCd(RoomCode.ROOM_START.getCode());
-            roomUsers.stream().forEach(user -> {
-                user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode());
-                user.setStartTmNow();
-            });
+            room.setStartTmNow();
+            roomRepository.save(room);
+
+            roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode()));
             roomUserRepository.saveAll(roomUsers);
             return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
         }
@@ -241,15 +259,18 @@ public class RoomServiceImpl implements RoomService {
             roomUser.setUserCd(RoomUserCode.ROOM_USER_EXIT.getCode());
             roomUserRepository.save(roomUser);
 
-            room.setCurrentMember(room.getCurrentMember() - 1);
-
             // 대화방에 혼자 있을 때 대화 종료
-            if (room.getCurrentMember() == 1) {
+            if (room.getCurrentMember() == 2) {
                 room.setRoomCd(RoomCode.ROOM_END.getCode());
 
                 RoomUser remainUser = roomUserRepository.findRoomUserInRoom(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode()).get(0);
                 remainUser.setUserCd(RoomUserCode.ROOM_USER_END.getCode());
                 roomUserRepository.save(remainUser);
+                growthService.giveExp(ExpLogRequestDto.builder()
+                                            .userId(remainUser.getUserId())
+                                            .gainExp(room.getTime())
+                                            .expCd(ExpCode.EXP_CONVERSATION.getCode())
+                                            .build());
             }
 
             roomRepository.save(room);
@@ -259,7 +280,7 @@ public class RoomServiceImpl implements RoomService {
             return RoomAndRoomUserListResponseDto.builder()
                     .room(RoomListResponseDto.builder()
                             .room(RoomResponseDto.builder()
-                                    .roomCd(RoomCode.ROOM_END.getCode())
+                                    .isAvail(false)
                                     .build())
                             .build())
                     .build();
@@ -274,8 +295,16 @@ public class RoomServiceImpl implements RoomService {
         room.setRoomCd(RoomCode.ROOM_END.getCode());
         roomRepository.save(room);
 
-        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());
-        roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_END.getCode()));
+        List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+        roomUsers.stream().forEach(user -> {
+            user.setUserCd(RoomUserCode.ROOM_USER_END.getCode());
+            selfEvaluationRepository.save(SelfEvaluation.builder().roomNo(body.getRoomNo()).userId(user.getUserId()).build());
+            growthService.giveExp(ExpLogRequestDto.builder()
+                                        .userId(user.getUserId())
+                                        .gainExp(room.getTime())
+                                        .expCd(ExpCode.EXP_CONVERSATION.getCode())
+                                        .build());
+        });
         roomUserRepository.saveAll(roomUsers);
 
         return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());

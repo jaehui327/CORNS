@@ -7,13 +7,12 @@ function SubjectsContainer() {
   const dispatch = useDispatch();
   const subjects = useSelector((state) => state.subjectsReducer);
 
-  // console.log(subjects);
   useEffect(() => {
     dispatch(getSubjects());
   }, [dispatch]);
 
   const subjectBtn = subjects.map((item) => (
-    <SubjectBtn subject={item.value} key={item.subjectNo} />
+    <SubjectBtn subject={item} key={item.subjectNo} />
   ));
   return <div>{subjects && subjectBtn}</div>;
 }
