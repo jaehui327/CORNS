@@ -7,14 +7,19 @@ import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
+import com.w6w.corns.dto.indicator.AmountResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 
 import com.w6w.corns.util.code.ExpCode;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.code.UserCode;
@@ -89,8 +94,33 @@ public class GrowthServiceImpl implements GrowthService {
 
     //주제별 비율 계산
     @Override
-    public void calSubjectRaio(int userId) throws Exception {
+    public void calSubjectRatio(int userId) throws Exception {
 
 
+    }
+
+    //일일 경험치 획득량 계산
+    @Override
+    public Map<String, Object> calDailyGainedExp(int userId) throws Exception {
+        //만약 사용자가 가입한지 얼마 안됐다면 날짜를 자를건지, 아니면 0으로 보여줄건지
+
+        List<AmountResponseDto> lastWeek = new ArrayList<>();
+        List<AmountResponseDto> thisWeek = new ArrayList<>();
+        for(int i=0; i<14; i++){
+            LocalDate date = LocalDate.now().minusDays(i);
+            System.out.println(date.getYear()+ " "+date.getMonthValue()+" "+date.getDayOfMonth());
+            Long sum = expLogRepository.sumByUserIdAndRegTm(userId, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+            System.out.println("sum = " + sum);
+            AmountResponseDto temp = AmountResponseDto.builder()
+                    .x(date.toString())
+                    .y(sum==null?"0":String.valueOf(sum)).build();
+            if(i / 7 > 0) lastWeek.add(temp);
+            else thisWeek.add(temp);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("lastWeek", lastWeek);
+        result.put("thisWeek", thisWeek);
+        return result;
     }
 }

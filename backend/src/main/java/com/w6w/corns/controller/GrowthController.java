@@ -122,15 +122,21 @@ public class GrowthController {
     @GetMapping("/indicator/{userId}/{type}")
     public ResponseEntity<?> showGraph(@PathVariable int userId, @PathVariable int type){
 
-        //type 1 최근 일주일 일별 대화량, 지난주와 비교
-
+        try {
+        //type 1 최근 일주일 일별 대화량
+        if(type == 1)
 
         //type 2 대화 주제 비율
+        if(type == 2)
 
+        //type 3 일일 경험치 획득량(지난주, 이번주 비교)
+        if(type == 3)
+            return new ResponseEntity<>(growthService.calDailyGainedExp(userId), HttpStatus.OK);
 
-        //type 3
-
-
+        } catch (Exception e) {
+            return exceptionHandling(e);
+        }
         return null;
+
     }
 }

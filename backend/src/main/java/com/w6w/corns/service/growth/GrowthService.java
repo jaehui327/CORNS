@@ -4,6 +4,7 @@ import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 import java.util.List;
+import java.util.Map;
 
 import com.w6w.corns.util.PageableResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -21,5 +22,7 @@ public interface GrowthService {
     //출석률 반환
     int calAttendanceRate(int userId) throws Exception;
     //주제별 비율 계산
-    void calSubjectRaio(int userId) throws Exception;
+    void calSubjectRatio(int userId) throws Exception;
+    //일일 경험치 획득량 계산
+    Map<String, Object> calDailyGainedExp(int userId) throws Exception;
 }
