@@ -5,9 +5,9 @@ import com.w6w.corns.service.subject.SubjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,13 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/subject")
 @Api("대화 주제 컨트롤러")
 public class SubjectController {
-
-    private final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
     private final SubjectService subjectService;
 
@@ -36,7 +35,7 @@ public class SubjectController {
 
         try {
             List<SubjectResponseDto> subjects = subjectService.findAll();
-            logger.debug("subjects: {}", subjects);
+            log.debug("subjects: {}", subjects);
 
             if (subjects.isEmpty()) {
                 status = HttpStatus.NO_CONTENT;
