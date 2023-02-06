@@ -12,9 +12,10 @@ import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.code.RoomCode;
 import com.w6w.corns.util.code.RoomUserCode;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -23,19 +24,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@RestController()
+@Slf4j
+@RequiredArgsConstructor
+@RestController
 @RequestMapping("room")
 public class RoomController {
 
-    private final Logger logger = LoggerFactory.getLogger(RoomController.class);
-
-    @Autowired
-    RoomService roomService;
+    private final RoomService roomService;
 
     @ApiOperation(value = "쫑알룸 생성하기", notes = "방 정보와 OpenVidu 관련 정보를 body에 담아서 요청")
     @PostMapping
     private ResponseEntity<?> save(@RequestBody CreateRoomRequestDto body) {
-        logger.debug("request body: {}", body);
+        log.debug("request body: {}", body);
         Map resultMap = new HashMap<>();
         HttpStatus status;
 
@@ -65,13 +65,13 @@ public class RoomController {
                                           @PageableDefault Pageable pageable) {
         Map resultMap = new HashMap<>();
         HttpStatus status;
-        logger.debug("baseTime: {}, subject: {}, minTime: {}, maxTime: {}, isAvail: {}, pageable: {}", baseTime, subject, minTime, maxTime, isAvail, pageable);
+        log.debug("baseTime: {}, subject: {}, minTime: {}, maxTime: {}, isAvail: {}, pageable: {}", baseTime, subject, minTime, maxTime, isAvail, pageable);
 
         try {
-            StringTokenizer st = new StringTokenizer(subject, "%");
+            StringTokenizer st = new StringTokenizer(subject, " ");
             ArrayList<Integer> subjects = new ArrayList<>();
             while (st.hasMoreTokens()) subjects.add(Integer.parseInt(st.nextToken()));
-            logger.debug("subjects: {}", subjects);
+            log.debug("subjects: {}", subjects);
 
             PageableResponseDto response = roomService.searchBySlice(baseTime, subjects, minTime, maxTime, isAvail, pageable);
             if (response.getList().isEmpty()) {
@@ -95,7 +95,7 @@ public class RoomController {
 
         try {
             RoomListResponseDto room = roomService.findRoomByRoomNo(roomNo);
-            logger.debug("room: {}", room);
+            log.debug("room: {}", room);
             if (room == null) {
                 status = HttpStatus.NO_CONTENT;
             } else {
@@ -118,7 +118,7 @@ public class RoomController {
 
         try {
             List<RoomUserListResponseDto> roomUsers = roomService.findRoomUserByRoomNoAndRoomUserCode(roomNo, RoomUserCode.ROOM_USER_END.getCode());
-            logger.debug("roomUsers: {}", roomUsers);
+            log.debug("roomUsers: {}", roomUsers);
             if (roomUsers == null) {
                 status = HttpStatus.NO_CONTENT;
             } else {
@@ -136,7 +136,7 @@ public class RoomController {
     @ApiOperation(value = "쫑알룸 입장", notes = "")
     @PostMapping(value = "/user")
     private ResponseEntity<?> enterRoom(@RequestBody EnterRoomRequestDto body) {
-        logger.debug("body: {}", body);
+        log.debug("body: {}", body);
         Map resultMap = new HashMap<>();
         HttpStatus status;
 
@@ -156,7 +156,7 @@ public class RoomController {
                     status = HttpStatus.ACCEPTED;
                 } else { // 입장 가능
                     RoomAndRoomUserListResponseDto response = roomService.enterRoom(body);
-                    logger.debug("roomUsers: {}", response);
+                    log.debug("roomUsers: {}", response);
                     status = HttpStatus.OK;
                     return new ResponseEntity<RoomAndRoomUserListResponseDto>(response, status);
                 }
@@ -179,7 +179,7 @@ public class RoomController {
             if (response == null) {
                 resultMap.put("message", "대기방 폭파");
                 status = HttpStatus.ACCEPTED;
-            } else if (response.getRoom().getRoom().getRoomCd() == RoomCode.ROOM_END.getCode()) {
+            } else if (response.getRoom().getRoom().isAvail() == false) {
                 resultMap.put("message", "종료된 방");
                 status = HttpStatus.ACCEPTED;
             } else {
