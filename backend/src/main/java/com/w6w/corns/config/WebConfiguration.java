@@ -3,9 +3,13 @@ package com.w6w.corns.config;
 import com.w6w.corns.jwt.JwtInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Configuration
@@ -26,7 +30,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 
         //메인페이지에서 api 호출도 풀기
         registry.addInterceptor(jwtInterceptor)
-                .excludePathPatterns("/**") //나중에 제대로 설정,,
+                .excludePathPatterns("/swagger/**")
+                .excludePathPatterns("/swagger-ui.html")
+                .excludePathPatterns("/swagger-resources/**")
+                .excludePathPatterns("/v2/api-docs")
+                .excludePathPatterns("/rank/hof")
                 .excludePathPatterns("/user/join")
                 .excludePathPatterns("/user/email-check/{email}")
                 .excludePathPatterns("/user/login/**")
