@@ -28,8 +28,6 @@ import java.util.Map;
 public class GrowthController {
 
     private final GrowthService growthService;
-    private final FriendService friendService;
-    private final UserService userService;
 
     private ResponseEntity<?> exceptionHandling(Exception e) {
         Map<String, String> map = new HashMap<>();
@@ -42,6 +40,7 @@ public class GrowthController {
     public ResponseEntity<?> showExpAndAttendBar(@PathVariable int userId) {
 
         try {
+            log.debug("userId : {}",userId);
             Map<String, Object> result = new HashMap<>();
 
             //레벨바 -> getUserLevel 재사용
@@ -101,26 +100,6 @@ public class GrowthController {
         }
     }
 
-    @ApiOperation(value = "알맹 상세 정보", notes = "from이 to의 상세정보를 봤을 때의 정보와 친구 관계를 반환")
-    @GetMapping("/{fromId}/{toId}")
-    public ResponseEntity<?> showDetail(@PathVariable int fromId, @PathVariable int toId) {
-
-        try {
-            //유저정보 불러오기
-            UserDetailResponseDto responseDto = userService.getUser(toId);
-
-            //관계 반환
-            int relation = friendService.getFriendRelation(fromId, toId);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("toUser", responseDto);
-            result.put("relation", relation);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Exception e) {
-            return exceptionHandling(e);
-        }
-    }
-
     @ApiOperation(value = "회원 지표 보기", notes = "type : 1 - 최근 일주일의 일별 대화량, 2 - 주제 비율, 3 - 일일 경험치 획득량")
     @GetMapping("/indicator/{userId}/{type}")
     public ResponseEntity<?> showGraph(@PathVariable int userId, @PathVariable int type) {
@@ -135,17 +114,19 @@ public class GrowthController {
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
             //type 2 대화 주제 비율
-            if (type == 2) {
+            else if (type == 2) {
                 result.put("subjectRatio", growthService.calSubjectRatio(userId));
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
             //type 3 일일 경험치 획득량(지난주, 이번주 비교)
-            if (type == 3)
+            else if (type == 3)
                 return new ResponseEntity<>(growthService.calDailyGainedExp(userId), HttpStatus.OK);
+
+            else
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } catch (Exception e) {
             return exceptionHandling(e);
         }
-        return null;
     }
 }

@@ -66,7 +66,6 @@ public class GrowthServiceImpl implements GrowthService {
         LocalDateTime localDateTime = LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThanEqual(userId, pageable, localDateTime);
-        System.out.println("slice = " + slice.getContent());
 
         List<ExpLogResponseDto> users = new ArrayList<>();
         for(ExpLog expLog : slice.getContent())
@@ -85,7 +84,6 @@ public class GrowthServiceImpl implements GrowthService {
         //expTotal 증가
         User user = userRepository.findByUserId(expLogRequestDto.getUserId());
         user.setExpTotal(user.getExpTotal()+expLogRequestDto.getGainExp());
-        System.out.println("exp 증가 후 user = " + user);
         userRepository.save(user);
     }
 
@@ -94,7 +92,6 @@ public class GrowthServiceImpl implements GrowthService {
     public int calAttendanceRate(int userId) throws Exception {
 
         long countPerMonth = loginLogRepository.findByRegTmAndUserIdPerMonth(userId);
-        System.out.println(countPerMonth);
 
         double rate = (double)countPerMonth / 30;
         return (int)(rate * 100);
@@ -124,14 +121,12 @@ public class GrowthServiceImpl implements GrowthService {
 
         //이것도 컬럼으로 갖고있는건..??(아니면 페이지 들어갈때마다 select해옴) -> 하지만 굳이긴하지..
         List<SubjectRatioResponseDto> subjectRatio = new ArrayList<>();
-        System.out.println("here");
+
         //roomuser에서 userid로 모든 대화 기록 가져오기
         List<RoomUser> roomUsers = roomUserRepository.findByUserIdAndRoomUserCd(userId, RoomUserCode.ROOM_USER_END.getCode());
-        System.out.println("roomUsers = " + roomUsers);
 
         int n = subjectService.findAll().size();
         int[] count = new int[n+1];
-        System.out.println("subjectService = " + subjectService.findAll());
 
         //각 roomuser의 room 번호로 room에서 대화 주제 가져오기
         for(RoomUser roomuser : roomUsers){
@@ -140,8 +135,7 @@ public class GrowthServiceImpl implements GrowthService {
 
         //총 대화 주제 수
         int sum = IntStream.of(count).sum();
-        System.out.println("sum = " + sum);
-        System.out.println("count.length = " + count.length);
+
         //주제별 비율 리스트
         for(int i=1; i<=n; i++){
             SubjectRatioResponseDto responseDto = SubjectRatioResponseDto.builder()
@@ -149,10 +143,8 @@ public class GrowthServiceImpl implements GrowthService {
                     .value(subjectService.findById(i).getValue())
                     .rate(count[i] / sum * 100)
                     .build();
-            System.out.println("responseDto = " + responseDto);
             subjectRatio.add(responseDto);
         }
-        System.out.println("subjectRatio = " + subjectRatio);
         return subjectRatio;
     }
 
@@ -163,11 +155,12 @@ public class GrowthServiceImpl implements GrowthService {
 
         List<IndicatorResponseDto> lastWeek = new ArrayList<>();
         List<IndicatorResponseDto> thisWeek = new ArrayList<>();
+
         for(int i=0; i<14; i++){
             LocalDate date = LocalDate.now().minusDays(i);
-            System.out.println(date.getYear()+ " "+date.getMonthValue()+" "+date.getDayOfMonth());
+
             Long sum = expLogRepository.sumByUserIdAndRegTm(userId, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
-            System.out.println("sum = " + sum);
+
             IndicatorResponseDto temp = IndicatorResponseDto.builder()
                     .x(date.toString())
                     .y(sum==null?"0":String.valueOf(sum)).build();

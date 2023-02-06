@@ -7,6 +7,6 @@ import java.util.Map;
 
 public interface OAuthService {
 
-    void request(Constant.SocialType socialType) throws IOException;
+    //소셜로그인
     Map<String, Object> oAuthLogin(Constant.SocialType socialType, String code) throws Exception;
 }

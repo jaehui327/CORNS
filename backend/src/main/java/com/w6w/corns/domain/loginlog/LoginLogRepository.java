@@ -13,8 +13,4 @@ public interface LoginLogRepository extends JpaRepository<LoginLog, Integer> {
             , nativeQuery = true)
     long findByRegTmAndUserIdPerMonth(int userId);
 
-    @Query(value="select count(distinct date(reg_tm)) from login_log"
-        + " where user_id = :userId", nativeQuery = true)
-    long findByRegTmAndUserId(int userId);
-
 }

@@ -12,6 +12,7 @@ import com.w6w.corns.dto.loginlog.LoginLogSaveDto;
 import com.w6w.corns.dto.user.*;
 import com.w6w.corns.dto.withdraw.WithdrawRequestDto;
 import com.w6w.corns.service.growth.GrowthService;
+import com.w6w.corns.service.jwt.JwtService;
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.SHA256Util;
 import com.w6w.corns.util.code.ExpCode;
@@ -37,6 +38,8 @@ public class UserServiceImpl implements UserService{
     private final WithdrawRepository withdrawRepository;
     private final WithdrawLogRepository withdrawLogRepository;
     private final GrowthService growthService;
+    private final JwtService jwtService;
+
     @Override
     @Transactional
     public int signUp(UserJoinRequestDto requestUser) throws Exception {
@@ -79,13 +82,10 @@ public class UserServiceImpl implements UserService{
 
         //탈퇴회원 및 이용정지회원은 나중에 처리하기
         //이메일, 비밀번호 일치 확인 && 회원코드 확인
-        if(isSamePassword(requestUser) && user.getUserCd() == UserCode.USER_DEFAULT.getCode()){
-
-            //로그인로그 insert
-            makeLoginLog(user.getUserId());
+        if(isSamePassword(requestUser) && user.getUserCd() == UserCode.USER_DEFAULT.getCode())
 
             return getUser(user.getUserId());
-        }
+
         return null;
     }
 
@@ -100,10 +100,18 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void saveRefreshToken(int userId, String refreshToken) throws Exception {
+    public String[] giveToken(int userId) throws Exception {
+
+        //토큰 발급
+        String accessToken = jwtService.createAccessToken("id", userId);
+        String refreshToken = jwtService.createRefreshToken("id", userId);
+
+        //refresh token 저장
         User user = userRepository.findByUserId(userId);
         user.setRefreshToken(refreshToken);
         userRepository.save(user);
+
+        return new String[]{accessToken, refreshToken};
     }
 
     @Override
