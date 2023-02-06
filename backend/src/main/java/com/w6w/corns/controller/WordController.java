@@ -7,6 +7,7 @@ import com.w6w.corns.dto.word.response.WordReponseDto;
 import com.w6w.corns.service.word.WordService;
 import com.w6w.corns.util.PageableResponseDto;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController()
+@RequiredArgsConstructor
+@RestController
 @RequestMapping("word")
 public class WordController {
 
     private final Logger logger = LoggerFactory.getLogger(WordController.class);
 
-    @Autowired
-    WordService wordService;
+    private final WordService wordService;
 
     @ApiOperation(value = "쫑알단어 목록", notes = "status, page, size를 parameter로 요청")
     @GetMapping(value = "/{userId}")
@@ -37,9 +38,12 @@ public class WordController {
 
         try {
             PageableResponseDto response = wordService.searchBySlice(baseTime, wordStatus, pageable);
-            status = HttpStatus.OK;
-            return new ResponseEntity<PageableResponseDto>(response, status);
-
+            if (response.getList().isEmpty()) {
+                status = HttpStatus.NO_CONTENT;
+            } else {
+                status = HttpStatus.OK;
+                return new ResponseEntity<PageableResponseDto>(response, status);
+            }
         } catch (Exception e) {
             resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -4,6 +4,7 @@ import com.w6w.corns.dto.subject.SubjectResponseDto;
 import com.w6w.corns.service.subject.SubjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/subject")
 @Api("대화 주제 컨트롤러")
@@ -24,8 +26,7 @@ public class SubjectController {
 
     private final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
-    @Autowired
-    SubjectService subjectService;
+    private final SubjectService subjectService;
 
     @ApiOperation(value = "대화 주제 리스트", notes = "대화 주제 번호, 이미지, 주제명을 반환")
     @GetMapping
