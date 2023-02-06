@@ -3,13 +3,19 @@ package com.w6w.corns.service.growth;
 import com.w6w.corns.domain.explog.ExpLog;
 import com.w6w.corns.domain.explog.ExpLogRepository;
 import com.w6w.corns.domain.loginlog.LoginLogRepository;
+import com.w6w.corns.domain.room.RoomRepository;
+import com.w6w.corns.domain.roomuser.RoomUser;
+import com.w6w.corns.domain.roomuser.RoomUserRepository;
 import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
 import com.w6w.corns.dto.indicator.AmountResponseDto;
+import com.w6w.corns.dto.indicator.SubjectRatioResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 
+import com.w6w.corns.dto.subject.SubjectResponseDto;
+import com.w6w.corns.service.subject.SubjectService;
 import com.w6w.corns.util.code.ExpCode;
 
 import java.time.LocalDate;
@@ -20,8 +26,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import com.w6w.corns.util.PageableResponseDto;
+import com.w6w.corns.util.code.RoomUserCode;
 import com.w6w.corns.util.code.UserCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +44,9 @@ public class GrowthServiceImpl implements GrowthService {
     private final UserRepository userRepository;
     private final ExpLogRepository expLogRepository;
     private final LoginLogRepository loginLogRepository;
+    private final RoomUserRepository roomUserRepository;
+    private final RoomRepository roomRepository;
+    private final SubjectService subjectService;
 
     public int calExpPercentile(int userId) throws Exception{
 
@@ -94,9 +105,41 @@ public class GrowthServiceImpl implements GrowthService {
 
     //주제별 비율 계산
     @Override
-    public void calSubjectRatio(int userId) throws Exception {
+    public List<SubjectRatioResponseDto> calSubjectRatio(int userId) throws Exception {
 
+        //이것도 컬럼으로 갖고있는건..??
+        //주제별로 매번 가져오면 select 너무 많이 함 ㅠㅠ
+        List<SubjectRatioResponseDto> subjectRatio = new ArrayList<>();
+        System.out.println("here");
+        //roomuser에서 userid로 모든 대화 기록 가져오기
+        List<RoomUser> roomUsers = roomUserRepository.findByUserIdAndRoomUserCd(userId, RoomUserCode.ROOM_USER_END.getCode());
+        System.out.println("roomUsers = " + roomUsers);
 
+        int n = subjectService.findAll().size();
+        int[] count = new int[n+1];
+        System.out.println("subjectService = " + subjectService.findAll());
+
+        //각 roomuser의 room 번호로 room에서 대화 주제 가져오기
+        for(RoomUser roomuser : roomUsers){
+            count[roomRepository.findByRoomNo(roomuser.getRoomNo()).getSubjectNo()]++;
+        }
+
+        //총 대화 주제 수
+        int sum = IntStream.of(count).sum();
+        System.out.println("sum = " + sum);
+        System.out.println("count.length = " + count.length);
+        //주제별 비율 리스트
+        for(int i=1; i<=n; i++){
+            SubjectRatioResponseDto responseDto = SubjectRatioResponseDto.builder()
+                    .subjectNo(i)
+                    .value(subjectService.findById(i).getValue())
+                    .rate(count[i] / sum * 100)
+                    .build();
+            System.out.println("responseDto = " + responseDto);
+            subjectRatio.add(responseDto);
+        }
+        System.out.println("subjectRatio = " + subjectRatio);
+        return subjectRatio;
     }
 
     //일일 경험치 획득량 계산

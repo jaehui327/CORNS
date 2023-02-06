@@ -54,13 +54,14 @@ public class GrowthController {
             result.put("attendanceRate", value);
             return new ResponseEntity<>(result, HttpStatus.OK);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             return exceptionHandling(e);
         }
     }
+
     @ApiOperation(value = "경험치 레벨바", notes = "경험치 페이지 내에서 회원의 경험치 백분위와 레벨바를 보여줌")
     @GetMapping("/exp/{userId}")
-    public ResponseEntity<?> showLevelBar(@PathVariable int userId){
+    public ResponseEntity<?> showLevelBar(@PathVariable int userId) {
 
         try {
             Map<String, Object> result = new HashMap<>();
@@ -84,13 +85,14 @@ public class GrowthController {
     @ApiOperation(value = "경험치 목록", notes = "회원의 경험치 전체 목록을 최신순으로 반환 + 페이지네이션")
     @GetMapping("/exp/list/{userId}")
     public ResponseEntity<?> listExp(@PathVariable int userId,
-                                     @PageableDefault(sort = "expLogSq", direction = Sort.Direction.DESC)  Pageable pageable,
-                                     @RequestParam String baseTime){
+                                     @PageableDefault(sort = "expLogSq", direction = Sort.Direction.DESC) Pageable pageable,
+                                     @RequestParam String baseTime) {
 
         try {
             PageableResponseDto responseDto = growthService.getExpLogList(userId, pageable, baseTime);
 
-            if(responseDto != null && responseDto.getList().size() > 0) return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            if (responseDto != null && responseDto.getList().size() > 0)
+                return new ResponseEntity<>(responseDto, HttpStatus.OK);
             else return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         } catch (Exception e) {
@@ -101,7 +103,7 @@ public class GrowthController {
 
     @ApiOperation(value = "알맹 상세 정보", notes = "from이 to의 상세정보를 봤을 때의 정보와 친구 관계를 반환")
     @GetMapping("/{fromId}/{toId}")
-    public ResponseEntity<?> showDetail(@PathVariable int fromId, @PathVariable int toId){
+    public ResponseEntity<?> showDetail(@PathVariable int fromId, @PathVariable int toId) {
 
         try {
             //유저정보 불러오기
@@ -120,23 +122,29 @@ public class GrowthController {
     }
 
     @GetMapping("/indicator/{userId}/{type}")
-    public ResponseEntity<?> showGraph(@PathVariable int userId, @PathVariable int type){
+    public ResponseEntity<?> showGraph(@PathVariable int userId, @PathVariable int type) {
 
+        System.out.println("userId = " + userId);
+        System.out.println("type = " + type);
+        Map<String, Object> result = new HashMap<>();
         try {
-        //type 1 최근 일주일 일별 대화량
-        if(type == 1)
-
-        //type 2 대화 주제 비율
-        if(type == 2)
-
-        //type 3 일일 경험치 획득량(지난주, 이번주 비교)
-        if(type == 3)
-            return new ResponseEntity<>(growthService.calDailyGainedExp(userId), HttpStatus.OK);
+            //type 1 최근 일주일 일별 대화량
+            if (type == 1)
+                System.out.println("11");
+            //type 2 대화 주제 비율
+            if (type == 2) {
+                System.out.println("22");
+                result.put("subjectRatio", growthService.calSubjectRatio(userId));
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+            //type 3 일일 경험치 획득량(지난주, 이번주 비교)
+            if (type == 3)
+                return new ResponseEntity<>(growthService.calDailyGainedExp(userId), HttpStatus.OK);
 
         } catch (Exception e) {
             return exceptionHandling(e);
+
         }
         return null;
-
     }
 }

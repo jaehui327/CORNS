@@ -2,6 +2,7 @@ package com.w6w.corns.service.growth;
 
 import com.w6w.corns.dto.explog.ExpLogRequestDto;
 import com.w6w.corns.dto.explog.ExpLogResponseDto;
+import com.w6w.corns.dto.indicator.SubjectRatioResponseDto;
 import com.w6w.corns.dto.level.LevelDto;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public interface GrowthService {
     //출석률 반환
     int calAttendanceRate(int userId) throws Exception;
     //주제별 비율 계산
-    void calSubjectRatio(int userId) throws Exception;
+    List<SubjectRatioResponseDto> calSubjectRatio(int userId) throws Exception;
     //일일 경험치 획득량 계산
     Map<String, Object> calDailyGainedExp(int userId) throws Exception;
 }
