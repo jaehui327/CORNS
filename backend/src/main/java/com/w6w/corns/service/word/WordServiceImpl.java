@@ -1,11 +1,10 @@
 package com.w6w.corns.service.word;
 
-import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.domain.word.Word;
 import com.w6w.corns.domain.word.WordRepository;
 import com.w6w.corns.dto.word.request.CreateWordRequestDto;
 import com.w6w.corns.dto.word.request.ModifyWordRequestDto;
-import com.w6w.corns.dto.word.request.UpdateStatusWordRequestDto;
+import com.w6w.corns.dto.word.request.UpdateWordStatusRequestDto;
 import com.w6w.corns.dto.word.response.WordReponseDto;
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.code.WordCode;
@@ -32,7 +31,9 @@ public class WordServiceImpl implements WordService {
     @Override
     @Transactional
     public WordReponseDto saveWord(CreateWordRequestDto request) {
-        Word word = wordRepository.save(request.toEntity());
+        Word word = request.toEntity();
+        word.setWordCd(WordCode.WORD_TODO.getCode());
+        wordRepository.save(word);
         return WordReponseDto.builder()
                 .wordSq(word.getWordSq())
                 .wordEng(word.getWordEng())
@@ -45,7 +46,7 @@ public class WordServiceImpl implements WordService {
     @Transactional
     public WordReponseDto modifyWord(ModifyWordRequestDto request) {
         Word word = wordRepository.findById(request.getWordSq()).get();
-        word.setWordKor(request.getWordEng());
+        word.setWordEng(request.getWordEng());
         word.setWordKor(request.getWordKor());
         wordRepository.save(word);
 
@@ -59,7 +60,7 @@ public class WordServiceImpl implements WordService {
     // 쫑알단어 상태 변경
     @Override
     @Transactional
-    public void updateStatusWord(UpdateStatusWordRequestDto request) {
+    public void updateWordStatus(UpdateWordStatusRequestDto request) {
         Word word = wordRepository.findById(request.getWordSq()).get();
         if (request.getStatus() == 1) {
             word.setWordCd(WordCode.WORD_TODO.getCode());

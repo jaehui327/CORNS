@@ -9,9 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @ApiModel(value="쫑알단어 상태 업데이트 요청 정보")
-public class UpdateStatusWordRequestDto {
-
-    private int UserId;
+public class UpdateWordStatusRequestDto {
 
     private int WordSq;
 
