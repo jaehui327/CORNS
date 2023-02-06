@@ -41,8 +41,7 @@ function joinSession() {
 		// Subscribe to the Stream to receive it. HTML video will be appended to element with roomListId id
 		// if(count < 5){
 			var roomno = roomListId + count;
-			console.log(event.stream)
-			var subscriber = session.subscribe(event.stream, "roomViewUserList");
+			var subscriber = session.subscribe(event.stream, "roomViewUser1");
 			count += 1;
 	
 			// When the HTML video has been appended to DOM...
@@ -93,7 +92,7 @@ function joinSession() {
 
 				// 내가 무조건 1번에 뜨게 한다.
 				// --- 6) Get your own camera stream with the desired properties ---
-				var publisher = OV.initPublisher("roomViewUser1", {
+				var publisher = OV.initPublisher("roomViewUser2", {
 					audioSource: undefined, // The source of audio. If undefined default microphone
 					videoSource: undefined, // The source of video. If undefined default webcam
 					publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
