@@ -14,6 +14,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class WordServiceImpl implements WordService {
@@ -24,7 +27,14 @@ public class WordServiceImpl implements WordService {
     @Override
     public PageableResponseDto searchBySlice(String baseTime, int wordStatus, Pageable pageable) {
         Slice<Word> slice = wordRepository.searchBySlice(baseTime, wordStatus, pageable);
-        return new PageableResponseDto(slice.hasNext(), slice.getContent());
+        List<WordReponseDto> words = slice.getContent().stream()
+                .map(m -> WordReponseDto.builder()
+                        .wordSq(m.getWordSq())
+                        .wordEng(m.getWordEng())
+                        .wordKor(m.getWordKor())
+                        .build())
+                .collect(Collectors.toList());
+        return new PageableResponseDto(slice.hasNext(), words);
     }
 
     // 쫑알단어 추가
