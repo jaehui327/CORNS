@@ -10,6 +10,8 @@ import lombok.*;
 public class SubjectRatioResponseDto {
 
     private int subjectNo;
+
     private String value;
+
     private int rate;
 }

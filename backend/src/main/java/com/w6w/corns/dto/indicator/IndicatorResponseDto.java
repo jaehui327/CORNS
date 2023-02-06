@@ -12,5 +12,6 @@ import lombok.Setter;
 public class IndicatorResponseDto {
 
     private String x;
+
     private String y;
 }

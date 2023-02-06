@@ -10,8 +10,8 @@ import javax.persistence.Id;
 @DynamicInsert
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString
 @Entity
 public class ExpLog extends BaseTime {

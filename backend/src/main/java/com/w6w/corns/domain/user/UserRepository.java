@@ -13,6 +13,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, CustomUser
 
     User findByUserId(int userId);
 
+    //해당 유저의 누적 exp 순위
     @Query(value = "select rank() over(order by exp_total desc) from user where user_cd = 8000 and user_id=:userId", nativeQuery = true)
     int rankByExp(int userId);
 

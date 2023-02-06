@@ -6,7 +6,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ApiModel(value="유저 목록 응답 정보")

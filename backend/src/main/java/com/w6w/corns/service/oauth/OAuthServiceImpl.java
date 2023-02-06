@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 public class OAuthServiceImpl implements OAuthService{
 
     private final GoogleOauth googleOauth;
-    private final HttpServletResponse response;
     private final UserRepository userRepository;
 
     @Override

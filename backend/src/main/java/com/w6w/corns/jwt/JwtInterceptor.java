@@ -17,6 +17,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     private final JwtService jwtService;
     private final AuthorizationExtractor authorizationExtractor;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -27,6 +28,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         // room 목록 반환하는 api만 허용
         if(request.getRequestURI().equals("/room") && request.getMethod().equals("GET")) return true;
         String token = authorizationExtractor.extract(request, "Bearer");
+        log.debug("token : {}"+token);
 
         if(token.isEmpty() || token == null || !jwtService.checkToken(token)) {
             response.setStatus(401);

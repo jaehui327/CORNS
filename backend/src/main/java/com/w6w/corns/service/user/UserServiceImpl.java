@@ -186,7 +186,6 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void updateUserInfo(UserModifyRequestDto requestUser) throws Exception{
 
-        System.out.println("requestUser = " + requestUser);
         User user = userRepository.findByUserId(requestUser.getUserId());
 
         //설정 안하면 null로 넘어오는지, 아니면 기존 내용이 넘어오는지 아마도 후자?!
@@ -270,7 +269,6 @@ public class UserServiceImpl implements UserService{
 
             //attendTotal 1증가
             user.setAttendTotal(user.getAttendTotal() + 1);
-            System.out.println("attend 증가 후 user = " + user);
         }
         user.setLastLoginTm(LocalDateTime.now());
         userRepository.save(user);
