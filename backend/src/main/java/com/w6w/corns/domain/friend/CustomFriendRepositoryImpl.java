@@ -48,7 +48,7 @@ public class CustomFriendRepositoryImpl implements CustomFriendRepository {
             builder.and(user.nickname.contains(friendListRequestDto.getKeyword()));
         } else {
             // 아이디 검색
-            builder.and(Expressions.stringPath(user.userId.castToNum(Integer.class).toString()).contains(friendListRequestDto.getKeyword()));
+            builder.and(user.userId.castToNum(Integer.class).stringValue().contains(friendListRequestDto.getKeyword()));
         }
 
         List<FriendListResponseDto> friendList = queryFactory
