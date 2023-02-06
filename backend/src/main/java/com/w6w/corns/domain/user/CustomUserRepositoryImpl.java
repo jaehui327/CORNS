@@ -1,49 +1,72 @@
 package com.w6w.corns.domain.user;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.w6w.corns.dto.friend.FriendListResponseDto;
+import com.w6w.corns.util.code.FriendCode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Transactional
 public class CustomUserRepositoryImpl implements CustomUserRepository{
 
+    private QUser user = QUser.user;
+
     private final JPAQueryFactory jpaQueryFactory;
+
     public CustomUserRepositoryImpl(EntityManager entityManager) {
         this.jpaQueryFactory = new JPAQueryFactory(entityManager);
     }
     @Override
-    public Slice<User> findByFilterRegTmLessThanEqual(Pageable pageable, LocalDateTime baseTime, String filter, String keyword) {
+    public Slice<User> findByFilterRegTmLessThanEqual(Pageable pageable, String baseTime, String filter, String keyword) {
 
-        JPAQuery<User> jpaQuery = jpaQueryFactory
-                .selectFrom(QUser.user)
-                .where(condition(filter, keyword))
-//                .where(regTm.lt(baseTime))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize()+1);
+        BooleanBuilder builder = new BooleanBuilder();
 
-        List<User> list = jpaQuery.fetch();
+        // baseTime
+        builder.and(user.regTm.lt(LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern(("yyyy-MM-dd HH:mm:ss")))));
 
-        boolean hasNext = false;
-        if(list.size() > pageable.getPageSize()){
-            list.remove(pageable.getPageSize());
-            hasNext = true;
+        // filter
+        if (keyword == null) keyword = "";
+        if (filter.equals("nickname")) {
+            // 닉네임 검색
+            builder.and(user.nickname.contains(keyword));
+        } else {
+            // 아이디 검색
+            builder.and(user.userId.castToNum(Integer.class).stringValue().contains(keyword));
         }
-        return new SliceImpl<>(list, pageable, hasNext);
+
+        List<User> userList = jpaQueryFactory
+                .select(user)
+                .from(user)
+                .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return checkLastPage(pageable, userList);
     }
 
-    private BooleanExpression condition(String filter, String keyword){
-        if(filter.equals("id")){
-            int userId = Integer.parseInt(keyword);
-             return QUser.user.userId.eq(userId);
+    // 무한 스크롤 방식 처리하는 메서드
+    private Slice<User> checkLastPage(Pageable pageable, List<User> userList) {
+        boolean hasNext = false;
+
+        // 조회한 결과 개수가 요청한 페이지 사이즈보다 크면 뒤에 더 있음, next = true
+        if (userList.size() > pageable.getPageSize()) {
+            hasNext = true;
+            userList.remove(pageable.getPageSize());
         }
-        return QUser.user.nickname.eq(keyword);
+
+        return new SliceImpl<>(userList, pageable, hasNext);
     }
 }

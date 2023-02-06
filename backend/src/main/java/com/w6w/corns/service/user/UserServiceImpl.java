@@ -201,10 +201,8 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public PageableResponseDto findAllUserByCondition(Pageable pageable, String baseTime, String filter, String keyword) throws Exception {
 
-        //baseTime -> LocalDate 타입으로
-        LocalDateTime localDateTime = LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        Slice<User> slice = userRepository.findByFilterRegTmLessThanEqual(pageable, localDateTime, filter, keyword);
+        Slice<User> slice = userRepository.findByFilterRegTmLessThanEqual(pageable, baseTime, filter, keyword);
 
         List<UserListResponseDto> exps = new ArrayList<>();
         for(User user : slice.getContent())

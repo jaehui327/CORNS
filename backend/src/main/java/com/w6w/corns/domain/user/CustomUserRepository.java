@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 
 
 public interface CustomUserRepository {
-    Slice<User> findByFilterRegTmLessThanEqual(Pageable pageable, LocalDateTime baseTime, String filter, String keyword);
+    Slice<User> findByFilterRegTmLessThanEqual(Pageable pageable, String baseTime, String filter, String keyword);
 }
