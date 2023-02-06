@@ -40,12 +40,12 @@ public class ConversationLogController {
 
         try {
             //주제 필터 파싱
-            StringTokenizer st = new StringTokenizer(subject, "%");
+            StringTokenizer st = new StringTokenizer(subject, " ");
             ArrayList<Integer> subjects = new ArrayList<>();
             while (st.hasMoreTokens()) subjects.add(Integer.parseInt(st.nextToken()));
 
             //자기평가 점수 필터 파싱
-            st = new StringTokenizer(selfScore, "%");
+            st = new StringTokenizer(selfScore, " ");
             ArrayList<Integer> selfScores = new ArrayList<>();
             while (st.hasMoreTokens()) selfScores.add(Integer.parseInt(st.nextToken()));
 

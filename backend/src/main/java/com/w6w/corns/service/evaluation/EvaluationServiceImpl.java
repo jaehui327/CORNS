@@ -28,26 +28,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EvaluationServiceImpl implements EvaluationService {
 
-    @Autowired
-    RoomService roomService;
+    private final GrowthService growthService;
 
-    @Autowired
-    GrowthService growthService;
+    private final UserRepository userRepo;
 
-    @Autowired
-    UserRepository userRepo;
+    private final RoomUserRepository roomUserRepo;
 
-    @Autowired
-    RoomRepository roomRepo;
+    private final ThumbLogRepository thumbLogRepo;
 
-    @Autowired
-    RoomUserRepository roomUserRepo;
-
-    @Autowired
-    ThumbLogRepository thumbLogRepo;
-
-    @Autowired
-    SelfEvaluationRepository selfEvaluationRepo;
+    private final SelfEvaluationRepository selfEvaluationRepo;
 
     //따봉멤버 투표
     @Override
@@ -78,7 +67,8 @@ public class EvaluationServiceImpl implements EvaluationService {
                                                                         .roomNo(selfEvalDto.getRoomNo())
                                                                         .userId(selfEvalDto.getUserId())
                                                                         .build()).get();
-        selfEvaluation.setScoreAndDesc(selfEvalDto.getScore(), selfEvalDto.getDescription());
+        selfEvaluation.setScore(selfEvalDto.getScore());
+        selfEvaluation.setDescription(selfEvalDto.getDescription());
         selfEvaluationRepo.save(selfEvaluation);
     }
 

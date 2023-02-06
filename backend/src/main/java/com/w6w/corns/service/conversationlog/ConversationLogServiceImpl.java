@@ -13,12 +13,9 @@ import com.w6w.corns.dto.conversationlog.RoomBookmarkRequestDto;
 import com.w6w.corns.dto.conversationlog.RoomLogFilterDto;
 import com.w6w.corns.dto.conversationlog.RoomLogResponseDto;
 import com.w6w.corns.dto.conversationlog.RoomMemberDto;
-import com.w6w.corns.service.evaluation.EvaluationService;
 import com.w6w.corns.service.room.RoomService;
 import com.w6w.corns.util.PageableResponseDto;
-import com.w6w.corns.util.code.RoomUserCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -31,28 +28,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConversationLogServiceImpl implements ConversationLogService {
 
-    @Autowired
-    EvaluationService evaluationService;
+    private final RoomService roomService;
 
-    @Autowired
-    RoomService roomService;
+    private final UserRepository userRepo;
 
-    @Autowired
-    UserRepository userRepo;
+    private final RoomUserRepository roomUserRepo;
 
-    @Autowired
-    RoomUserRepository roomUserRepo;
+    private final RoomRepository roomRepo;
 
-    @Autowired
-    RoomRepository roomRepo;
-
-    @Autowired
-    SelfEvaluationRepository selfEvaluationRepo;
+    private final SelfEvaluationRepository selfEvaluationRepo;
 
     //유저가 참여했던 쫑알로그 리스트 조회
     @Override
     public PageableResponseDto getLogList(RoomLogFilterDto roomLogFilterDto, String baseTime, int userId, Pageable pageable) {
-        Slice<RoomLogResponseDto> logList = roomUserRepo.findLogByUserIdAndFilter(roomLogFilterDto, baseTime, userId, RoomUserCode.ROOM_USER_END.getCode(), pageable);
+        Slice<RoomLogResponseDto> logList = roomUserRepo.findLogByUserIdAndFilter(roomLogFilterDto, baseTime, userId, pageable);
         return new PageableResponseDto(logList.hasNext(), logList.getContent());
     }
 

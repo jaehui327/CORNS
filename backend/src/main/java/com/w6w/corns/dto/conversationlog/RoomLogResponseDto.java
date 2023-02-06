@@ -18,4 +18,5 @@ public class RoomLogResponseDto {
     private int selfScore;
     private String selfDesc;
     private int thumbCnt;
+    private Boolean canRead;
 }

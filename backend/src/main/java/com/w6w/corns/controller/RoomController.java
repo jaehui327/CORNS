@@ -68,7 +68,7 @@ public class RoomController {
         logger.debug("baseTime: {}, subject: {}, minTime: {}, maxTime: {}, isAvail: {}, pageable: {}", baseTime, subject, minTime, maxTime, isAvail, pageable);
 
         try {
-            StringTokenizer st = new StringTokenizer(subject, "%");
+            StringTokenizer st = new StringTokenizer(subject, " ");
             ArrayList<Integer> subjects = new ArrayList<>();
             while (st.hasMoreTokens()) subjects.add(Integer.parseInt(st.nextToken()));
             logger.debug("subjects: {}", subjects);

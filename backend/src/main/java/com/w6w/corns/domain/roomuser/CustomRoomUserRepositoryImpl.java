@@ -9,6 +9,7 @@ import com.w6w.corns.domain.room.QRoom;
 import com.w6w.corns.domain.selfevaluation.QSelfEvaluation;
 import com.w6w.corns.dto.conversationlog.RoomLogFilterDto;
 import com.w6w.corns.dto.conversationlog.RoomLogResponseDto;
+import com.w6w.corns.util.code.RoomUserCode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -43,14 +44,14 @@ public class CustomRoomUserRepositoryImpl implements CustomRoomUserRepository {
 
     // 유저가 참여했던 쫑알로그를 필터에 따라 조회 후 페이징
     @Override
-    public Slice<RoomLogResponseDto> findLogByUserIdAndFilter(RoomLogFilterDto roomLogFilterDto, String baseTime, int userId, int roomUserCd, Pageable pageable) {
+    public Slice<RoomLogResponseDto> findLogByUserIdAndFilter(RoomLogFilterDto roomLogFilterDto, String baseTime, int userId, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
 
         // userId
         builder.and(roomUser.userId.eq(userId));
 
         // roomUserCd
-        builder.and(roomUser.roomUserCd.eq(roomUserCd));
+        builder.and(roomUser.roomUserCd.between(RoomUserCode.ROOM_USER_END.getCode(), RoomUserCode.ROOM_USER_EXIT.getCode()));
 
         // baseTime
         builder.and(room.regTm.lt(LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern(("yyyy-MM-dd HH:mm:ss")))));
@@ -98,7 +99,8 @@ public class CustomRoomUserRepositoryImpl implements CustomRoomUserRepository {
                                                 room.time,
                                                 room.currentMember,
                                                 selfEvaluation.score,
-                                                roomUser.thumbCnt)
+                                                roomUser.thumbCnt,
+                                                roomUser.roomUserCd)
                                         .from(roomUser)
                                         .join(room).on(roomUser.roomNo.eq(room.roomNo))
                                         .join(selfEvaluation).on(roomUser.roomNo.eq(selfEvaluation.roomNo)
@@ -146,6 +148,7 @@ public class CustomRoomUserRepositoryImpl implements CustomRoomUserRepository {
                     .member(roomLog.get(room.currentMember))
                     .selfScore(roomLog.get(selfEvaluation.score))
                     .thumbCnt(roomLog.get(roomUser.thumbCnt))
+                    .canRead(roomLog.get(roomUser.roomUserCd)==RoomUserCode.ROOM_USER_END.getCode()?true:false)
                     .build());
         }
 
