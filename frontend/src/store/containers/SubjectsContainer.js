@@ -7,7 +7,6 @@ function SubjectsContainer() {
   const dispatch = useDispatch();
   const subjects = useSelector((state) => state.subjectsReducer);
 
-  // console.log(subjects);
   useEffect(() => {
     dispatch(getSubjects());
   }, [dispatch]);

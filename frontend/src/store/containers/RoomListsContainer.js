@@ -6,10 +6,11 @@ import { getRoomList } from "store/reducers/roomListReducer";
 function RoomListsContainer() {
   const dispatch = useDispatch();
   const roomList = useSelector((state) => state.roomListReducer);
+  const filter = useSelector((state) => state.roomFilterReducer);
 
   useEffect(() => {
-    dispatch(getRoomList());
-  }, [dispatch]);
+    dispatch(getRoomList(filter));
+  }, [dispatch, filter]);
 
   return <div>{roomList && <RoomList roomLists={roomList} />}</div>;
 }

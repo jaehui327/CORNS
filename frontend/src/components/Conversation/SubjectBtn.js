@@ -9,19 +9,20 @@ function SubjectBtn({ subject }) {
   const filter = useSelector((state) => state.roomFilterReducer);
 
   const { subjectNo, imgUrl, value } = subject;
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(true);
 
   // 버튼을 눌렀을 때 색깔이 바뀌게 하는 toggle 함수
   const btnColorToggle = (e) => {
     setToggle((prev) => !prev);
   };
 
+  // 주제 버튼 누를 때마다 params 주제 해제하는 함수
   const checkFilter = () => {
     if (toggle === false) {
-      dispatch(add({ id: subjectNo, value: value }, "ADD"));
+      dispatch(add(subjectNo, "ADD"));
       console.log(`add:`, filter);
     } else {
-      dispatch(remove({ id: subjectNo, value: value }, "REMOVE"));
+      dispatch(remove(subjectNo, "REMOVE"));
       console.log(`remove:`, filter);
     }
   };
