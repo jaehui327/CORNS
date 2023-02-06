@@ -7,13 +7,13 @@ import UserNameTag from "components/GlobalComponents/UserNameTag";
 import { css } from "@emotion/react";
 
 function UserItem({ item }) {
-  const { img_url, nickname, user_id, level } = item;
+  const { userId, imgUrl, nickname, level } = item;
 
   return (
     <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
       <TableCell>
         <img
-          src={img_url}
+          src={imgUrl}
           alt={nickname}
           css={css`
             border-radius: 200px;
@@ -23,7 +23,7 @@ function UserItem({ item }) {
         />
       </TableCell>
       <TableCell>
-        <UserNameTag nickname={nickname} user_id={user_id} />
+        <UserNameTag nickname={nickname} user_id={userId} />
       </TableCell>
       <TableCell>Lv.{level}</TableCell>
     </TableRow>
