@@ -2,20 +2,20 @@ import React, { useState } from "react";
 import UserProfileModal from "components/GlobalComponents/UserProfileModal";
 import { Box, Modal } from "@mui/material";
 
-function UserNameTag({ nickname, user_id }) {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+function UserNameTag({ nickname, userId }) {
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   return (
     <>
-      <Box onClick={handleOpen} sx={{ cursor: "pointer" }}>
-        {nickname}#{user_id}
+      <Box onClick={handleOpenModal} sx={{ cursor: "pointer" }}>
+        {nickname}#{userId}
       </Box>
 
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={openModal} onClose={handleOpenModal}>
         <Box>
-          <UserProfileModal />
+          <UserProfileModal openModal={openModal} toId={userId} handleCloseModal={handleCloseModal}/>
         </Box>
       </Modal>
     </>

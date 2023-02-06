@@ -23,7 +23,7 @@ function UserItem({ item }) {
         />
       </TableCell>
       <TableCell>
-        <UserNameTag nickname={nickname} user_id={userId} />
+        <UserNameTag nickname={nickname} userId={userId} />
       </TableCell>
       <TableCell>Lv.{level}</TableCell>
     </TableRow>
