@@ -55,10 +55,16 @@ public class GrowthServiceImpl implements GrowthService {
         return rank / cntAll * 100;
     }
 
-    public LevelDto getUserLevel(int userId) throws Exception{
+    public Map<String, Object> getUserLevel(int userId) throws Exception{
+
+        Map<String, Object> result = new HashMap<>();
 
         User user = userRepository.findByUserId(userId);
-        return LevelDto.fromEntity(user.getLevel());
+
+        result.put("level", LevelDto.fromEntity(user.getLevel()));
+        result.put("expTotal", user.getExpTotal());
+
+        return result;
     }
 
     public PageableResponseDto getExpLogList(int userId, Pageable pageable, String baseTime) throws Exception{

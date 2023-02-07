@@ -27,7 +27,6 @@ public class UserDetailResponseDto {
     private long attendTotal;
     private long speakingTotal;
     private long thumbTotal;
-    private LocalDateTime lastLoginTm;
 
     public static UserDetailResponseDto fromEntity(User user){
 
@@ -43,7 +42,6 @@ public class UserDetailResponseDto {
                 .speakingTotal(user.getSpeakingTotal())
                 .thumbTotal(user.getThumbTotal())
                 .social(user.getSocial())
-                .lastLoginTm(user.getLastLoginTm())
                 .build();
 
     }

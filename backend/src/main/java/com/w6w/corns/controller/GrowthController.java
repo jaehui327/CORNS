@@ -59,13 +59,7 @@ public class GrowthController {
     public ResponseEntity<?> showLevelBar(@PathVariable int userId) {
 
         try {
-            Map<String, Object> result = new HashMap<>();
-
-            //레벨바
-            LevelDto level = growthService.getUserLevel(userId);
-
-            result.put("level", level);
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(growthService.getUserLevel(userId), HttpStatus.OK);
 
         } catch (Exception e) {
             log.error(e.getMessage());
