@@ -257,8 +257,8 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByUserId(responseDto.getUserId());
 
         //해당 날짜에 처음 출석했다면 경험치
-        if (responseDto.getLastLoginTm() == null ||
-                !responseDto.getLastLoginTm().toLocalDate().equals(LocalDate.now())) {
+        if (user.getLastLoginTm() == null ||
+                !user.getLastLoginTm().toLocalDate().equals(LocalDate.now())) {
 
             ExpLogRequestDto expLogRequestDto = ExpLogRequestDto.builder()
                     .userId(responseDto.getUserId())
