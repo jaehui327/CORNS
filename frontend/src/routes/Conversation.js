@@ -1,18 +1,18 @@
 import React from "react";
 
-import Navbar from "../components/GlobalComponents/Navbar";
-import LogInUserArea from "../components/Conversation/LogInUserArea";
-import AnonymousUserArea from "../components/Conversation/AnonymousUserArea";
-import ConversationRoomFilter from "../components/Conversation/ConversationRoomFilter";
-import RoomCreateModal from "../components/Conversation/RoomCreateForm";
-import SelfEvaluationModal from "../components/Conversation/SelfEvaluationModal";
+import Navbar from "components/GlobalComponents/Navbar";
+import LogInUserArea from "components/Conversation/LogInUserArea";
+import IsLogin from "auth/IsLogin";
+import ConversationRoomFilter from "components/Conversation/ConversationRoomFilter";
+import RoomCreateModal from "components/Conversation/RoomCreateForm";
+import SelfEvaluationModal from "components/Conversation/SelfEvaluationModal";
 import RoomListsContainer from "store/containers/RoomListsContainer";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
 function Conversation() {
-  const user = true;
+  let user = IsLogin();
 
   return (
     <div
@@ -26,7 +26,7 @@ function Conversation() {
           margin: 124px 0 0 0;
         `}
       >
-        {user ? <LogInUserArea /> : <AnonymousUserArea />}
+        {user ? <LogInUserArea /> : null}
         <h2>쫑알룸리스트</h2>
         <ConversationRoomFilter />
         <RoomListsContainer />
