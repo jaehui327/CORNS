@@ -35,21 +35,17 @@ public class GrowthController {
         return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ApiOperation(value = "쫑알쫑알 경험치, 출석률바", notes = "쫑알쫑알 페이지에서 회원의 경험치와 출석률바 보여줌")
+    @ApiOperation(value = "출석률바", notes = "쫑알쫑알 페이지에서 출석률바 보여줌")
     @GetMapping("/room/{userId}")
-    public ResponseEntity<?> showExpAndAttendBar(@PathVariable int userId) {
+    public ResponseEntity<?> showAttendBar(@PathVariable int userId) {
 
         try {
             log.debug("userId : {}",userId);
             Map<String, Object> result = new HashMap<>();
 
-            //레벨바 -> getUserLevel 재사용
-            LevelDto level = growthService.getUserLevel(userId);
-
             //출석률 -> 날짜를 한달 기준으로 얼마나 출석했는지 보여줌, 하루에 한 번만 기록
             int value = growthService.calAttendanceRate(userId);
 
-            result.put("level", level);
             result.put("attendanceRate", value);
             return new ResponseEntity<>(result, HttpStatus.OK);
 
@@ -58,20 +54,16 @@ public class GrowthController {
         }
     }
 
-    @ApiOperation(value = "경험치 레벨바", notes = "경험치 페이지 내에서 회원의 경험치 백분위와 레벨바를 보여줌")
-    @GetMapping("/exp/{userId}")
+    @ApiOperation(value = "경험치 레벨바", notes = "경험치 페이지, 쫑알쫑일 페이지 내에서 회원의 레벨바를 보여줌")
+    @GetMapping("/exp/bar/{userId}")
     public ResponseEntity<?> showLevelBar(@PathVariable int userId) {
 
         try {
             Map<String, Object> result = new HashMap<>();
 
-            //경험치 상위 백분위
-            int percentile = growthService.calExpPercentile(userId);
-
             //레벨바
             LevelDto level = growthService.getUserLevel(userId);
 
-            result.put("percentile", percentile);
             result.put("level", level);
             return new ResponseEntity<>(result, HttpStatus.OK);
 
@@ -80,6 +72,25 @@ public class GrowthController {
             return exceptionHandling(e);
         }
     }
+
+     @ApiOperation(value = "경험치 상위 백분위값", notes = "경험치 페이지 내에서 회원의 경험치 백분위를 보여줌")
+        @GetMapping("/exp/{userId}")
+        public ResponseEntity<?> showPercentile(@PathVariable int userId) {
+
+            try {
+                Map<String, Object> result = new HashMap<>();
+
+                //경험치 상위 백분위
+                int percentile = growthService.calExpPercentile(userId);
+
+                result.put("percentile", percentile);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                return exceptionHandling(e);
+            }
+        }
 
     @ApiOperation(value = "경험치 목록", notes = "회원의 경험치 전체 목록을 최신순으로 반환 + 페이지네이션")
     @GetMapping("/exp/list/{userId}")
@@ -115,7 +126,7 @@ public class GrowthController {
             }
             //type 2 대화 주제 비율
             else if (type == 2) {
-                result.put("subjectRatio", growthService.calSubjectRatio(userId));
+                result.put("subjectRatio", growthService.countBySubject(userId));
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
             //type 3 일일 경험치 획득량(지난주, 이번주 비교)

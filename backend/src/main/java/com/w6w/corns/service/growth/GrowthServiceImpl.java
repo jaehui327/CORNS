@@ -117,7 +117,7 @@ public class GrowthServiceImpl implements GrowthService {
 
     //주제별 비율 계산
     @Override
-    public List<SubjectRatioResponseDto> calSubjectRatio(int userId) throws Exception {
+    public List<SubjectRatioResponseDto> countBySubject(int userId) throws Exception {
 
         //이것도 컬럼으로 갖고있는건..??(아니면 페이지 들어갈때마다 select해옴) -> 하지만 굳이긴하지..
         List<SubjectRatioResponseDto> subjectRatio = new ArrayList<>();
@@ -130,7 +130,7 @@ public class GrowthServiceImpl implements GrowthService {
 
         //각 roomuser의 room 번호로 room에서 대화 주제 가져오기
         for(RoomUser roomuser : roomUsers){
-            count[roomRepository.findByRoomNo(roomuser.getRoomNo()).getSubjectNo()]++;
+            count[roomRepository.findById(roomuser.getRoomNo()).get().getSubjectNo()]++;
         }
 
         //총 대화 주제 수
@@ -141,7 +141,7 @@ public class GrowthServiceImpl implements GrowthService {
             SubjectRatioResponseDto responseDto = SubjectRatioResponseDto.builder()
                     .subjectNo(i)
                     .value(subjectService.findById(i).getValue())
-                    .rate(count[i] / sum * 100)
+                    .cnt(count[i])
                     .build();
             subjectRatio.add(responseDto);
         }

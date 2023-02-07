@@ -26,7 +26,7 @@ public interface GrowthService {
     //최근 일주일 일별 대화량
     List<IndicatorResponseDto> calDailySpeakingTotalByWeek(int userId) throws Exception;
     //주제별 비율 계산
-    List<SubjectRatioResponseDto> calSubjectRatio(int userId) throws Exception;
+    List<SubjectRatioResponseDto> countBySubject(int userId) throws Exception;
     //일일 경험치 획득량 계산
     Map<String, Object> calDailyGainedExp(int userId) throws Exception;
 }

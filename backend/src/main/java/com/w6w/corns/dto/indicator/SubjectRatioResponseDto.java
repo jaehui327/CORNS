@@ -13,5 +13,5 @@ public class SubjectRatioResponseDto {
 
     private String value;
 
-    private int rate;
+    private int cnt;
 }
