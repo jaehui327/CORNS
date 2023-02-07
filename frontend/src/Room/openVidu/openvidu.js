@@ -3,44 +3,33 @@ var session;
 
 var roomListId = "roomViewUser";
 
-// 비디오 사이즈
-// let videoWidth = parseInt($(window).width() * 0.35); //Math.floor(screen.width * 0.35); // "35vw";
-// let videoHeight = parseInt($(window).height() * 0.375); //"37.5vh";
-
-// let videoWidth = 640;
-// let videoHeight = 360;
-
-
-// 현재 인원수
-// var count = 2;
-// 최대 인원수
-// var maxcount = 4;
+// serverurl
+let serverUrl = "https://corns.co.kr:4463/";
 
 // 칸이 차 있는지
 var userArray = [false,false,false,false];
 
 
-// function setVideoSize(){
-// 	// videoWidth = parseInt($(window).width() * 0.35); //Math.floor(screen.width * 0.35); // "35vw";
-// 	// videoHeight = parseInt($(window).height() * 0.375); //"37.5vh";
-// 	videoWidth = 640;
-// 	videoHeight = 360;
-	
-// }
+var mySessionId;
+var myUserName;
+var jRoomNo;
+var userId;
 
 /* OPENVIDU METHODS */
 
 function joinSession() {
 
-	var mySessionId = document.getElementById("sessionId").value;
-	var myUserName = document.getElementById("userName").value;
+	mySessionId = document.getElementById("sessionId").value;
+	myUserName = document.getElementById("userName").value;
+	jRoomNo = document.getElementById("jRoomNo").value;
+	userId = document.getElementById("userId").value;
 
 	// $("#sessionId").val(session);
 	// $("#userName").val(username);
 	// $("#jRoomNo").val(jroomno);
 	// $("#userId").val(userid);
 	// 방 입장처리 한다.
-	// intoRoom();
+	//intoRoom(connectionId, recordId, token)
 
 
 	// --- 1) Get an OpenVidu object ---
@@ -117,13 +106,7 @@ function joinSession() {
 			.then(() => {
 
 				// --- 5) Set page layout for active call ---
-
-				// document.getElementById('session-title').innerText = mySessionId;
-				// document.getElementById('join').style.display = 'none';
-				// document.getElementById('session').style.display = 'block';
-
 				// 내가 무조건 1번에 뜨게 한다.
-				// setVideoSize();
 				// --- 6) Get your own camera stream with the desired properties ---
 				var publisher = OV.initPublisher("roomViewUser1", {
 					audioSource: undefined, // The source of audio. If undefined default microphone
@@ -161,14 +144,25 @@ function joinSession() {
 }
 
 // 방 입장 처리
-function intoRoom(){
+function intoRoom(connectionId, recordId, token){
 	$.ajax({
 		type : "POST",            // HTTP method type(GET, POST) 형식이다.
-		url : "/test/ajax",      // 컨트롤러에서 대기중인 URL 주소이다.
-		data : params,            // Json 형식의 데이터이다.
+		url : serverUrl + "/room/user",      // 컨트롤러에서 대기중인 URL 주소이다.
+		data : JSON.stringify({
+			"roomNo": jRoomNo,
+			"roomUser": {
+			   "connectionId": connectionId, 
+			   "recordId": recordId,
+			   "token": token
+			},
+			"userId": userId
+		  }),
 		success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-			// 응답코드 > 0000
-			alert(res.code);
+			/*
+
+			
+			
+			*/
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
 			alert("통신 실패.")
@@ -202,15 +196,6 @@ function removeUserData(connection) {
 	else if(pid === "roomViewUser4"){
 		userArray[2] = false;
 	}
-	// alert("delete처리 완")
-	// alert(connection.connectionId)
-	// var dataNode = document.getElementById("data-" + connection.connectionId);
-	// dataNode.parentNode.removeChild(dataNode);
-	// remote-video-str_CAM_OHsQ_con_BTsNbIQ1ZD
-	// con_XAUvl6LqwV
-	// var videoNode = document.getElementById("remote-video-str_CAM_Ifyr_" + connection.connectionId);
-	// if(videoNode.parentNode.id)
-	// alert(videoNode.parentNode.parentNode.id);
 }
 
 
@@ -219,8 +204,6 @@ var OPENVIDU_URL= "https://corns.co.kr:4430/";
 var OPENVIDU_SECRET = btoa("OPENVIDUAPP:a506w6w");
 function getToken(mySessionId) {
 	return createToken(mySessionId);
-	// return createSession(mySessionId).then(sessionId => createToken(sessionId));
-	// return getConnections(mySessionId).then(sessionId => createToken(sessionId));
 }
 
 function createSession(sessionId) {
