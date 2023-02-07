@@ -76,7 +76,7 @@ function SearchComp({ type, setType, text, setText, search, setSearch }) {
         </Select>
         <Box sx={{ width: "100%", height: "100%" }}>
           <input
-            placeholder={`${type}을 입력해주세요.`}
+            placeholder={`${type === "nickname" ? "닉네임을" : "아이디를"} 입력해주세요.`}
             value={text}
             onChange={onChange}
             css={css`

@@ -9,6 +9,7 @@ import { Envelope } from "react-bootstrap-icons";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import ProfileImg from "components/GlobalComponents/ProfileImg";
 
 
 const LightTooltip = styled(({ className, ...props }) => (
@@ -59,17 +60,7 @@ function RequestCard({ user }) {
           </LightTooltip>
         </Box>
 
-        <CardMedia
-          component="img"
-          sx={{
-            height: "100px",
-            width: "100px",
-            borderRadius: "200px",
-            border: "3px solid #111",
-          }}
-          image={imgUrl}
-          alt={nickname}
-        />
+        <ProfileImg imgSrc={imgUrl} nickname={nickname} width={"100px"}/>
 
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Typography component="div" sx={{ fontSize: 18, p: "16px" }}>

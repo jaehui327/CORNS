@@ -25,7 +25,6 @@ const deleteFriend = async (fromId, toId, setRelation) => {
 function FriendBtnThree({ fromId, toId, setRelation }) {
   return (
     <Button
-      variant="contained"
       sx={{
         border: "3px solid #111",
         color: "#111111",
