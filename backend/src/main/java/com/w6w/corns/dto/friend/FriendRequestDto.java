@@ -10,4 +10,5 @@ import lombok.*;
 public class FriendRequestDto {
     private int fromId;
     private int toId;
+    private String message;
 }
