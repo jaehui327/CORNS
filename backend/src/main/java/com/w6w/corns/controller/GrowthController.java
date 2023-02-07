@@ -1,10 +1,6 @@
 package com.w6w.corns.controller;
 
-import com.w6w.corns.dto.level.LevelDto;
-import com.w6w.corns.dto.user.UserDetailResponseDto;
-import com.w6w.corns.service.friend.FriendService;
 import com.w6w.corns.service.growth.GrowthService;
-import com.w6w.corns.service.user.UserService;
 import com.w6w.corns.util.PageableResponseDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
