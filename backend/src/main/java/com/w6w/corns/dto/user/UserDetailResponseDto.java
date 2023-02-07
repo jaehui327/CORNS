@@ -1,6 +1,7 @@
 package com.w6w.corns.dto.user;
 
 import com.w6w.corns.domain.user.User;
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@ApiModel(value="유저 상세 응답 정보")
 public class UserDetailResponseDto {
 
     private int userId;
@@ -18,15 +20,13 @@ public class UserDetailResponseDto {
     private String nickname;
     private String imgUrl;
     private long expTotal;
-    private int level;
+    private int levelNo;
     private long friendTotal;
     private int social;
     private boolean isGoogle;
-    private String refreshToken;
     private long attendTotal;
-    private long conversationTotal;
+    private long speakingTotal;
     private long thumbTotal;
-    private LocalDateTime lastLoginTm;
 
     public static UserDetailResponseDto fromEntity(User user){
 
@@ -36,11 +36,12 @@ public class UserDetailResponseDto {
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .imgUrl(user.getImgUrl())
-                .level(user.getLevel().getLevelNo())
+                .levelNo(user.getLevel().getLevelNo())
                 .expTotal(user.getExpTotal())
+                .attendTotal(user.getAttendTotal())
+                .speakingTotal(user.getSpeakingTotal())
+                .thumbTotal(user.getThumbTotal())
                 .social(user.getSocial())
-                .refreshToken(user.getRefreshToken())
-                .lastLoginTm(user.getLastLoginTm())
                 .build();
 
     }
