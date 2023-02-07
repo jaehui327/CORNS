@@ -1,31 +1,17 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getFriendRequestListAxios } from "store/reducers/friendListReducer";
+
 import RequestList from "./RequestList";
 import { Box } from "@mui/material";
 
-const getFriendRequest = async (setUsers) => {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_HOST}/friend/receive/${sessionStorage.getItem(
-        "userId"
-      )}`
-    );
-    if (response.status === 200) {
-      // console.log(response);
-      setUsers(response.data.recvList);
-    } else if (response.status === 204) {
-      // console.log(response)
-      setUsers([]);
-    }
-  } catch {}
-};
-
 function FriendRequest() {
-  const [users, setUsers] = useState([]);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.friendListReducer.friendRequestList)
 
   useEffect(() => {
-    getFriendRequest(setUsers);
-  }, []);
+    dispatch(getFriendRequestListAxios());
+  }, [dispatch]);
 
   return (
     <>

@@ -57,7 +57,6 @@ function SearchUser() {
         setType={setType}
         text={text}
         setText={setText}
-        search={search}
         setSearch={setSearch}
       />
 

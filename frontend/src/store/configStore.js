@@ -9,12 +9,14 @@ import { roomListReducer } from "store/reducers/roomListReducer";
 import { subjectsReducer } from "store/reducers/subjectsReducer";
 import { roomFilterReducer } from "store/reducers/roomFilterReducer";
 import { userInfoReducer } from "store/reducers/userInfoReducer";
+import { friendListReducer } from "store/reducers/friendListReducer";
 
 const rootReducer = combineReducers({
   roomListReducer: roomListReducer.reducer,
   subjectsReducer: subjectsReducer.reducer,
   roomFilterReducer: roomFilterReducer.reducer,
   userInfoReducer: userInfoReducer.reducer,
+  friendListReducer: friendListReducer.reducer,
 });
 
 export const store = configureStore(

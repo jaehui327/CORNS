@@ -1,5 +1,11 @@
 import React from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import {
+  getFriendListAxios,
+  getFriendRequestListAxios,
+} from "store/reducers/friendListReducer";
+
 import { Box, Button } from "@mui/material";
 
 // 친구신청 수락 axios
@@ -40,9 +46,21 @@ const rejectFriend = async (fromId, toId, setRelation) => {
   }
 };
 
-
 // 친구신청 받은 상태
 function FriendBtnTwo({ fromId, toId, setRelation }) {
+  const dispatch = useDispatch();
+
+  const acceptHandler = async () => {
+    await acceptFriend(fromId, toId, setRelation);
+    dispatch(getFriendListAxios());
+    dispatch(getFriendRequestListAxios())
+  };
+
+  const rejectHandler = async () => {
+    await rejectFriend(fromId, toId, setRelation);
+    dispatch(getFriendRequestListAxios());
+  };
+
   return (
     <Box
       sx={{
@@ -60,7 +78,7 @@ function FriendBtnTwo({ fromId, toId, setRelation }) {
           width: "82px",
           height: "38px",
         }}
-        onClick={() => acceptFriend(fromId, toId, setRelation)}
+        onClick={acceptHandler}
       >
         수락
       </Button>
@@ -72,7 +90,7 @@ function FriendBtnTwo({ fromId, toId, setRelation }) {
           width: "82px",
           height: "38px",
         }}
-        onClick={() => rejectFriend(fromId, toId, setRelation)}
+        onClick={rejectHandler}
       >
         거절
       </Button>
