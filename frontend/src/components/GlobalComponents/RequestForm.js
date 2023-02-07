@@ -14,7 +14,7 @@ const sendFriend = async (fromId, toId, message, setRelation, handleCloseForm) =
       `${process.env.REACT_APP_HOST}/friend/send`, {
         fromId: fromId,
         toId: toId,
-        // ************* message: message -> DB + API 수정되면 추후 추가
+        message: message,
       }
     )
     if (response.status === 200) {
@@ -48,7 +48,6 @@ function RequestForm({ fromId, toId, handleCloseForm, setRelation }) {
 
   const [text, setText] = useState("우리 친구해요!");
 
-  // 100자 제한
   const onChange = (e) => {
     setText(e.target.value);
   };

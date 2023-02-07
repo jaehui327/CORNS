@@ -1,12 +1,14 @@
 import React from "react";
+import UserNameTag from "components/GlobalComponents/UserNameTag";
+import FriendBtnTwo from "components/GlobalComponents/FriendBtnTwo";
 
 import { Box, Card, CardMedia, Typography, Button } from "@mui/material";
 
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 
 function RequestCard({ user }) {
-  const { img_url, nickname, user_id } = user;
+
+  // message 추가해야함
+  const { userId, nickname, imgUrl, message } = user;
   return (
     <>
       <Card
@@ -32,47 +34,17 @@ function RequestCard({ user }) {
             borderRadius: "200px",
             border: "3px solid #111",
           }}
-          image={img_url}
+          image={imgUrl}
           alt="Live from space album cover"
         />
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Typography component="div" sx={{ fontSize: 18, p: "16px" }}>
-            {nickname}#{user_id}
+            <UserNameTag nickname={nickname} userId={userId} />
           </Typography>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-
-          {/* FriendBtnTwo로 수정 예정 */}
-          <Button
-            sx={{
-              border: "3px solid #111",
-              color: "#111111",
-              backgroundColor: "#FFC804",
-              width: "82px",
-              height: "38px",
-            }}
-          >
-            수락
-          </Button>
-          <Button
-            sx={{
-              border: "3px solid #111",
-              color: "#111111",
-              width: "82px",
-              height: "38px",
-            }}
-          >
-            거절
-          </Button>
-        
-        </Box>
+          
+      <FriendBtnTwo fromId={sessionStorage.getItem("userId")} toId={userId} />
+      
       </Card>
     </>
   );

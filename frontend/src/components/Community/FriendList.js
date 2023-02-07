@@ -1,54 +1,51 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import SearchComp from "../GlobalComponents/SearchComp";
+import SearchComp from "components/GlobalComponents/SearchComp";
 import UserList from "./UserList";
 
 import { Box } from "@mui/material";
 
-// 친구 검색 axios
-const GetFriends = async (type, text) => {
+// 친구 검색 axios -> pagination 추가해야함 ...
+const GetFriends = async (type, text, setUsers) => {
   // const startDate = moment().format("YYYY-MM-DDTHH:mm:sszz")
   // console.log(startDate)
-  console.log('axios', type, text);
-  // try {
-  //   const response = await axios.get(
-  //     `${process.env.REACT_APP_HOST}/user?` +
-  //       new URLSearchParams({
-  //         page: 0,
-  //         size: 10,
-  //         baseTime: "2023-02-05 00:00:00",
-  //         filter: type,
-  //         keyword: text,
-  //       }),
-  //     {
-  //       validateStatus: (status) => status === 200 || status === 204,
-  //     }
-  //   );
-  //   if (response.status === 200) {
-  //     console.log(response.data);
-
-
-  //   } else if (response.status === 204) {
-  //     console.log(response.data);
-  //   }
-  // } catch (e) {
-  //   console.log(e);
-  // }
+  
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_HOST}/friend/${sessionStorage.getItem("userId")}?` +
+        new URLSearchParams({
+          filter: type,
+          keyword: text,
+          baseTime: "2023-02-28 00:00:00",
+          page: 0,
+          size: 20,
+        }),
+      {
+        validateStatus: (status) => status === 200 || status === 204,
+      }
+    );
+    // console.log('search friend axios', type, text)
+    if (response.status === 200) {
+      setUsers(response.data.list)
+    } else if (response.status === 204) {
+      setUsers([])
+    }
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 
 
 function FriendList({ items }) {
-  const [type, setType] = useState("id");
+  const [type, setType] = useState("nickname");
   const [text, setText] = useState("");
   const [search, setSearch] = useState(false);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    if (text) {
-      GetFriends(type, text);
-    }
-  })
+    GetFriends(type, text, setUsers);
+  }, [type, text])
 
 
   return (

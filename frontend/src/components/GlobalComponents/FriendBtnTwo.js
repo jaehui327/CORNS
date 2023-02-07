@@ -14,7 +14,7 @@ const acceptFriend = async (fromId, toId, setRelation) => {
     );
     if (response.status === 200) {
       console.log(response);
-      setRelation(3);
+      setRelation && setRelation(3);
     }
   } catch (e) {
     console.log(e);
@@ -33,7 +33,7 @@ const rejectFriend = async (fromId, toId, setRelation) => {
     );
     if (response.status === 200) {
       console.log(response);
-      setRelation(0);
+      setRelation && setRelation(0);
     }
   } catch (e) {
     console.log(e);

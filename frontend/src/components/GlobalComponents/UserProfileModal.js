@@ -11,18 +11,15 @@ import { css } from "@emotion/react";
 // user detail get axios
 const GetUserModalDetail = async (from_id, to_id, setUser, setRelation) => {
   try {
-    // 추후 back에서 url 수정 예정 *****************************
     const apiUrl =
       from_id === to_id.toString()
-        ? `user/${from_id}`
-        : `growth/${from_id}/${to_id}`;
+        ? `/${from_id}`
+        : `/${from_id}/${to_id}`;
 
-    const response = await axios.get(`${process.env.REACT_APP_HOST}/${apiUrl}`);
+    const response = await axios.get(`${process.env.REACT_APP_HOST}/user/${apiUrl}`);
     if (response.status === 200) {
-      // url 수정되면 추후 수정
-      console.log('user detail', from_id, to_id);
-      console.log(response.data)
-      setUser(response.data.user ? response.data.user : response.data.toUser);
+      // console.log(response.data)
+      setUser(response.data.user);
       setRelation(response.data.relation > -1 ? response.data.relation : -1);
 
       // ranking 데이터 추가되면 setRanking 추가

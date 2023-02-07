@@ -6,8 +6,6 @@ import { Search } from "react-bootstrap-icons";
 import { css } from "@emotion/react";
 
 function SearchComp({ type, setType, text, setText, search, setSearch }) {
-  // const [type, setType] = useState("user_id");
-  // const [text, setText] = useState("");
   const [pathName, setPathName] = useState("");
   const [textInfo, setTextInfo] = useState("");
 
@@ -72,8 +70,8 @@ function SearchComp({ type, setType, text, setText, search, setSearch }) {
           onChange={handleChange}
           sx={{ height: "51px", border: "3px solid #111" }}
         >
-          <MenuItem value={"id"}>아이디</MenuItem>
           <MenuItem value={"nickname"}>닉네임</MenuItem>
+          <MenuItem value={"id"}>아이디</MenuItem>
         </Select>
         <Box sx={{ width: "100%", height: "100%" }}>
           <input

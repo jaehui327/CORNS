@@ -6,6 +6,7 @@ import UserList from "components/Community/UserList";
 import Box from "@mui/material/Box";
 
 // user 검색 axios
+// 무한스크롤 구현 해야함
 const GetUser = async (type, text, setUsers) => {
   // const startDate = moment().format("YYYY-MM-DDTHH:mm:sszz")
   // console.log(startDate)
@@ -16,7 +17,7 @@ const GetUser = async (type, text, setUsers) => {
         new URLSearchParams({
           page: 0,
           size: 10,
-          baseTime: "2023-02-05 00:00:00",
+          baseTime: "2023-02-30 00:00:00",
           filter: type,
           keyword: text,
         }),
@@ -37,7 +38,7 @@ const GetUser = async (type, text, setUsers) => {
 };
 
 function SearchUser() {
-  const [type, setType] = useState("id");
+  const [type, setType] = useState("nickname");
   const [text, setText] = useState("");
   const [search, setSearch] = useState(0);
   const [users, setUsers] = useState([]);
