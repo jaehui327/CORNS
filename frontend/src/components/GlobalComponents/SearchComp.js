@@ -6,6 +6,7 @@ import { Search } from "react-bootstrap-icons";
 import { css } from "@emotion/react";
 
 function SearchComp({ type, setType, text, setText, search, setSearch }) {
+
   const [pathName, setPathName] = useState("");
   const [textInfo, setTextInfo] = useState("");
 
