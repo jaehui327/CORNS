@@ -8,7 +8,7 @@ function Friends() {
     <>
       <h2>친구</h2>
       <Box mt="64px" mb="64px">
-        {/* <FriendRequest /> */}
+        <FriendRequest />
       </Box>
       <Box>
         <FriendList />

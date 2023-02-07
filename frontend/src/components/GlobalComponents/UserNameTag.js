@@ -13,7 +13,7 @@ function UserNameTag({ nickname, userId }) {
         {nickname}#{userId}
       </Box>
 
-      <Modal open={openModal} onClose={handleOpenModal}>
+      <Modal open={openModal} onClose={handleCloseModal}>
         <Box>
           <UserProfileModal openModal={openModal} toId={userId} handleCloseModal={handleCloseModal}/>
         </Box>

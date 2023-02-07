@@ -48,6 +48,8 @@ function RequestCard({ user }) {
             gap: "10px",
           }}
         >
+
+          {/* FriendBtnTwo로 수정 예정 */}
           <Button
             sx={{
               border: "3px solid #111",
@@ -69,6 +71,7 @@ function RequestCard({ user }) {
           >
             거절
           </Button>
+        
         </Box>
       </Card>
     </>
