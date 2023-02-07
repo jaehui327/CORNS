@@ -40,7 +40,7 @@ function joinSession() {
 	// $("#jRoomNo").val(jroomno);
 	// $("#userId").val(userid);
 	// 방 입장처리 한다.
-	intoRoom();
+	// intoRoom();
 
 
 	// --- 1) Get an OpenVidu object ---
