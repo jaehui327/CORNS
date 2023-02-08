@@ -14,7 +14,6 @@ import {
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-
 // 즐겨찾기 등록 / 해제 patch
 // CORS 에러.....
 const toggleBookmark = async (roomNo, userId, doRegister) => {
@@ -70,6 +69,7 @@ function LogItem({ log }) {
   // 북마크 삭제 / 추가
   const onToggleHandler = async () => {
     await toggleBookmark(roomNo, sessionStorage.getItem("userId"), !isBookmark);
+    // 즐겨찾기 page일때만 갱신
     if (window.location.pathname.includes("bookmarks")) {
       dispatch(getLogBookmarkListAxios(sort));
     }
@@ -114,9 +114,14 @@ function LogItem({ log }) {
 
       {/* 제목 */}
       <TableCell width="25%" align="center">
-        <Link to={logUrl} style={{ textDecoration: "none", color: "black" }}>
-          {title}
-        </Link>
+        {/* 로그 상세에서는 LINK X */}
+        {window.location.href.includes("logdetail") ? (
+          title
+        ) : (
+          <Link to={logUrl} style={{ textDecoration: "none", color: "black" }}>
+            {title}
+          </Link>
+        )}
       </TableCell>
 
       {/* 날짜 */}

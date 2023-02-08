@@ -47,7 +47,7 @@ function ConversationLog({}) {
               />
               <Route
                 exact
-                path="/conversationLog/logdetail/:room_no"
+                path="/conversationLog/logdetail/:roomNo"
                 component={LogDetail}
               />
               <Route exact path="/conversationLog/words" component={LogWord} />
