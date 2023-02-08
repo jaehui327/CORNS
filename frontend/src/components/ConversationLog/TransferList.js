@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import SaveIcon from '@mui/icons-material/CheckBoxOutlined';
 import { IconButton, ListItemButton } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDoneList, getTodoList } from 'store/reducers/wordListReducer';
 
 
 function not(a, b) {
@@ -23,12 +25,23 @@ function intersection(a, b) {
 }
 
 export default function TransferList() {
-  const [checked, setChecked] = React.useState([]);
-  const [left] = React.useState([0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
-  const [right] = React.useState([4, 5, 6, 7]);
+  const dispatch = useDispatch();
+  const baseTime = "2023-02-28 00:00:00"
 
-  const leftChecked = intersection(checked, left);
-  const rightChecked = intersection(checked, right);
+  useEffect(() => {
+    dispatch(getTodoList(baseTime));
+    dispatch(getDoneList(baseTime));
+  }, [baseTime, dispatch]);
+
+  const [checked, setChecked] = React.useState([]);
+  const todoWords = useSelector((state) => state.wordListReducer.todoList);
+  const doneWords = useSelector((state) => state.wordListReducer.doneList);
+
+  const setLeft = [];
+  const setRight = [];
+
+  const leftChecked = intersection(checked, todoWords);
+  const rightChecked = intersection(checked, doneWords);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -43,24 +56,25 @@ export default function TransferList() {
     setChecked(newChecked);
   };
 
-
   const handleCheckedRight = () => {
+    setRight(doneWords.concat(leftChecked));
+    setLeft(not(todoWords, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
+    setLeft(todoWords.concat(rightChecked));
+    setRight(not(doneWords, rightChecked));
     setChecked(not(checked, rightChecked));
   };
 
   const todoList = (items) => (
     <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
       <List dense component="div" role="list">
-        {items.map((value) => {
-          const labelId = `transfer-list-item-${value}-label`;
-
+        {items.map((item) => {
           return (
             <ListItem
-              key={value}
+              key={item.wordSq}
               secondaryAction={[
                 <IconButton>
                   <EditIcon color="warning"></EditIcon>
@@ -71,19 +85,19 @@ export default function TransferList() {
               ]}
               disablePadding
             >
-              <ListItemButton role="listitem" onClick={handleToggle(value)}>
+              <ListItemButton role="listitem" onClick={handleToggle(item.wordSq)}>
                 <ListItemIcon>
                   <Checkbox
-                    checked={checked.indexOf(value) !== -1}
+                    checked={checked.indexOf(item.wordSq) !== -1}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{
-                      'aria-labelledby': labelId,
+                      'aria-labelledby': item.wordSq,
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText id={labelId} primary={`${value + 1}`} />
-                <ListItemText id={labelId} primary={`${value + 1}`} />
+                <ListItemText id={item.wordEng} primary={`${item.wordEng}`} />
+                <ListItemText id={item.wordKor} primary={`${item.wordKor}`} />
                 <ListItemIcon></ListItemIcon>
               </ListItemButton>
             </ListItem>
@@ -96,12 +110,10 @@ export default function TransferList() {
   const doneList = (items) => (
     <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
       <List dense component="div" role="list">
-        {items.map((value) => {
-          const labelId = `transfer-list-item-${value}-label`;
-
+        {items.map((item) => {
           return (
             <ListItem
-              key={value}
+              key={item.wordSq}
               secondaryAction={
                 <IconButton>
                   <SaveIcon color="success"></SaveIcon>
@@ -109,19 +121,19 @@ export default function TransferList() {
               }
               disablePadding
             >
-              <ListItemButton  role="listitem" onClick={handleToggle(value)}>
+              <ListItemButton role="listitem" onClick={handleToggle(item.wordSq)}>
                 <ListItemIcon>
                   <Checkbox
-                    checked={checked.indexOf(value) !== -1}
+                    checked={checked.indexOf(item.wordSq) !== -1}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{
-                      'aria-labelledby': labelId,
+                      'aria-labelledby': item.wordSq,
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText id={labelId} primary={`${value + 1}`} />
-                <ListItemText id={labelId} primary={`${value + 1}`} />
+                <ListItemText id={item.wordEng} primary={`${item.wordEng}`} />
+                <ListItemText id={item.wordKor} primary={`${item.wordKor}`} />
                 <ListItemIcon></ListItemIcon>
               </ListItemButton>
             </ListItem>
@@ -140,7 +152,7 @@ export default function TransferList() {
             <Button variant="contained">추가</Button>
           </Grid>
           </Grid>
-        {todoList(left)}
+        {todoList(todoWords)}
       </Grid>
       <Grid item xs={1}> 
         <Grid container direction="column" justifyContent="center" alignItems="center">
@@ -168,7 +180,7 @@ export default function TransferList() {
       </Grid>
       <Grid item xs={5.5} sx={{ boxShadow:"4px 4px 4px rgba(0,0,0,0.25)", border: "3px solid #111" }}>
         <Grid sx={{ ml: "16px"}}><h3>외운 쫑알단어</h3></Grid>
-        {doneList(right)}
+        {doneList(doneWords)}
       </Grid>
     </Grid>
   );
