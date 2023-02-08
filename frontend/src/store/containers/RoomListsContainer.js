@@ -5,7 +5,7 @@ import { getRoomList } from "store/reducers/roomListReducer";
 
 function RoomListsContainer({ main }) {
   const dispatch = useDispatch();
-  const roomList = useSelector((state) => state.roomListReducer);
+  const { data, loading } = useSelector((state) => state.roomListReducer);
   const filter = useSelector((state) => state.roomFilterReducer);
 
   useEffect(() => {
@@ -16,11 +16,19 @@ function RoomListsContainer({ main }) {
 
   if (main) maxRoomList = true;
 
-  return (
-    <div>
-      {roomList && <RoomList roomLists={roomList} maxRoomList={maxRoomList} />}
-    </div>
-  );
+  if (loading === "pending") {
+    return <div>로딩중</div>;
+  }
+  if (loading === "successed") {
+    const roomList = data;
+    return (
+      <div>
+        {roomList && (
+          <RoomList roomLists={roomList.list} maxRoomList={maxRoomList} />
+        )}
+      </div>
+    );
+  }
 }
 
 export default RoomListsContainer;
