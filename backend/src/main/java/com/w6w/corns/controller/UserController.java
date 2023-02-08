@@ -257,7 +257,7 @@ public class UserController {
 
     @ApiOperation(value = "user 정보 수정", notes = "닉네임, 이미지 수정")
     @PutMapping
-    public ResponseEntity<?> modifyUserInfo(@RequestPart UserModifyRequestDto modifyRequestDto,
+    public ResponseEntity<?> modifyUserInfo(UserModifyRequestDto modifyRequestDto,
                                             @RequestPart MultipartFile multipartFile){
 
         try {
