@@ -34,11 +34,8 @@ export default function TransferList() {
   }, [baseTime, dispatch]);
 
   const [checked, setChecked] = React.useState([]);
-  const todoWords = useSelector((state) => state.wordListReducer.todoList);
-  const doneWords = useSelector((state) => state.wordListReducer.doneList);
-
-  const setLeft = [];
-  const setRight = [];
+  const [todoWords, setLeft] = React.useState(useSelector((state) => state.wordListReducer.todoList)); 
+  const [doneWords, setRight] = React.useState(useSelector((state) => state.wordListReducer.doneList));
 
   const leftChecked = intersection(checked, todoWords);
   const rightChecked = intersection(checked, doneWords);
@@ -72,6 +69,8 @@ export default function TransferList() {
     <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
       <List dense component="div" role="list">
         {items.map((item) => {
+          const labelId = `transfer-list-item-${item.wordSq}-label`;
+
           return (
             <ListItem
               key={item.wordSq}
@@ -85,19 +84,19 @@ export default function TransferList() {
               ]}
               disablePadding
             >
-              <ListItemButton role="listitem" onClick={handleToggle(item.wordSq)}>
+              <ListItemButton role="listitem" onClick={handleToggle(item)}>
                 <ListItemIcon>
                   <Checkbox
-                    checked={checked.indexOf(item.wordSq) !== -1}
+                    checked={checked.indexOf(item) !== -1}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{
-                      'aria-labelledby': item.wordSq,
+                      'aria-labelledby': labelId,
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText id={item.wordEng} primary={`${item.wordEng}`} />
-                <ListItemText id={item.wordKor} primary={`${item.wordKor}`} />
+                <ListItemText id={labelId} primary={`${item.wordEng}`} />
+                <ListItemText id={labelId} primary={`${item.wordKor}`} />
                 <ListItemIcon></ListItemIcon>
               </ListItemButton>
             </ListItem>
@@ -111,6 +110,8 @@ export default function TransferList() {
     <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
       <List dense component="div" role="list">
         {items.map((item) => {
+          const labelId = `transfer-list-item-${item.wordSq}-label`;
+
           return (
             <ListItem
               key={item.wordSq}
@@ -121,19 +122,19 @@ export default function TransferList() {
               }
               disablePadding
             >
-              <ListItemButton role="listitem" onClick={handleToggle(item.wordSq)}>
+              <ListItemButton role="listitem" onClick={handleToggle(item)}>
                 <ListItemIcon>
                   <Checkbox
-                    checked={checked.indexOf(item.wordSq) !== -1}
+                    checked={checked.indexOf(item) !== -1}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{
-                      'aria-labelledby': item.wordSq,
+                      'aria-labelledby': labelId,
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText id={item.wordEng} primary={`${item.wordEng}`} />
-                <ListItemText id={item.wordKor} primary={`${item.wordKor}`} />
+                <ListItemText id={labelId} primary={`${item.wordEng}`} />
+                <ListItemText id={labelId} primary={`${item.wordKor}`} />
                 <ListItemIcon></ListItemIcon>
               </ListItemButton>
             </ListItem>
