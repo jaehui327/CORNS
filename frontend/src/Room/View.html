@@ -95,7 +95,7 @@
         let session = urlParams.get('session');
         let username = urlParams.get('username'); // sessionstorage의 nickname
         let userid = urlParams.get('userId');     // sessionstorage의 userId
-        let jroomno = urlParams.get('nroomno');
+        let jroomno = urlParams.get('jroomno');
         // alert('session = ' + session)
 
         if(!session ){
@@ -115,5 +115,31 @@
 
 
       });
+    </script>
+
+    <script>
+     window.onload = function() {
+    		console.log("[window onload] : [start]");
+    		console.log("");
+    		
+    		/* 브라우저 닫기 이벤트 감지 실시 [1]
+    		window.addEventListener("beforeunload", function (event) {
+    			console.log("[window beforeunload] : [start]");
+    			console.log("");        			
+    			// event.returnValue = "브라우저를 종료하시겠습니까?";    			
+        	outRoom($("#userId").val());
+    		});    		
+    		*/
+    	};
+    	
+    	
+    	/* 브라우저 닫기 이벤트 감지 실시 [2] */
+    	window.onbeforeunload = function() {
+    		console.log("[window onbeforeunload] : [start]");
+    		console.log("");
+    		
+        outRoom($("#userId").val());
+    		// return "브라우저를 종료하시겠습니까?";
+    	};	 
     </script>
 </html>

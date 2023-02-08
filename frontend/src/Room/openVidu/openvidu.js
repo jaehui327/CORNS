@@ -4,7 +4,12 @@ var session;
 var roomListId = "roomViewUser";
 
 // serverurl
+// let serverUrl = "https://corns.co.kr:4463/";
 let serverUrl = "https://corns.co.kr:4463/";
+
+if(window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")){
+	serverUrl = "https://corns.co.kr:4463/";
+}
 
 // 칸이 차 있는지
 var userArray = [false,false,false,false];
@@ -28,8 +33,6 @@ function joinSession() {
 	// $("#userName").val(username);
 	// $("#jRoomNo").val(jroomno);
 	// $("#userId").val(userid);
-	// 방 입장처리 한다.
-	//intoRoom(connectionId, recordId, token)
 
 
 	// --- 1) Get an OpenVidu object ---
@@ -102,7 +105,7 @@ function joinSession() {
 
 		// First param is the token got from the OpenVidu deployment. Second param can be retrieved by every user on event
 		// 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
-		session.connect(token, { clientData: myUserName })
+		session.connect(token, { userId : userId, userName: myUserName })
 			.then(() => {
 
 				// --- 5) Set page layout for active call ---
@@ -135,6 +138,10 @@ function joinSession() {
 
 				session.publish(publisher);
 
+				
+				// 방 입장처리 한다.
+				intoRoom(myUserName, '', token);
+
 			})
 			.catch(error => {
 				console.log('There was an error connecting to the session:', error.code, error.message);
@@ -145,27 +152,66 @@ function joinSession() {
 
 // 방 입장 처리
 function intoRoom(connectionId, recordId, token){
-	$.ajax({
-		type : "POST",            // HTTP method type(GET, POST) 형식이다.
-		url : serverUrl + "/room/user",      // 컨트롤러에서 대기중인 URL 주소이다.
-		data : JSON.stringify({
-			"roomNo": jRoomNo,
-			"roomUser": {
-			   "connectionId": connectionId, 
-			   "recordId": recordId,
-			   "token": token
-			},
-			"userId": userId
-		  }),
-		success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
-			/*
-
-			
-			
-			*/
+	var data = {
+		"roomNo": jRoomNo,
+		"roomUser": {
+		   "connectionId": connectionId, 
+		   "recordId": recordId,
+		   "token": token
 		},
-		error : function(XMLHttpRequest, textStatus, errorThrown){ // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
-			alert("통신 실패.")
+		"userId": userId
+	  };
+
+	$.ajax({
+		type : "POST",
+		url : serverUrl + "room/user",      
+		contentType : "application/json",
+		data : JSON.stringify(data),
+		success: function(data, textStatus, xhr) {
+			console.log(data);
+			console.log(textStatus);
+			console.log(xhr);
+			console.log("입장처리 완료");
+		},
+		error:function(request,status,error){
+			alert("방 입장처리 실패 : " + request.statusText);
+			console.log(request);
+			console.log(status);
+			console.log(error);
+			if(request.status === 409){
+				console.log("이미 접속완료된 회원");
+				// 어디방인지 확인하고 이 방 아니면 나가게하자
+			}
+		}
+	});
+}
+
+function outRoom(rUserId){	// 떠나는 사람 방 번호 받는다.
+	var data = {
+		"roomNo": jRoomNo,
+		"userId": rUserId
+	  };
+
+	$.ajax({
+		type : "PATCH",
+		url : serverUrl + "room/user",      
+		contentType : "application/json",
+		data : JSON.stringify(data),
+		success: function(data, textStatus, xhr) {
+			console.log(data);
+			console.log(textStatus);
+			console.log(xhr);
+			console.log("퇴장처리 완료");
+		},
+		error:function(request,status,error){
+			alert("방 퇴장처리 실패 : " + request.statusText);
+			console.log(request);
+			console.log(status);
+			console.log(error);
+			if(request.status === 409){
+				console.log("이미 접속완료된 회원");
+				// 어디방인지 확인하고 이 방 아니면 나가게하자
+			}
 		}
 	});
 }
@@ -196,6 +242,13 @@ function removeUserData(connection) {
 	else if(pid === "roomViewUser4"){
 		userArray[2] = false;
 	}
+
+	console.log("ruserData");
+	console.log(connection);
+	var rUserData = JSON.parse(connection.data);
+	console.log(rUserData);
+
+	// outRoom(rUserData.userId);
 }
 
 
@@ -227,7 +280,7 @@ function createToken(sessionId) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			type: 'POST',
-			url: OPENVIDU_URL + 'openvidu/api/sessions/' + sessionId + '/connection',
+			url: OPENVIDU_URL + 'openvidu/api/sessions/' + sessionId + '/connection',	// 새 연결 만들기
 			data: JSON.stringify({}),
 			headers: { "Content-Type": "application/json",
 						"Authorization" : "Basic " + OPENVIDU_SECRET,
