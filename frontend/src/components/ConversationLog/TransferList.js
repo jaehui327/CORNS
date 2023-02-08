@@ -8,6 +8,11 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 
+import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
+import EditIcon from '@mui/icons-material/EditOutlined';
+import SaveIcon from '@mui/icons-material/CheckBoxOutlined';
+
+
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
@@ -18,7 +23,7 @@ function intersection(a, b) {
 
 export default function TransferList() {
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState([0, 1, 2, 3, 8, 9, 10, 11, 12, 13]);
+  const [left, setLeft] = React.useState([0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
   const [right, setRight] = React.useState([4, 5, 6, 7]);
 
   const leftChecked = intersection(checked, left);
@@ -60,8 +65,7 @@ export default function TransferList() {
   };
 
   const todoList = (items) => (
-    <Paper sx={{ width: "100%", padding: "32px", overflow: 'auto', boxShadow:"4px 4px 4px rgba(0,0,0,0.25)", border: "3px solid #111" }}>
-    <h3>외워야할 쫑알단어</h3>
+    <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
       <List dense component="div" role="list">
         {items.map((value) => {
           const labelId = `transfer-list-item-${value}-label`;
@@ -84,6 +88,10 @@ export default function TransferList() {
                 />
               </ListItemIcon>
               <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemIcon>
+                <EditIcon color="warning"></EditIcon>
+                <DeleteIcon color="error"></DeleteIcon>
+              </ListItemIcon>
             </ListItem>
           );
         })}
@@ -92,8 +100,7 @@ export default function TransferList() {
   );
 
   const doneList = (items) => (
-    <Paper sx={{ width: 570, height: 600, overflow: 'auto' }}>
-    <h3>외운 쫑알단어</h3>
+    <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
       <List dense component="div" role="list">
         {items.map((value) => {
           const labelId = `transfer-list-item-${value}-label`;
@@ -116,6 +123,9 @@ export default function TransferList() {
                 />
               </ListItemIcon>
               <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemIcon>
+                <SaveIcon color="success"></SaveIcon>
+              </ListItemIcon>
             </ListItem>
           );
         })}
@@ -124,10 +134,18 @@ export default function TransferList() {
   );
 
   return (
-    <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{width:"90%"}}>
-      <Grid  xs={5}item>{todoList(left)}</Grid>
-      <Grid item xs={2}> 
-        <Grid container direction="column" alignItems="center">
+    <Grid container sx={{ mt: "32px" }} justifyContent="center" alignItems="center">
+      <Grid item xs={5.5} sx={{ boxShadow:"4px 4px 4px rgba(0,0,0,0.25)", border: "3px solid #111" }}>
+        <Grid sx={{ ml: "16px", mr: "16px" }}>
+          <Grid container direction="row" justifyContent="space-between" alignItems="center">
+            <h3>외워야할 쫑알단어</h3>
+            <Button variant="contained">추가</Button>
+          </Grid>
+          </Grid>
+        {todoList(left)}
+      </Grid>
+      <Grid item xs={1}> 
+        <Grid container direction="column" justifyContent="center" alignItems="center">
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
@@ -150,7 +168,10 @@ export default function TransferList() {
           </Button>
         </Grid>
       </Grid>
-      <Grid item xs={5}>{doneList(right)}</Grid>
+      <Grid item xs={5.5} sx={{ boxShadow:"4px 4px 4px rgba(0,0,0,0.25)", border: "3px solid #111" }}>
+        <Grid sx={{ ml: "16px"}}><h3>외운 쫑알단어</h3></Grid>
+        {doneList(right)}
+      </Grid>
     </Grid>
   );
 }
