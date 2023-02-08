@@ -67,7 +67,6 @@ function SearchUser() {
         {loading && <p>loading 중...</p>}
         {!loading && search > 0 && users.length > 0 && <UserList userList={users} />}
         {!loading && search > 0 && users.length === 0 && <p>검색 결과가 없습니다.</p>}
-
       </Box>
     </>
   );

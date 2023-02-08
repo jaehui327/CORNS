@@ -27,9 +27,10 @@ function FriendRequest() {
           border: "3px solid #111111",
           position: "relative",
           p: "1.5rem",
-          minHeight: "300px",
+          // minHeight: "300px",
         }}
       > 
+        {loading && <p>loading 중...</p>}
         {!loading && users.length > 0 && <RequestList users={users} />}
         {!loading && users.length === 0 && <p>친구신청이 없습니다.</p>}
       </Box>
