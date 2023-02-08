@@ -22,6 +22,7 @@ function RoomListsContainer({ main }) {
     setList(data.list);
   }, [data]);
 
+  const [addList, setAddList] = useState(list);
   // const [_, setRef] = useIntersect(async (entry, observer) => {
   //   observer.unobserve(entry.target);
   //   await dispatch(addPage(page));
@@ -35,19 +36,21 @@ function RoomListsContainer({ main }) {
   if (main) maxRoomList = true;
 
   const addNext = async () => {
-    const addList = await dispatch(getRoomList(filter));
-    setList([...list, addList]);
+    setAddList([...list, ...data.list]);
   };
 
   const nextPage = () => {
     dispatch(addPageCount(pageCount, "ADD_PAGE_COUNT"));
     dispatch(addPage(pageCount, "ADD_PAGE"));
     addNext();
+    if (!data.hasNext) {
+      alert("남은페이지가 없어요!");
+    }
   };
 
   return (
     <div>
-      {list && <RoomList roomLists={list} maxRoomList={maxRoomList} />}
+      {addList && <RoomList roomLists={addList} maxRoomList={maxRoomList} />}
       {loading && <div>로딩중</div>}
       <button onClick={nextPage}>추가로 불러오기</button>
     </div>
