@@ -11,9 +11,10 @@ import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import SaveIcon from '@mui/icons-material/CheckBoxOutlined';
-import { IconButton, ListItemButton } from '@mui/material';
+import { Alert, IconButton, ListItemButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDoneList, getTodoList } from 'store/reducers/wordListReducer';
+import axios from 'axios';
 
 
 function not(a, b) {
@@ -54,94 +55,86 @@ export default function TransferList() {
   };
 
   const handleCheckedRight = () => {
-    setRight(doneWords.concat(leftChecked));
+    let request = leftChecked.map(function(value) {
+      return {status: 2, wordSq: `${value.wordSq}`}
+    });
+    updateWordStatus(request);
+    setRight(leftChecked.concat(doneWords));
+
     setLeft(not(todoWords, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
-    setLeft(todoWords.concat(rightChecked));
+    setLeft(rightChecked.concat(todoWords));
     setRight(not(doneWords, rightChecked));
     setChecked(not(checked, rightChecked));
   };
 
-  const todoList = (items) => (
-    <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
-      <List dense component="div" role="list">
-        {items.map((item) => {
-          const labelId = `transfer-list-item-${item.wordSq}-label`;
+  // [PATCH] 단어 상태 변경
+  const updateWordStatus = async (body) => {
+    console.log(body);
 
-          return (
-            <ListItem
-              key={item.wordSq}
-              secondaryAction={[
-                <IconButton>
-                  <EditIcon color="warning"></EditIcon>
-                </IconButton>,
-                <IconButton>
-                  <DeleteIcon color="error"></DeleteIcon>
-                </IconButton>
-              ]}
-              disablePadding
-            >
-              <ListItemButton role="listitem" onClick={handleToggle(item)}>
-                <ListItemIcon>
-                  <Checkbox
-                    checked={checked.indexOf(item) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{
-                      'aria-labelledby': labelId,
-                    }}
-                  />
-                </ListItemIcon>
-                <ListItemText id={labelId} primary={`${item.wordEng}`} />
-                <ListItemText id={labelId} primary={`${item.wordKor}`} />
-                <ListItemIcon></ListItemIcon>
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
-    </Paper>
-  );
+    try {
+      const response = await axios.patch(
+        `${process.env.REACT_APP_HOST}/word`, {body}
+      );
+      if (response.status === 200) {
+        <Alert severity="success">잘 했어</Alert>
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  const doneList = (items) => (
-    <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
-      <List dense component="div" role="list">
-        {items.map((item) => {
-          const labelId = `transfer-list-item-${item.wordSq}-label`;
+  // [PUT] 쫑알단어 수정
+  const modifyWord = (body) => async (e) => {
+    e.preventDefault();
 
-          return (
-            <ListItem
-              key={item.wordSq}
-              secondaryAction={
-                <IconButton>
-                  <SaveIcon color="success"></SaveIcon>
-                </IconButton>
-              }
-              disablePadding
-            >
-              <ListItemButton role="listitem" onClick={handleToggle(item)}>
-                <ListItemIcon>
-                  <Checkbox
-                    checked={checked.indexOf(item) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{
-                      'aria-labelledby': labelId,
-                    }}
-                  />
-                </ListItemIcon>
-                <ListItemText id={labelId} primary={`${item.wordEng}`} />
-                <ListItemText id={labelId} primary={`${item.wordKor}`} />
-                <ListItemIcon></ListItemIcon>
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
-    </Paper>
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_HOST}/word`, {body}
+      );
+      if (response.status === 200) {
+        <Alert severity="success">잘 했어</Alert>
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const wordListItem = (item, id) => (
+    <ListItem
+    key={id}
+    secondaryAction={[
+      <IconButton>
+        <EditIcon color="warning"></EditIcon>
+      </IconButton>,
+      <IconButton>
+        <DeleteIcon color="error"></DeleteIcon>
+      </IconButton>,
+      <IconButton>
+      <SaveIcon color="success"></SaveIcon>
+    </IconButton>
+    ]}
+    disablePadding
+  >
+    <ListItemButton role="listitem" onClick={handleToggle(item)}>
+      <ListItemIcon>
+        <Checkbox
+          checked={checked.indexOf(item) !== -1}
+          tabIndex={-1}
+          disableRipple
+          inputProps={{
+            'aria-labelledby': item.wordSq,
+          }}
+        />
+      </ListItemIcon>
+      <ListItemText id={item.wordEng} primary={`${item.wordEng}`} />
+      <ListItemText id={item.wordKor} primary={`${item.wordKor}`} />
+      <ListItemIcon></ListItemIcon>
+    </ListItemButton>
+  </ListItem>
   );
 
   return (
@@ -152,8 +145,14 @@ export default function TransferList() {
             <h3>외워야할 쫑알단어</h3>
             <Button variant="contained">추가</Button>
           </Grid>
-          </Grid>
-        {todoList(todoWords)}
+        </Grid>
+        <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
+          <List dense component="div" role="list">
+            {
+              todoWords.map((item, id) => wordListItem(item, id))
+            }
+          </List>
+        </Paper>
       </Grid>
       <Grid item xs={1}> 
         <Grid container direction="column" justifyContent="center" alignItems="center">
@@ -181,7 +180,13 @@ export default function TransferList() {
       </Grid>
       <Grid item xs={5.5} sx={{ boxShadow:"4px 4px 4px rgba(0,0,0,0.25)", border: "3px solid #111" }}>
         <Grid sx={{ ml: "16px"}}><h3>외운 쫑알단어</h3></Grid>
-        {doneList(doneWords)}
+        <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
+          <List dense component="div" role="list">
+            {
+              doneWords.map((item, id) => wordListItem(item, id))
+            }
+          </List>
+        </Paper>
       </Grid>
     </Grid>
   );
