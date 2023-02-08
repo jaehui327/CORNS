@@ -1,14 +1,16 @@
 import React, {useState} from "react";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
+import { useDispatch } from "react-redux";
+import {TableRow, TableCell,Select,MenuItem}   from "@mui/material";
+import { logBookmarkListActions, getLogBookmarkListAxios } from "store/reducers/logBookmarkListReducer";
 
 function LogHeader() {
-  const [type, setType] = useState("newest");
+  const dispatch = useDispatch()
+  const [type, setType] = useState("DESC");
   
-  const handleChange = (e) => {
+  const changeHandler = (e) => {
     setType(e.target.value);
+    dispatch(logBookmarkListActions.toggleSortOption(e.target.value))
+    dispatch(getLogBookmarkListAxios(e.target.value))
   };
   
   return (
@@ -26,9 +28,9 @@ function LogHeader() {
       </TableCell>
 
       <TableCell width="15%" align="center">
-        <Select value={type} variant="standard" size="small" onChange={handleChange} sx={{fontSize: "14px"}}>
-          <MenuItem value={"newest"}>최신순</MenuItem>
-          <MenuItem value={"oldest"}>오래된순</MenuItem>
+        <Select value={type} variant="standard" size="small" onChange={changeHandler} sx={{fontSize: "14px"}} >
+          <MenuItem value={"DESC"}>최신순</MenuItem>
+          <MenuItem value={"ASC"}>오래된순</MenuItem>
         </Select>
       </TableCell>
 
