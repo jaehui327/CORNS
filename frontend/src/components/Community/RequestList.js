@@ -6,14 +6,14 @@ import { Box } from "@mui/material";
 
 function RequestList({ users }) {
   return (
-    <Box
-      sx={{
-        backgroundColor: "#DDDDDD",
-        border: "3px solid #111111",
-        position: "relative",
-        p: "1.5rem",
-      }}
-    >
+    // <Box
+    //   sx={{
+    //     backgroundColor: "#DDDDDD",
+    //     border: "3px solid #111111",
+    //     position: "relative",
+    //     p: "1.5rem",
+    //   }}
+    // >
       <Carousel>
         {users.map((item, index) => {
           return (
@@ -23,7 +23,7 @@ function RequestList({ users }) {
           );
         })}
       </Carousel>
-    </Box>
+    // </Box>
   );
 }
 

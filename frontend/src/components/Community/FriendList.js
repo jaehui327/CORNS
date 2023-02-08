@@ -9,8 +9,10 @@ function FriendList({ items }) {
   const dispatch = useDispatch();
   const [type, setType] = useState("nickname");
   const [text, setText] = useState("");
-  const [search, setSearch] = useState(false);
+  const [search, setSearch] = useState(0);
   const users = useSelector((state) => state.friendListReducer.friendList);
+  const loading = useSelector((state) => state.friendListReducer.isFriendListLoading);
+
 
   useEffect(() => {
     dispatch(getFriendListAxios(type, text));
@@ -27,7 +29,10 @@ function FriendList({ items }) {
         setSearch={setSearch}
       />
       <Box padding="48px 112px">
-        {users && <UserList userList={users} />}
+        {loading && <p>loading중...</p>}
+        {!loading && users.length > 0 && <UserList userList={users} />}
+        {!loading && users.length === 0 && !text && <p>친구가 없습니다.</p> }
+        {!loading && users.length === 0 && text &&  <p>검색결과가 없습니다.</p> }
       </Box>
     </>
   );

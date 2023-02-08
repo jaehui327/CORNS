@@ -19,7 +19,6 @@ const acceptFriend = async (fromId, toId, setRelation) => {
       }
     );
     if (response.status === 200) {
-      console.log(response);
       setRelation && setRelation(3);
     }
   } catch (e) {
@@ -38,7 +37,6 @@ const rejectFriend = async (fromId, toId, setRelation) => {
       }
     );
     if (response.status === 200) {
-      console.log(response);
       setRelation && setRelation(0);
     }
   } catch (e) {
@@ -52,13 +50,17 @@ function FriendBtnTwo({ fromId, toId, setRelation }) {
 
   const acceptHandler = async () => {
     await acceptFriend(fromId, toId, setRelation);
-    dispatch(getFriendListAxios());
-    dispatch(getFriendRequestListAxios())
+    if (window.location.pathname.includes('friends')) {
+      dispatch(getFriendListAxios());
+      dispatch(getFriendRequestListAxios())
+    }
   };
 
   const rejectHandler = async () => {
     await rejectFriend(fromId, toId, setRelation);
-    dispatch(getFriendRequestListAxios());
+    if (window.location.pathname.includes('friends')) {
+      dispatch(getFriendRequestListAxios());
+    }
   };
 
   return (

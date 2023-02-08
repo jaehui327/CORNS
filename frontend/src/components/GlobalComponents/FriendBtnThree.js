@@ -28,7 +28,9 @@ function FriendBtnThree({ fromId, toId, setRelation }) {
   const dispatch = useDispatch();
   const deleteHandler = async () => {
     await deleteFriend(fromId, toId, setRelation);
-    dispatch(getFriendListAxios());
+    if (window.location.pathname.includes('friends')) {
+      dispatch(getFriendListAxios());
+    }
   };
 
   return (
