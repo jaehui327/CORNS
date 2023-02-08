@@ -1,74 +1,40 @@
-import React from "react";
-import RequestList from "./RequestList";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getFriendRequestListAxios } from "store/reducers/friendListReducer";
 
-import { ChevronDoubleRight, ChevronDoubleLeft } from "react-bootstrap-icons";
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import RequestList from "./RequestList";
+import { Box } from "@mui/material";
+
 function FriendRequest() {
-  const users = [
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "1번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "2번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "3번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "4번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "5번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "6번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "7번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "8번임",
-      user_id: 1000,
-    },
-    {
-      img_url:
-        "https://i.pinimg.com/564x/af/7b/de/af7bde50489a2cb932a98741b877704b.jpg",
-      nickname: "9번임",
-      user_id: 1000,
-    },
-  ];
+  const dispatch = useDispatch();
+  const users = useSelector(
+    (state) => state.friendListReducer.friendRequestList
+  );
+  const loading = useSelector(
+    (state) => state.friendListReducer.isFriendRequestListLoading
+  );
+
+  useEffect(() => {
+    dispatch(getFriendRequestListAxios());
+  }, [dispatch]);
 
   return (
     <>
       <h3>친구신청</h3>
-
-      <RequestList users={users} />
+      <Box
+        sx={{
+          backgroundColor: "#DDDDDD",
+          border: "3px solid #111111",
+          position: "relative",
+          p: "1.5rem",
+          // minHeight: "300px",
+        }}
+      > 
+        {loading && <p>loading 중...</p>}
+        {!loading && users.length > 0 && <RequestList users={users} />}
+        {!loading && users.length === 0 && <p>친구신청이 없습니다.</p>}
+      </Box>
     </>
   );
 }
-
 export default FriendRequest;
