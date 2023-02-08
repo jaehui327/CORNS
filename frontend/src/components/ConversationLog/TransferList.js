@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import SaveIcon from '@mui/icons-material/CheckBoxOutlined';
+import { IconButton, ListItemButton } from '@mui/material';
 
 
 function not(a, b) {
@@ -23,8 +24,8 @@ function intersection(a, b) {
 
 export default function TransferList() {
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState([0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
-  const [right, setRight] = React.useState([4, 5, 6, 7]);
+  const [left] = React.useState([0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
+  const [right] = React.useState([4, 5, 6, 7]);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -42,26 +43,13 @@ export default function TransferList() {
     setChecked(newChecked);
   };
 
-  const handleAllRight = () => {
-    setRight(right.concat(left));
-    setLeft([]);
-  };
 
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
-  };
-
-  const handleAllLeft = () => {
-    setLeft(left.concat(right));
-    setRight([]);
   };
 
   const todoList = (items) => (
@@ -73,25 +61,31 @@ export default function TransferList() {
           return (
             <ListItem
               key={value}
-              role="listitem"
-              button
-              onClick={handleToggle(value)}
+              secondaryAction={[
+                <IconButton>
+                  <EditIcon color="warning"></EditIcon>
+                </IconButton>,
+                <IconButton>
+                  <DeleteIcon color="error"></DeleteIcon>
+                </IconButton>
+              ]}
+              disablePadding
             >
-              <ListItemIcon>
-                <Checkbox
-                  checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    'aria-labelledby': labelId,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
-              <ListItemIcon>
-                <EditIcon color="warning"></EditIcon>
-                <DeleteIcon color="error"></DeleteIcon>
-              </ListItemIcon>
+              <ListItemButton role="listitem" onClick={handleToggle(value)}>
+                <ListItemIcon>
+                  <Checkbox
+                    checked={checked.indexOf(value) !== -1}
+                    tabIndex={-1}
+                    disableRipple
+                    inputProps={{
+                      'aria-labelledby': labelId,
+                    }}
+                  />
+                </ListItemIcon>
+                <ListItemText id={labelId} primary={`${value + 1}`} />
+                <ListItemText id={labelId} primary={`${value + 1}`} />
+                <ListItemIcon></ListItemIcon>
+              </ListItemButton>
             </ListItem>
           );
         })}
@@ -108,24 +102,28 @@ export default function TransferList() {
           return (
             <ListItem
               key={value}
-              role="listitem"
-              button
-              onClick={handleToggle(value)}
+              secondaryAction={
+                <IconButton>
+                  <SaveIcon color="success"></SaveIcon>
+                </IconButton>
+              }
+              disablePadding
             >
-              <ListItemIcon>
-                <Checkbox
-                  checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    'aria-labelledby': labelId,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
-              <ListItemIcon>
-                <SaveIcon color="success"></SaveIcon>
-              </ListItemIcon>
+              <ListItemButton  role="listitem" onClick={handleToggle(value)}>
+                <ListItemIcon>
+                  <Checkbox
+                    checked={checked.indexOf(value) !== -1}
+                    tabIndex={-1}
+                    disableRipple
+                    inputProps={{
+                      'aria-labelledby': labelId,
+                    }}
+                  />
+                </ListItemIcon>
+                <ListItemText id={labelId} primary={`${value + 1}`} />
+                <ListItemText id={labelId} primary={`${value + 1}`} />
+                <ListItemIcon></ListItemIcon>
+              </ListItemButton>
             </ListItem>
           );
         })}
