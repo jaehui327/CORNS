@@ -15,36 +15,38 @@ import { css } from "@emotion/react";
 function LogItem({ log }) {
   // dummy data
   const {
-    room_no,
-    bookmark,
+    roomNo,
+    isBookmark,
     subject,
     title,
-    start_date,
+    startTime,
     time,
-    max_member,
-    self_score,
-    ddabong,
+    member,
+    selfScore,
+    thumbCnt,
   } = log;
-  const logUrl = `/conversationLog/logdetail/${room_no}`;
+  
+  const logUrl = `/conversationLog/logdetail/${roomNo}`;
+  const subjectString = subject
 
-  const [bookmarkState, setBookmarkState] = useState(bookmark);
+  // const [bookmarkState, setBookmarkState] = useState(bookmark);
 
-  // 북마크 삭제 / 추가
-  const onToggle = () => {
-    setBookmarkState(!bookmarkState);
-  };
+  // // 북마크 삭제 / 추가
+  // const onToggle = () => {
+  //   setBookmarkState(!bookmarkState);
+  // };
 
   return (
     <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
       {/* 북마크 */}
       <TableCell component="th" scope="row" width="10%" align="center">
-        {bookmarkState ? (
+        {isBookmark ? (
           <BookmarkStar
             css={css`
               font-size: 24px;
               color: #3c90f2;
             `}
-            onClick={onToggle}
+            // onClick={onToggle}
           />
         ) : (
           <BookmarkStarFill
@@ -52,7 +54,7 @@ function LogItem({ log }) {
               font-size: 24px;
               color: #3c90f2;
             `}
-            onClick={onToggle}
+            // onClick={onToggle}
           />
         )}
       </TableCell>
@@ -79,7 +81,7 @@ function LogItem({ log }) {
       </TableCell>
 
       {/* 날짜 */}
-      <TableCell width="15%" align="center">{start_date}</TableCell>
+      <TableCell width="15%" align="center">{startTime}</TableCell>
 
       {/* 대화시간 */}
       <TableCell width="10%" align="center">
@@ -97,7 +99,7 @@ function LogItem({ log }) {
       </TableCell>
 
       {/* 인원 */}
-      <TableCell width="10%" align="center">{max_member}명</TableCell>
+      <TableCell width="10%" align="center">{member}명</TableCell>
 
       {/* 자기평가 */}
       <TableCell width="10%" align="center">
@@ -110,7 +112,7 @@ function LogItem({ log }) {
         >
           <Star css={css`font-size: 17px;`}/>
 
-          {self_score}
+          {selfScore}
         </div>
       </TableCell>
 
@@ -124,8 +126,7 @@ function LogItem({ log }) {
           `}
         >
           <HandThumbsUp css={css`font-size: 17px;`}/>
-
-          {ddabong}
+          {thumbCnt}
         </div>
       </TableCell>
     </TableRow>
