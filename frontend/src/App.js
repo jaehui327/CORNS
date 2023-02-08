@@ -2,6 +2,7 @@ import React, { Route, Switch, Redirect } from "react-router-dom";
 import AuthRoute from "routes/AuthRoute";
 
 import Home from "routes/Home";
+import Tutorial from "routes/Tutorial";
 import Conversation from "routes/Conversation";
 import ConversationLog from "routes/ConversationLog/ConversationLog";
 import Community from "routes/Community/Community";
@@ -18,6 +19,7 @@ function App() {
     <div className="App">
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route exact path="/tutorial" component={Tutorial} />
         <Route exact path="/conversation" component={Conversation} />
         <AuthRoute path="/conversationLog" component={ConversationLog} />
         <AuthRoute path="/community" component={Community} />
