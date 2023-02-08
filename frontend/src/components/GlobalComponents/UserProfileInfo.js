@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Box, CardMedia, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
+import ProfileImg from "./ProfileImg";
 
 function UserProfileInfo({ basicInfo }) {
   const {
@@ -25,17 +26,10 @@ function UserProfileInfo({ basicInfo }) {
           p: "64px 48px",
         }}
       >
-        <CardMedia
-          component="img"
-          image={imgUrl == null ? "" : null}
-          alt={nickname}
-          sx={{
-            width: "250px",
-            borderRadius: "200px",
-            border: "3px solid #111",
-            mr: "135px",
-          }}
-        />
+        <Box sx={{mr: "135px"}}>
+          <ProfileImg imgSrc={imgUrl} nickname={nickname} width={"110%"} />
+        </Box>
+
         <Box
           sx={{
             display: "flex",
