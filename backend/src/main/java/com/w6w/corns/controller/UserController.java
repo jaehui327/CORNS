@@ -258,10 +258,10 @@ public class UserController {
     @ApiOperation(value = "user 정보 수정", notes = "닉네임, 이미지 수정")
     @PutMapping
     public ResponseEntity<?> modifyUserInfo(@RequestPart UserModifyRequestDto modifyRequestDto,
-                                            @RequestPart MultipartFile multipartFile){
+                                            @RequestParam MultipartFile multipartFile){
 
         try {
-            System.out.println("modifyRequestDto = " + modifyRequestDto + ", multipartFile = " + multipartFile);
+            log.debug("modifyRequestDto = " + modifyRequestDto + ", multipartFile = " + multipartFile);
             userService.updateUserInfo(modifyRequestDto, multipartFile);
             return new ResponseEntity<>(HttpStatus.OK);
 
