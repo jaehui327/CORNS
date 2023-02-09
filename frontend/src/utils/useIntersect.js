@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 //  옵션 값을 지정한다.
 const defaultOption = {
   root: null,
-  threshold: 0.75,
+  threshold: 0.25,
   rootMargin: "0px",
 };
 //  커스텀 훅 부분
