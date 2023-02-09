@@ -24,6 +24,7 @@
       <script src="openVidu/openvidu.js"></script>
     </head>
     <body>
+      <button id="startSttttt" style="display:none"></button>
       <div id="roomViewBackground">
         <!-- 탑바 -->
         <div id="roomViewTopBar">
@@ -32,7 +33,7 @@
           <span id="roomViewMemberCount"><!--2/3--></span>
           <span id="roomViewMike"><i class="fa-solid fa-microphone"></i></span>
           <span id="roomViewVideo"><i class="fa-solid fa-video"></i></span>
-          <span id="roomViewPlay" onclick="startConversation()"><i class="fa-solid fa-play"></i></span>
+          <span id="roomViewPlay" onclick="startConversation()" hidden><i class="fa-solid fa-play"></i></span>
           <span id="roomViewOut"><i class="fa-solid fa-right-from-bracket"></i></span>
 
         </div>
@@ -121,7 +122,7 @@
     			console.log("[window beforeunload] : [start]");
     			console.log("");        			
     			// event.returnValue = "브라우저를 종료하시겠습니까?";    			
-        	outRoom($("#userId").val());
+        	// outRoom($("#userId").val());
     		});    		
     		*/
     	};
@@ -132,7 +133,7 @@
     		console.log("[window onbeforeunload] : [start]");
     		console.log("");
     		
-        outRoom($("#userId").val());
+        // outRoom($("#userId").val());
     		// return "브라우저를 종료하시겠습니까?";
     	};	 
     </script>
