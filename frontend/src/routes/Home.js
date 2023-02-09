@@ -162,7 +162,7 @@ function Home() {
           }}
         >
           <img
-            src="https://img.freepik.com/free-vector/different-people-asking-questions_23-2148934441.jpg"
+            src="https://images.everydayhealth.com/images/ms-and-dysarthria-1440x810.jpg"
             alt="conversation-people"
             css={css`
               border: 3px solid #111;
