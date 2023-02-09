@@ -10,12 +10,13 @@ function UserProfileInfo({ basicInfo }) {
     nickname,
     imgUrl,
     expTotal,
-    level,
+    levelNo,
     friendTotal,
     social,
-    isGoogle,
-    refreshToken,
     attendTotal,
+    speakingTotal,
+    thumbTotal,
+    google,
   } = basicInfo;
 
   return (
@@ -26,7 +27,7 @@ function UserProfileInfo({ basicInfo }) {
           p: "64px 48px",
         }}
       >
-        <Box sx={{mr: "135px"}}>
+        <Box sx={{ mr: "135px" }}>
           <ProfileImg imgSrc={imgUrl} nickname={nickname} width={"110%"} />
         </Box>
 
@@ -43,7 +44,7 @@ function UserProfileInfo({ basicInfo }) {
           </Typography>
           <Grid container spacing={0}>
             <Grid item xs={4}>
-              <Typography>Lv.{level}</Typography>
+              <Typography>Lv.{levelNo}</Typography>
             </Grid>
             <Grid item xs={4}>
               <Typography>{expTotal}exp</Typography>
@@ -57,10 +58,10 @@ function UserProfileInfo({ basicInfo }) {
               <Typography>누적 출석수 {attendTotal}일</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography>누적 칭찬수 100개</Typography>
+              <Typography>누적 칭찬수 {thumbTotal}개</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography>누적 발화량수 100분</Typography>
+              <Typography>누적 발화량 {speakingTotal}분</Typography>
             </Grid>
           </Grid>
         </Box>

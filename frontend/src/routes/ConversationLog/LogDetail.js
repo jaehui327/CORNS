@@ -22,16 +22,20 @@ const getLogDetail = async (
     const response = await axios.get(
       `${process.env.REACT_APP_HOST}/corns-log/${roomNo}/${userId}`
     );
-    setLog(response.data.room);
-    setParticipants(response.data.memberList);
-    console.log(response);
+    if (response.data.room.canRead) {
+      setLog(response.data.room);
+      setParticipants(response.data.memberList);
+    } else {
+      setLog({});
+    }
   } catch (e) {
+    console.log(e);
     // axios error (내가 대화한 방 아닌 경우)
     if (e.response.status === 500) {
-      window.location.href = "/NotFound";
+      setLog({});
     }
+    setLoading(false);
   }
-  setLoading(false);
 };
 
 function LogDetail({ match }) {
@@ -50,35 +54,39 @@ function LogDetail({ match }) {
     );
   }, [roomNo]);
 
-  return (
-    <>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableBody>
-          <LogItem log={log} />
-        </TableBody>
-      </Table>
-      <hr />
+  if (log["canRead"]) {
+    return (
+      <>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableBody>
+            <LogItem log={log} />
+          </TableBody>
+        </Table>
+        <hr />
 
-      <ParticipantScriptList participants={participants} />
+        <ParticipantScriptList participants={participants} />
 
-      <Box
-        sx={{
-          width: "95.4%",
-          padding: "32px",
-          backgroundImage: `url(${backgroundImage})`,
-          position: "absolute",
-          bottom: "0",
-          left: "0",
-        }}
-      >
-        <SelfEvaluation
-          roomNo={log.roomNo}
-          selfScore={log.selfScore}
-          selfDesc={log.selfDesc}
-        />
-      </Box>
-    </>
-  );
+        <Box
+          sx={{
+            width: "95.4%",
+            padding: "32px",
+            backgroundImage: `url(${backgroundImage})`,
+            position: "absolute",
+            bottom: "0",
+            left: "0",
+          }}
+        >
+          <SelfEvaluation
+            roomNo={log.roomNo}
+            selfScore={log.selfScore}
+            selfDesc={log.selfDesc}
+          />
+        </Box>
+      </>
+    );
+  } else {
+    return <p>확인할 수 없는 방입니다.</p>;
+  }
 }
 
 export default LogDetail;

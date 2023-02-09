@@ -9,10 +9,10 @@ const initialLogListState = {
 export const logListReducer = createSlice({
   name: "log",
   initialState: initialLogListState,
-  reduers: {
-    // isLogListLoading: (state) => {
-    //   state.isLogListLoading = !state.isLogListLoading;
-    // },
+  reducers: {
+    isLogListLoading: (state) => {
+      state.isLogListLoading = !state.isLogListLoading;
+    },
     getLogList(state, actions) {
       state.logList = actions.payload;
     },
@@ -23,10 +23,9 @@ export const logListReducer = createSlice({
 // filter + pagination 추가...
 export const getLogListAxios = (filter) => {
   console.log("log list axios!");
-  console.log(filter)
 
   return async (dispatch) => {
-    // dispatch(logActions.isLogListLoading());
+    dispatch(logListActions.isLogListLoading());
 
     const sendRequest = async (state) => {
       const response = await axios.get(
@@ -38,6 +37,7 @@ export const getLogListAxios = (filter) => {
         }
       );
       if (response.status === 200) {
+        // console.log(response)
         return response.data.list;
       } else if (response.status === 204) {
         return [];
@@ -45,13 +45,13 @@ export const getLogListAxios = (filter) => {
     };
     try {
       const logList = await sendRequest();
-      dispatch(logActions.getLogList(logList));
+      dispatch(logListActions.getLogList(logList));
     } catch (e) {
       console.log(e);
     }
-    // dispatch(logActions.isLogListLoading());
+    dispatch(logListActions.isLogListLoading());
   };
 };
 
-export const logActions = logListReducer.actions;
+export const logListActions = logListReducer.actions;
 export const { initialState } = logListReducer;

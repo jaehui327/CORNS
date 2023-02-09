@@ -17,6 +17,7 @@ import { css } from "@emotion/react";
 // doRegister: true -> 등록
 // doRegister: false -> 해제
 const toggleBookmark = async (roomNo, userId, doRegister) => {
+  console.log("toggle!", doRegister)
   try {
     const response = await axios.patch(
       `${process.env.REACT_APP_HOST}/corns-log/bookmark`,
@@ -27,11 +28,10 @@ const toggleBookmark = async (roomNo, userId, doRegister) => {
       }
     );
     if (response.status === 200) {
-      return true;
+      return doRegister;
     }
   } catch (e) {
     console.log(e);
-    return false;
   }
 };
 
@@ -68,20 +68,28 @@ function LogItem({ log }) {
     }
   };
 
-
   const dispatch = useDispatch();
-  const sort = useSelector((state) => state.logBookmarkListReducer.sort);
+  const bookmarkSort = useSelector((state) => state.logBookmarkListReducer.sort);
+
+  const [bookmarkState, setBookmarkState] = useState(false);
+
+  useEffect(() => {
+    setBookmarkState(isBookmark)
+  }, [log])
+
 
   // 북마크 삭제 / 추가 handler
   const onToggleHandler = async () => {   
-    if (window.location.pathname.includes("logdetail")) {
+    if (!canRead) {
       return;
     }
     
-    const res = await toggleBookmark(roomNo, sessionStorage.getItem("userId"));
+    const res = await toggleBookmark(roomNo, sessionStorage.getItem("userId"), !bookmarkState);
+    setBookmarkState(res)
+
     // 즐겨찾기 page일때만 갱신
-    if (res && window.location.pathname.includes("bookmarks")) {
-      dispatch(getLogBookmarkListAxios(sort));
+    if (window.location.pathname.includes("bookmarks")) {
+      dispatch(getLogBookmarkListAxios(bookmarkSort));
     }
   };
 
@@ -92,7 +100,7 @@ function LogItem({ log }) {
         
         // canread -> blur
         css={css`
-          filter: ${canRead === false ? "grayscale(100%) blur(2px)" : "none"};
+          filter: ${!canRead ? "grayscale(70%) blur(2px)" : "none"};
         `}
       >
 
@@ -103,10 +111,10 @@ function LogItem({ log }) {
           width="10%"
           align="center"
           sx={{ fontSize: "25px", color: "#3c90f2"}}
-          css={css`cursor: ${!canRead ? "default" : "pointer"}`}
+          css={css`cursor: ${canRead ? "pointer" : "cursor"}`}
           onClick={onToggleHandler}
         >
-          {isBookmark ? <BookmarkStarFill /> : <BookmarkStar />}
+          {bookmarkState ? <BookmarkStarFill /> : <BookmarkStar />}
         </TableCell>
 
         {/* 주제 */}

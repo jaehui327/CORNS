@@ -9,15 +9,13 @@ import { getLogListAxios } from "store/reducers/logListReducer";
 
 function Log() {
   const dispatch = useDispatch();
-  
-  const logs = useSelector((state) => state.logListReducer.logList);
-
-  // const loading = useSelector((state) => state.logListReducer.isLogListLoading);
+  const loading = useSelector((state) => state.logListReducer.isLogListLoading);
   const filter = useSelector((state) => state.logFilterReducer);
+  const logs = useSelector((state) => state.logListReducer.logList);
 
   useEffect(() => {
     dispatch(getLogListAxios(filter));
-  }, [dispatch]);
+  }, [dispatch, filter]);
 
   return (
     <>
@@ -30,7 +28,7 @@ function Log() {
             <LogHeader />
           </TableHead>
           <TableBody>
-            {/* <LogList logs={logs} /> */}
+            <LogList logs={logs} />
           </TableBody>
         </Table>
       </TableContainer>

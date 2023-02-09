@@ -1,7 +1,7 @@
 import React from "react";
 import LogItem from "./LogItem";
 
-function LogList({ logs }) {
+function LogList({ logs }) {  
   return (
     <>
       {logs.map((item) => {

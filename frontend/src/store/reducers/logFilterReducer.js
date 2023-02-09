@@ -19,9 +19,22 @@ const initialLogFilterState = {
 export const logFilterReducer = createSlice({
   name: "logFilter",
   initialState: initialLogFilterState,
-  reducers: {},
+  reducers: {
+    addSubject: (state, action) => {
+      state.subject += action.payload + " ";
+    },
+    remobeSubject: (state, action) => {
+      const subjectList = state.subject.split(" ");
+      const cleaned = subjectList
+        .filter((sub) => parseInt(sub) !== action.payload)
+        .join(" ");
+      return { ...state, subject: cleaned };
+    },
+    toggleSortOption(state, actions) {
+      state.sort = actions.payload;
+    },
+  },
 });
 
-
 export const logFilterActions = logFilterReducer.actions;
-export const { initialState } = logFilterReducer
+export const { initialState } = logFilterReducer;
