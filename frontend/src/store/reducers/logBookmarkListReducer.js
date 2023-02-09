@@ -5,7 +5,7 @@ import { toStringDate } from "./roomFilterReducer";
 const initiaLogBookmarkListState = {
   isLogBookmarkListLoading: false,
   logBookmarkList: [],
-  sort: "DESC",
+  sort: "startTm,DESC",
 };
 
 export const logBookmarkListReducer = createSlice({
@@ -39,7 +39,7 @@ export const getLogBookmarkListAxios = (sort) => {
             baseTime: toStringDate(),
             page: 0,
             size: 20,
-            sort: `startTm,${sort}`,
+            sort: `${sort}`,
           }),
         {
           validateStatus: (status) => status === 200 || status === 204,

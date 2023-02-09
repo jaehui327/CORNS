@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getLogBookmarkListAxios } from "store/reducers/logBookmarkListReducer";
-import { toStringDate } from "store/reducers/roomFilterReducer";
 
 import LogHeader from "components/ConversationLog/LogHeader";
 import LogList from "components/ConversationLog/LogList";
 
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
+import { Table, TableBody, TableContainer, TableHead } from "@mui/material";
 
 function LogBookmark() {
   const dispatch = useDispatch();

@@ -5,8 +5,10 @@ import { logBookmarkListActions, getLogBookmarkListAxios } from "store/reducers/
 
 function LogHeader() {
   const dispatch = useDispatch()
-  const [type, setType] = useState("DESC");
+  const [type, setType] = useState("startTm,DESC");
   
+  // window.location.href 따라서 bookmark / 그냥 log -> dispatch 다르게
+  // 그냥 로그일때는 LOGFILTER에 보내야함
   const changeHandler = (e) => {
     setType(e.target.value);
     dispatch(logBookmarkListActions.toggleSortOption(e.target.value))
@@ -29,8 +31,8 @@ function LogHeader() {
 
       <TableCell width="15%" align="center">
         <Select value={type} variant="standard" size="small" onChange={changeHandler} sx={{fontSize: "14px"}} >
-          <MenuItem value={"DESC"}>최신순</MenuItem>
-          <MenuItem value={"ASC"}>오래된순</MenuItem>
+          <MenuItem value={"startTm,DESC"}>최신순</MenuItem>
+          <MenuItem value={"startTm,ASC"}>오래된순</MenuItem>
         </Select>
       </TableCell>
 
