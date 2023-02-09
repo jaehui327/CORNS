@@ -13,6 +13,8 @@ import { friendListReducer } from "store/reducers/friendListReducer";
 import { expProgressBarReducer } from "store/reducers/expProgressBarReducer";
 import { attendProgressBarReducer } from "store/reducers/attendProgressBarReducer";
 import { wordListReducer } from "./reducers/wordListReducer";
+import { expLogReducer } from "store/reducers/expLogReducer";
+import { pageReducer } from "store/reducers/pageReducer";
 
 const rootReducer = combineReducers({
   roomListReducer: roomListReducer.reducer,
@@ -22,7 +24,9 @@ const rootReducer = combineReducers({
   friendListReducer: friendListReducer.reducer,
   expProgressBarReducer: expProgressBarReducer.reducer,
   attendProgressBarReducer: attendProgressBarReducer.reducer,
-  wordListReducer: wordListReducer.reducer
+  wordListReducer: wordListReducer.reducer,
+  expLogReducer: expLogReducer.reducer,
+  pageReducer: pageReducer.reducer,
 });
 
 export const store = configureStore(
