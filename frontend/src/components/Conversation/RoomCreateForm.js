@@ -1,17 +1,21 @@
 import * as React from "react";
 import SubjectBtn from "./SubjectBtn";
+import SubjectsContainer from "store/containers/SubjectsContainer";
 
+import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Tooltip from "@mui/material/Tooltip";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
-
 import { PlusCircleFill, XSquare } from "react-bootstrap-icons";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
+import makeRoom from "components/Conversation/MakeRoom";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+
 
 const style = {
   display: "flex",
@@ -37,37 +41,19 @@ const datas = [
   { id: 6, subject: "자유" },
 ];
 
-const subjectBtn = datas.map((item) => (
-  <SubjectBtn active={false} subject={item.subject} key={item.id} />
-));
-
-const times = [
-  {
-    label: "5분",
-  },
-  {
-    label: "10분",
-  },
-  {
-    label: "15분",
-  },
-  {
-    label: "20분",
-  },
-  {
-    label: "25분",
-  },
-  {
-    label: "30분",
-  },
-];
-
-const people = [{ label: "2명" }, { label: "3명" }, { label: "4명" }];
-
 export default function RoomCreateModal() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleChange = (e) => {
+    setOpen(e.target.value);
+  };
+
+  
+    makeRoom();
+  
+
 
   return (
     <div>
@@ -94,30 +80,84 @@ export default function RoomCreateModal() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Box>
-            <input placeholder="제목을 입력해주세요."></input>
-            <Box>주제{subjectBtn}</Box>
-            <Box>
-              시간
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={times}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="(분)" />}
-              />
+          <Box
+            css={css`
+              margin-left: 50px;
+            `}>
+            <input
+             css={css`
+             border: 3px solid #111;
+             width: 1300px;
+             height: 40px;
+             margin-top: 100px;
+           `}
+            placeholder="제목을 입력해주세요."></input>
+            <Box
+            css={css`
+              margin: 5px;
+            `}
+            ><div
+            css={css`
+              margin: 5px;
+            `}
+            >주제</div>
+              <SubjectsContainer/>  
             </Box>
-            <Box>
+            <Box
+            css={css`
+            margin: 5px;
+            `}
+              >
+              시간      
+              <FormControl
+                variant="standard"
+                sx={{
+                  backgroundColor: "#fff",
+                  border: "3px solid #111",
+                  width: "50%",
+                  height: "100%",
+                  pl: "1%",
+                  margin: "5px"
+                }}
+              >
+              <Select onChange={handleChange} min-width="100px">
+                <MenuItem value={5}>5분</MenuItem>
+                <MenuItem value={10}>10분</MenuItem>
+                <MenuItem value={15}>15분</MenuItem>
+                <MenuItem value={20}>20분</MenuItem>
+                <MenuItem value={25}>25분</MenuItem>
+                <MenuItem value={30}>30분</MenuItem>
+              </Select>
+              </FormControl>
+            </Box>
+            <Box
+            css={css`
+            margin: 5px;
+            `}
+              >
               인원
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={people}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="(명)" />}
-              />
+              <FormControl
+                variant="standard"
+                sx={{
+                  backgroundColor: "#fff",
+                  border: "3px solid #111",
+                  width: "50%",
+                  height: "100%",
+                  pl: "1%",
+                  margin: "5px"
+                }}
+              >
+              <Select onChange={handleChange} min-width="100px">
+                <MenuItem value="2">2</MenuItem>
+                <MenuItem value="3">3</MenuItem>
+                <MenuItem value="4">4</MenuItem>
+              </Select>
+              </FormControl>
             </Box>
-            <Button variant="contained">방만들기</Button>
+            <Button 
+            css={css`
+            float: right
+            `} variant="contained" onClick={makeRoom}>방만들기</Button>
           </Box>
           <XSquare
             css={css`
