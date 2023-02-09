@@ -10,11 +10,11 @@ import Paper from '@mui/material/Paper';
 
 import DeleteIcon from '@mui/icons-material/DeleteForeverOutlined';
 import EditIcon from '@mui/icons-material/EditOutlined';
-import SaveIcon from '@mui/icons-material/CheckBoxOutlined';
-import { Alert, IconButton, ListItemButton } from '@mui/material';
+import { Alert, IconButton, ListItemButton, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDoneList, getTodoList } from 'store/reducers/wordListReducer';
 import axios from 'axios';
+import AddWordButton from './AddWordButton';
 
 
 function not(a, b) {
@@ -41,6 +41,7 @@ export default function TransferList() {
   const leftChecked = intersection(checked, todoWords);
   const rightChecked = intersection(checked, doneWords);
 
+  // 체크박스
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -56,7 +57,7 @@ export default function TransferList() {
 
   const handleCheckedRight = () => {
     let request = leftChecked.map(function(value) {
-      return {status: 2, wordSq: `${value.wordSq}`}
+      return {"status": 2, "wordSq": value.wordSq}
     });
     updateWordStatus(request);
     setRight(leftChecked.concat(doneWords));
@@ -66,9 +67,33 @@ export default function TransferList() {
   };
 
   const handleCheckedLeft = () => {
+    let request = rightChecked.map(function(value) {
+      return {"status": 1, "wordSq": value.wordSq}
+    });
+    updateWordStatus(request);
+
     setLeft(rightChecked.concat(todoWords));
     setRight(not(doneWords, rightChecked));
     setChecked(not(checked, rightChecked));
+  };
+
+  // 수정 버튼 클릭
+  const clickedEditButton = () => {
+    
+  };
+
+  // 삭제 버튼 클릭 - [DELETE] 단어 삭제
+  const clickedDeleteButton = (word) => async () => {
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_HOST}/word/${word.wordSq}`);
+      if (response.status === 200) {
+        alert("쫑알단어가 삭제되었습니다");
+        setLeft(not(todoWords, [word]));
+        setRight(not(doneWords, [word]));
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   // [PATCH] 단어 상태 변경
@@ -77,7 +102,7 @@ export default function TransferList() {
 
     try {
       const response = await axios.patch(
-        `${process.env.REACT_APP_HOST}/word`, {body}
+        `${process.env.REACT_APP_HOST}/word`, body
       );
       if (response.status === 200) {
         <Alert severity="success">잘 했어</Alert>
@@ -108,14 +133,11 @@ export default function TransferList() {
     key={id}
     secondaryAction={[
       <IconButton>
-        <EditIcon color="warning"></EditIcon>
+        <EditIcon color="warning" className='editButton' onClick={clickedEditButton}></EditIcon>
       </IconButton>,
       <IconButton>
-        <DeleteIcon color="error"></DeleteIcon>
-      </IconButton>,
-      <IconButton>
-      <SaveIcon color="success"></SaveIcon>
-    </IconButton>
+        <DeleteIcon color="error" className='deleteButton' onClick={clickedDeleteButton(item)}></DeleteIcon>
+      </IconButton>
     ]}
     disablePadding
   >
@@ -130,8 +152,8 @@ export default function TransferList() {
           }}
         />
       </ListItemIcon>
-      <ListItemText id={item.wordEng} primary={`${item.wordEng}`} />
-      <ListItemText id={item.wordKor} primary={`${item.wordKor}`} />
+      <ListItemText id={`${item.wordEng}-ListItemText`} primary={`${item.wordEng}`} />
+      <ListItemText id={`${item.wordEng}-ListItemText`} primary={`${item.wordKor}`} />
       <ListItemIcon></ListItemIcon>
     </ListItemButton>
   </ListItem>
@@ -143,7 +165,7 @@ export default function TransferList() {
         <Grid sx={{ ml: "16px", mr: "16px" }}>
           <Grid container direction="row" justifyContent="space-between" alignItems="center">
             <h3>외워야할 쫑알단어</h3>
-            <Button variant="contained">추가</Button>
+            <AddWordButton />
           </Grid>
         </Grid>
         <Paper sx={{ width: "100%", height: "600px", overflow: 'auto' }}>
