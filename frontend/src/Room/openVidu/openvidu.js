@@ -100,6 +100,28 @@ function joinSession() {
 		// 여기에서 스크립트 만드는 api 호출
 		if (event.reason === "recognized") {
 			console.log(event.text);
+
+			var data = {
+				"roomNo": jRoomNo,
+				"userId": userId,
+				"sentence": event.text
+				// "time": "2023-02-09 00:00:00"
+			}
+
+			$.ajax({
+				type : "POST",
+				url : serverUrl + "room/script",    
+				headers: { "Content-Type": "application/json",
+							"Authorization" : "Basic " + OPENVIDU_SECRET,
+							"Access-Control-Allow-Credentials" : "true"},    
+				contentType : "application/json",
+				data : JSON.stringify(data),
+				success: function(data, textStatus, xhr) {
+				},
+				error:function(request,status,error){
+				}
+			});
+
 		}
 	});
 
