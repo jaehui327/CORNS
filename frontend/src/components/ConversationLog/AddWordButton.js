@@ -1,22 +1,27 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Grid,
-  Input,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, Input, Modal, TextField, Typography } from "@mui/material";
 import { XSquare } from "react-bootstrap-icons";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import axios from "axios";
 
 function AddWordButton() {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+
+  const [wordEng, setWordEng] = useState("");
+  const [wordKor, setWordKor] = useState("");
+
+  const onChangeWordEng = (e) => {
+    setWordEng(e.target.value);
+  };
+
+  const onChangeWordKor = (e) => {
+    setWordKor(e.target.value);
+  };
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -28,6 +33,21 @@ function AddWordButton() {
     border: "3px solid #111",
     boxShadow: 24,
     p: "32px 0 200px",
+  };
+
+  const clickedSubmitButton = async (e) => {
+    console.log(wordEng, wordKor);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_HOST}/word`, {
+        userId: sessionStorage.getItem("userId"),
+        wordEng: wordEng,
+        wordKor: wordKor,
+      });
+      console.log(response);
+      handleCloseModal();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -56,13 +76,7 @@ function AddWordButton() {
               onClick={handleCloseModal}
             />
           </Box>
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-evenly"
-            alignItems="center"
-            spacing={2}
-          >
+          <Grid container direction="row" justifyContent="space-evenly" alignItems="center" spacing={2}>
             <Grid
               item
               xs={5}
@@ -72,6 +86,8 @@ function AddWordButton() {
               }}
             >
               <Input
+                value={wordEng}
+                onChange={onChangeWordEng}
                 rows={4}
                 multiline={true}
                 sx={{
@@ -90,6 +106,8 @@ function AddWordButton() {
               }}
             >
               <Input
+                value={wordKor}
+                onChange={onChangeWordKor}
                 rows={4}
                 multiline={true}
                 sx={{
@@ -101,7 +119,9 @@ function AddWordButton() {
             </Grid>
           </Grid>
           <Box sx={{ display: "flex", justifyContent: "center", mt: "4%" }}>
-            <Button variant="contained">등록하기</Button>
+            <Button onClick={clickedSubmitButton} variant="contained">
+              등록하기
+            </Button>
           </Box>
         </Box>
       </Modal>
