@@ -152,9 +152,6 @@ function joinSession() {
 
 	// 이벤트 받기
 	session.on('signal', (event) => {
-
-		console.log(event);
-
 		//시작
 		if(event.type==="signal:start"){
 
@@ -208,10 +205,6 @@ function sendChatting(){
 			"type":"chat",
 			"data":myUserName + " : " + $("#roomViewChattingSendMessage").val()
 		};
-
-		console.log(senddata);
-
-
 		
 		$.ajax({
 			type : "POST",
@@ -277,7 +270,10 @@ function intoRoom(connectionId, recordId, token){
 
 	$.ajax({
 		type : "POST",
-		url : serverUrl + "room/user",      
+		url : serverUrl + "room/user",    
+		headers: { "Content-Type": "application/json",
+					"Authorization" : "Basic " + OPENVIDU_SECRET,
+					"Access-Control-Allow-Credentials" : "true"},    
 		contentType : "application/json",
 		data : JSON.stringify(data),
 		success: function(data, textStatus, xhr) {
@@ -308,6 +304,9 @@ function outRoom(rUserId){	// 떠나는 사람 방 번호 받는다.
 	$.ajax({
 		type : "PATCH",
 		url : serverUrl + "room/user",      
+		headers: { "Content-Type": "application/json",
+					"Authorization" : "Basic " + OPENVIDU_SECRET,
+					"Access-Control-Allow-Credentials" : "true"},   
 		contentType : "application/json",
 		data : JSON.stringify(data),
 		success: function(data, textStatus, xhr) {
@@ -439,4 +438,67 @@ function getConnections(sessionId){
 function startConversation(){
 	// 시작했다고 모두에게 알리기
 
+}
+
+var maxMemberCount = 0;
+
+// 방 정보 세팅
+function initRoomInfo(){
+	console.log("initRoomInfo")
+	$.ajax({
+		type : "GET",
+		url : serverUrl + "room/" + jRoomNo, 
+		headers: { "Content-Type": "application/json",
+					"Authorization" : "Basic " + OPENVIDU_SECRET,
+					"Access-Control-Allow-Credentials" : "true"},     
+		contentType : "application/json",
+		success: function(data, textStatus, xhr) {
+
+			/* 
+			{
+  "room": {
+    "room": {
+      "roomNo": 64,
+      "title": "test14입니다",
+      "time": 5,
+      "currentMember": 1,
+      "maxMember": 2,
+      "hostUserId": 1064,
+      "sessionId": "",
+      "avail": true
+    },
+    "subject": {
+      "subjectNo": 3,
+      "imgUrl": "https://corns.co.kr:4435/uploads/subjects/3.jpg",
+      "value": "시험"
+    }
+  }
+}*/
+
+		console.log(data)
+
+			// var roomData = JSON.parse(data);
+
+			// console.log(roomData + "[" + data.room.subject.value + "]");
+
+			$("#roomViewTitle").text(data.room.room.title + "   [" + data.room.subject.value + "]");
+			$("#roomViewTimer").text(data.room.room.time + "분");
+			maxMemberCount = data.room.room.currentMember;
+			setMemberCount(data.room.room.currentMember);
+			console.log(data);
+			console.log(textStatus);
+			console.log(xhr);
+		},
+		error:function(request,status,error){
+			// alert("방 퇴장처리 실패 : " + request.statusText);
+			console.log(request);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+
+
+function setMemberCount(curr){
+	$("#roomViewMemberCount").text(curr + "/" + maxMemberCount);
 }
