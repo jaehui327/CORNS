@@ -36,7 +36,7 @@ function UserProfileModal({ openModal, toId, handleCloseModal }) {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "60%",
-    height: "50%",
+    height: "45%",
     bgcolor: "background.paper",
     border: "3px solid #111",
     boxShadow: 24,

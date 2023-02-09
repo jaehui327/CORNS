@@ -22,11 +22,14 @@ const getLogDetail = async (
     const response = await axios.get(
       `${process.env.REACT_APP_HOST}/corns-log/${roomNo}/${userId}`
     );
-    console.log(response.data);
     setLog(response.data.room);
     setParticipants(response.data.memberList);
+    console.log(response);
   } catch (e) {
-    console.log(e);
+    // axios error (내가 대화한 방 아닌 경우)
+    if (e.response.status === 500) {
+      window.location.href = "/NotFound";
+    }
   }
   setLoading(false);
 };
@@ -68,7 +71,11 @@ function LogDetail({ match }) {
           left: "0",
         }}
       >
-        <SelfEvaluation />
+        <SelfEvaluation
+          roomNo={log.roomNo}
+          selfScore={log.selfScore}
+          selfDesc={log.selfDesc}
+        />
       </Box>
     </>
   );
