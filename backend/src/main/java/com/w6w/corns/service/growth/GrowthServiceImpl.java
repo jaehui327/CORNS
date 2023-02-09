@@ -16,13 +16,12 @@ import com.w6w.corns.dto.level.LevelDto;
 
 import com.w6w.corns.service.subject.SubjectService;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import com.w6w.corns.util.PageableResponseDto;
@@ -72,7 +71,7 @@ public class GrowthServiceImpl implements GrowthService {
         //baseTime -> LocalDate 타입으로
         LocalDateTime localDateTime = LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThanEqual(userId, pageable, localDateTime);
+        Slice<ExpLog> slice = expLogRepository.findByUserIdAndRegTmLessThanEqual(userId, localDateTime, pageable);
 
         List<ExpLogResponseDto> users = new ArrayList<>();
         for(ExpLog expLog : slice.getContent())
@@ -85,13 +84,12 @@ public class GrowthServiceImpl implements GrowthService {
     @Override
     @Transactional
     public void giveExp(ExpLogRequestDto expLogRequestDto){
-
-        expLogRepository.save(expLogRequestDto.toEntity());
-
         //expTotal 증가
         User user = userRepository.findByUserId(expLogRequestDto.getUserId());
         user.setExpTotal(user.getExpTotal()+expLogRequestDto.getGainExp());
         userRepository.save(user);
+
+        expLogRepository.save(expLogRequestDto.toEntity());
     }
 
     //출석률 반환
@@ -110,7 +108,7 @@ public class GrowthServiceImpl implements GrowthService {
         List<IndicatorResponseDto> responseDtos = new ArrayList<>();
 
         //roomuser에 있는 speaking_sec를 일별로 받아오기 -> 나중에 계산테이블 이용
-        for(int i=0; i<7; i++){
+        for(int i=6; i>=0; i--){
             LocalDate date = LocalDate.now().minusDays(i);
             Long sum = roomUserRepository.sumByUserIdAndRegTm(userId, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
             responseDtos.add(IndicatorResponseDto.builder()
@@ -146,9 +144,9 @@ public class GrowthServiceImpl implements GrowthService {
         //주제별 비율 리스트
         for(int i=1; i<=n; i++){
             SubjectRatioResponseDto responseDto = SubjectRatioResponseDto.builder()
-                    .subjectNo(i)
-                    .value(subjectService.findById(i).getValue())
-                    .cnt(count[i])
+                    .id(subjectService.findById(i).getValue())
+                    .label(subjectService.findById(i).getValue())
+                    .value(count[i])
                     .build();
             subjectRatio.add(responseDto);
         }
@@ -163,13 +161,15 @@ public class GrowthServiceImpl implements GrowthService {
         List<IndicatorResponseDto> lastWeek = new ArrayList<>();
         List<IndicatorResponseDto> thisWeek = new ArrayList<>();
 
-        for(int i=0; i<14; i++){
+        for(int i=13; i>=0; i--){
             LocalDate date = LocalDate.now().minusDays(i);
 
             Long sum = expLogRepository.sumByUserIdAndRegTm(userId, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
 
+            DayOfWeek dayOfWeek = date.getDayOfWeek();
+
             IndicatorResponseDto temp = IndicatorResponseDto.builder()
-                    .x(date.toString())
+                    .x(dayOfWeek.getDisplayName(TextStyle.NARROW, Locale.KOREAN))
                     .y(sum==null?"0":String.valueOf(sum)).build();
             if(i / 7 > 0) lastWeek.add(temp);
             else thisWeek.add(temp);

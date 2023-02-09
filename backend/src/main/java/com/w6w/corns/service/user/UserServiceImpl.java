@@ -17,18 +17,24 @@ import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.SHA256Util;
 import com.w6w.corns.util.code.ExpCode;
 import com.w6w.corns.util.code.UserCode;
+
+import java.io.File;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
@@ -39,6 +45,12 @@ public class UserServiceImpl implements UserService{
     private final WithdrawLogRepository withdrawLogRepository;
     private final GrowthService growthService;
     private final JwtService jwtService;
+
+    @Value("${upload.path}")
+    private String uploadPath;
+
+    @Value("${domain.save.path}")
+    private String domainPath;
 
     @Override
     @Transactional
@@ -184,13 +196,44 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updateUserInfo(UserModifyRequestDto requestUser) throws Exception{
+    public void updateUserInfo(UserModifyRequestDto modifyRequestDto, MultipartFile multipartFile) throws Exception{
 
-        User user = userRepository.findByUserId(requestUser.getUserId());
+        User user = userRepository.findByUserId(modifyRequestDto.getUserId());
 
+        //일단 이미지를 내리는 기능은 없어서 null로 넘어오면 기존 이미지로 유지
+        String imgUrl;
+        if(multipartFile != null && !multipartFile.isEmpty()){
+
+            String saveUrl = uploadPath + "/users/" + user.getUserId()+"_" + multipartFile.getOriginalFilename();
+
+            //똑같은 id의 이미지가 있는지 확인 -> 있으면 삭제 후 새로운 파일 업로드
+            File dir = new File(uploadPath);
+
+            File[] preFiles = dir.listFiles();
+
+            for(File preFile : preFiles){
+                StringTokenizer st = new StringTokenizer(preFile.getName(),"_");
+                int saveUserId = Integer.parseInt(st.nextToken());
+
+                if(saveUserId == user.getUserId()){
+                    //삭제
+                    log.debug("preFile = " + preFile.getName());
+                    preFile.delete();
+                    break;
+                }
+            }
+
+            imgUrl = domainPath + "/users/" + user.getUserId() + "_" + multipartFile.getOriginalFilename();
+
+            File file = new File(saveUrl);
+
+            multipartFile.transferTo(file);
+
+            user.setImgUrl(imgUrl);
+        }
         //설정 안하면 null로 넘어오는지, 아니면 기존 내용이 넘어오는지 아마도 후자?!
-        user.setNickname(requestUser.getNickname());
-        user.setImgUrl(requestUser.getImgUrl());
+        if(modifyRequestDto.getNickname() != null)
+            user.setNickname(modifyRequestDto.getNickname());
 
         userRepository.save(user);
     }
@@ -211,9 +254,9 @@ public class UserServiceImpl implements UserService{
 
         Slice<User> slice = userRepository.findByFilterRegTmLessThanEqual(pageable, baseTime, filter, keyword);
 
-        List<UserListResponseDto> exps = new ArrayList<>();
+        List<UserListResponseDto> users = new ArrayList<>();
         for(User user : slice.getContent())
-            exps.add(UserListResponseDto.builder()
+            users.add(UserListResponseDto.builder()
                             .userId(user.getUserId())
                             .imgUrl(user.getImgUrl())
                             .nickname(user.getNickname())
@@ -221,7 +264,7 @@ public class UserServiceImpl implements UserService{
                             .build());
 
         return PageableResponseDto.builder()
-                .list(exps)
+                .list(users)
                 .hasNext(slice.hasNext())
                 .build();
     }

@@ -19,9 +19,10 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
+                .allowedOrigins("http://localhost:3000", "https://localhost:5000", "http://i8a506.p.ssafy.io:3000", "https://corns.co.kr:4435", "https://corns.co.kr:4438")
                 .allowedHeaders("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+                .allowCredentials(true)
                 .maxAge(3000);
     }
 
@@ -40,6 +41,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/user/email-check/{email}")
                 .excludePathPatterns("/user/login/**")
                 .excludePathPatterns("/user/auth/{socialType}/callback")
+                .excludePathPatterns("/user/refresh")
                 .excludePathPatterns("/resources/**");
     }
 }

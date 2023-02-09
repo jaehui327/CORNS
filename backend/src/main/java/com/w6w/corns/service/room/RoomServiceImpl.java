@@ -14,6 +14,7 @@ import com.w6w.corns.dto.room.request.StartEndRoomRequestDto;
 import com.w6w.corns.dto.room.request.UpdateRoomRequestDto;
 import com.w6w.corns.dto.room.response.*;
 import com.w6w.corns.service.growth.GrowthService;
+import com.w6w.corns.service.redis.RedisService;
 import com.w6w.corns.service.subject.SubjectService;
 import com.w6w.corns.util.PageableResponseDto;
 import com.w6w.corns.util.code.ExpCode;
@@ -47,6 +48,8 @@ public class RoomServiceImpl implements RoomService {
     private final SubjectService subjectService;
 
     private final GrowthService growthService;
+
+    private final RedisService redisService;
 
     //대화 참여자 리스트
     @Override
@@ -223,7 +226,10 @@ public class RoomServiceImpl implements RoomService {
             room.setStartTmNow();
             roomRepository.save(room);
 
-            roomUsers.stream().forEach(user -> user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode()));
+            roomUsers.stream().forEach(user -> {
+                user.setUserCd(RoomUserCode.ROOM_USER_CONVERSATION.getCode());
+                selfEvaluationRepository.save(SelfEvaluation.builder().roomNo(body.getRoomNo()).userId(user.getUserId()).build());
+            });
             roomUserRepository.saveAll(roomUsers);
             return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
         }
@@ -298,7 +304,6 @@ public class RoomServiceImpl implements RoomService {
         List<RoomUser> roomUsers = roomUserRepository.findByRoomNoAndRoomUserCd(body.getRoomNo(), RoomUserCode.ROOM_USER_CONVERSATION.getCode());
         roomUsers.stream().forEach(user -> {
             user.setUserCd(RoomUserCode.ROOM_USER_END.getCode());
-            selfEvaluationRepository.save(SelfEvaluation.builder().roomNo(body.getRoomNo()).userId(user.getUserId()).build());
             growthService.giveExp(ExpLogRequestDto.builder()
                                         .userId(user.getUserId())
                                         .gainExp(room.getTime())
@@ -306,6 +311,17 @@ public class RoomServiceImpl implements RoomService {
                                         .build());
         });
         roomUserRepository.saveAll(roomUsers);
+
+        // 스크립트 생성
+        redisService.makeScriptFile(RoomListResponseDto.builder()
+                                        .room(RoomResponseDto.builder()
+                                                .roomNo(room.getRoomNo())
+                                                .title(room.getTitle())
+                                                .time(room.getTime())
+                                                .currentMember(room.getCurrentMember())
+                                                .build())
+                                        .subject(subjectService.findById(room.getSubjectNo()))
+                                                .build());
 
         return findRoomAndRoomUserByRoomNo(body.getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());
     }

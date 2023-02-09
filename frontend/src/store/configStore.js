@@ -15,6 +15,10 @@ import { attendProgressBarReducer } from "store/reducers/attendProgressBarReduce
 import { logBookmarkListReducer } from "store/reducers/logBookmarkListReducer";
 import { logFilterReducer } from "store/reducers/logFilterReducer";
 import { logListReducer } from "store/reducers/logListReducer";
+import { expLogReducer } from "store/reducers/expLogReducer";
+import { expTopReducer } from "store/reducers/expTopReducer";
+import { indicatorsReducer } from "store/reducers/indicatorsReducer";
+import { pageReducer } from "store/reducers/pageReducer";
 
 const rootReducer = combineReducers({
   roomListReducer: roomListReducer.reducer,
@@ -27,6 +31,10 @@ const rootReducer = combineReducers({
   logBookmarkListReducer: logBookmarkListReducer.reducer,
   logFilterReducer: logFilterReducer.reducer,
   logListReducer: logListReducer.reducer,
+  expLogReducer: expLogReducer.reducer,
+  expTopReducer: expTopReducer.reducer,
+  indicatorsReducer: indicatorsReducer.reducer,
+  pageReducer: pageReducer.reducer,
 });
 
 export const store = configureStore(

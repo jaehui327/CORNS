@@ -9,8 +9,8 @@ export const changeTinyNumber = (num) => {
   return num;
 };
 
-export const toStringDate = () => {
-  const date = new Date();
+export const toStringDate = (dd) => {
+  const date = dd;
   const year = date.getFullYear().toString();
   const month = changeTinyNumber(date.getMonth() + 1);
   const day = changeTinyNumber(date.getDate());
@@ -23,31 +23,49 @@ export const toStringDate = () => {
   return result;
 };
 
+const now = new Date();
+
 export const roomFilterReducer = createSlice({
   name: "roomFilter",
   initialState: {
     page: 0,
     size: 18,
-    baseTime: toStringDate(),
+    baseTime: toStringDate(now),
     subject: "1 2 3 4 5 6 ",
     minTime: 0,
     maxTime: 30,
     isAvail: false,
   },
   reducers: {
-    add: (state, action) => {
+    addSubject: (state, action) => {
       state.subject += action.payload + " ";
     },
-    remove: (state, action) => {
+    removeSubject: (state, action) => {
       const subjectList = state.subject.split(" ");
       const cleaned = subjectList
         .filter((sub) => parseInt(sub) !== action.payload)
         .join(" ");
       return { ...state, subject: cleaned };
     },
+    modifyMinTime: (state, action) => {
+      return { ...state, minTime: action.payload };
+    },
+    modifyMaxTime: (state, action) => {
+      return { ...state, maxTime: action.payload };
+    },
+    modifyIsAvail: (state, action) => {
+      return { ...state, isAvail: action.payload };
+    },
   },
 });
 
 export default roomFilterReducer.reducer;
-export const { add, remove } = roomFilterReducer.actions;
+export const {
+  addSubject,
+  removeSubject,
+  addPage,
+  modifyMinTime,
+  modifyMaxTime,
+  modifyIsAvail,
+} = roomFilterReducer.actions;
 export const { initialState } = roomFilterReducer;
