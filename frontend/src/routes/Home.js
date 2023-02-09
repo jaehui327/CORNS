@@ -26,9 +26,16 @@ function Home() {
     <>
       <Navbar />
       <Box
-        sx={{ width: "100%", height: "850px", backgroundImage: `url(${hero})` }}
+        sx={{
+          width: "100%",
+          height: "850px",
+          backgroundImage: `url(${hero})`,
+          backgroundSize: "120%",
+          backgroundPosition: "top 15% left 0% ",
+          backgroundRepeat: "no-repeat",
+        }}
       >
-        <Box sx={{ position: "absolute", top: "45%", right: "15%" }}>
+        <Box sx={{ position: "absolute", top: "45%", left: "10%" }}>
           <Typography variant="h3">CORNS가 처음이세요?</Typography>
           <Typography sx={{ color: "#fff" }}>
             CORNS 사용법 더 알아보러가기
