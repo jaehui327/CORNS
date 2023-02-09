@@ -19,14 +19,14 @@ export const logBookmarkListReducer = createSlice({
       state.logBookmarkList = actions.payload;
     },
     toggleSortOption(state, actions) {
-      state.sort = actions.payload
-    }
+      state.sort = actions.payload;
+    },
   },
 });
 
 // 즐겨찾기 목록 가져오기 axios -> pagination 추가해야함 ...
 export const getLogBookmarkListAxios = (sort) => {
-  console.log('get Bookmark list!')
+  console.log("get Bookmark list!");
   return async (dispatch) => {
     dispatch(logBookmarkListActions.isLogBookmarkListLoading());
 
@@ -39,7 +39,7 @@ export const getLogBookmarkListAxios = (sort) => {
             baseTime: toStringDate(),
             page: 0,
             size: 20,
-            sort: `startTm,${sort}`
+            sort: `startTm,${sort}`,
           }),
         {
           validateStatus: (status) => status === 200 || status === 204,
@@ -60,10 +60,6 @@ export const getLogBookmarkListAxios = (sort) => {
     dispatch(logBookmarkListActions.isLogBookmarkListLoading());
   };
 };
-
-
-
-
 
 export const logBookmarkListActions = logBookmarkListReducer.actions;
 export const { initialState } = logBookmarkListReducer;
