@@ -28,8 +28,11 @@ public class CustomWordRepositoryImpl implements CustomWordRepository {
     }
 
     @Override
-    public Slice<Word> searchBySlice(String baseTime, int wordStatus, Pageable pageable) {
+    public Slice<Word> searchBySlice(int userId, String baseTime, int wordStatus, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
+
+        // userId
+        builder.and(word.userId.eq(userId));
 
         // baseTime
         builder.and(word.modTm.lt(LocalDateTime.parse(baseTime, DateTimeFormatter.ofPattern(("yyyy-MM-dd HH:mm:ss")))));
