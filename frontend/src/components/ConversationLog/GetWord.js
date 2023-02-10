@@ -15,7 +15,6 @@ export const GetTodoWord = async (baseTime, setTodoWords, setLoading) => {
         })
     );
     if (response.status === 200) {
-      console.log("todo list: ", response.data.list);
       setTodoWords(response.data.list);
     } else if (response.status === 204) {
       setTodoWords([]);
@@ -41,7 +40,6 @@ export const GetDoneWord = async (baseTime, setDoneWords, setLoading) => {
         })
     );
     if (response.status === 200) {
-      console.log("done list: ", response.data.list);
       setDoneWords(response.data.list);
     } else if (response.status === 204) {
       setDoneWords([]);

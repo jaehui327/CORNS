@@ -78,8 +78,6 @@ export default function TransferList() {
 
   // [PATCH] 단어 상태 변경
   const updateWordStatus = async (body) => {
-    console.log(body);
-
     try {
       const response = await axios.patch(
         `${process.env.REACT_APP_HOST}/word`,
