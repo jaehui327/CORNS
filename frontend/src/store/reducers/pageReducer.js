@@ -2,15 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const pageReducer = createSlice({
   name: "page",
-  initialState: {
-    pageCount: 0,
-  },
+  initialState: {},
   reducers: {
-    addPageCount: (state) => {
-      state.pageCount += 1;
+    addPage: (state, action) => {
+      state = action.payload;
     },
   },
 });
 
 export default pageReducer.reducer;
-export const { addPageCount } = pageReducer.actions;
+export const { addPage } = pageReducer.actions;

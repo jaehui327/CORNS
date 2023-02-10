@@ -4,7 +4,7 @@ import GoogleLogin from "auth/GoogleLogin";
 import Navbar from "../components/GlobalComponents/Navbar";
 import hero from "assets/hero.png";
 import backgroundImage from "assets/backgroundImage.png";
-import RoomListsContainer from "store/containers/RoomListsContainer";
+import MainConversation from "components/Home/MainConversation";
 import RankingList from "components/GlobalComponents/RankingList";
 
 /** @jsxImportSource @emotion/react */
@@ -26,9 +26,16 @@ function Home() {
     <>
       <Navbar />
       <Box
-        sx={{ width: "100%", height: "850px", backgroundImage: `url(${hero})` }}
+        sx={{
+          width: "100%",
+          height: "850px",
+          backgroundImage: `url(${hero})`,
+          backgroundSize: "120%",
+          backgroundPosition: "top 15% left 0% ",
+          backgroundRepeat: "no-repeat",
+        }}
       >
-        <Box sx={{ position: "absolute", top: "45%", right: "15%" }}>
+        <Box sx={{ position: "absolute", top: "45%", left: "10%" }}>
           <Typography variant="h3">CORNS가 처음이세요?</Typography>
           <Typography sx={{ color: "#fff" }}>
             CORNS 사용법 더 알아보러가기
@@ -84,7 +91,7 @@ function Home() {
               />
             </Link>
           </Box>
-          <RoomListsContainer main={true} />
+          <MainConversation />
         </Box>
         <Box sx={{ mt: "64px" }}>
           <Box
@@ -104,7 +111,7 @@ function Home() {
               랭킹
             </p>
             <Link
-              to="/conversation"
+              to="/community/ranking/sincerity"
               css={{
                 color: "#111",
                 textDecoration: "none",
@@ -162,7 +169,7 @@ function Home() {
           }}
         >
           <img
-            src="https://img.freepik.com/free-vector/different-people-asking-questions_23-2148934441.jpg"
+            src="https://images.everydayhealth.com/images/ms-and-dysarthria-1440x810.jpg"
             alt="conversation-people"
             css={css`
               border: 3px solid #111;

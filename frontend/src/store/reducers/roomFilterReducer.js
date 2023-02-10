@@ -9,8 +9,8 @@ export const changeTinyNumber = (num) => {
   return num;
 };
 
-export const toStringDate = () => {
-  const date = new Date();
+export const toStringDate = (dd) => {
+  const date = dd;
   const year = date.getFullYear().toString();
   const month = changeTinyNumber(date.getMonth() + 1);
   const day = changeTinyNumber(date.getDate());
@@ -23,17 +23,21 @@ export const toStringDate = () => {
   return result;
 };
 
+const now = new Date();
+
+export const initialState = {
+  page: 0,
+  size: 18,
+  baseTime: toStringDate(now),
+  subject: "1 2 3 4 5 6 ",
+  minTime: 0,
+  maxTime: 30,
+  isAvail: false,
+};
+
 export const roomFilterReducer = createSlice({
   name: "roomFilter",
-  initialState: {
-    page: 0,
-    size: 6,
-    baseTime: toStringDate(),
-    subject: "1 2 3 4 5 6 ",
-    minTime: 0,
-    maxTime: 30,
-    isAvail: false,
-  },
+  initialState,
   reducers: {
     addSubject: (state, action) => {
       state.subject += action.payload + " ";
@@ -45,13 +49,24 @@ export const roomFilterReducer = createSlice({
         .join(" ");
       return { ...state, subject: cleaned };
     },
-    addPage: (state, action) => {
-      state.page = 0;
-      state.page += parseInt(action.payload);
+    modifyMinTime: (state, action) => {
+      return { ...state, minTime: action.payload };
+    },
+    modifyMaxTime: (state, action) => {
+      return { ...state, maxTime: action.payload };
+    },
+    modifyIsAvail: (state, action) => {
+      return { ...state, isAvail: action.payload };
     },
   },
 });
 
 export default roomFilterReducer.reducer;
-export const { addSubject, removeSubject, addPage } = roomFilterReducer.actions;
-export const { initialState } = roomFilterReducer;
+export const {
+  addSubject,
+  removeSubject,
+  addPage,
+  modifyMinTime,
+  modifyMaxTime,
+  modifyIsAvail,
+} = roomFilterReducer.actions;

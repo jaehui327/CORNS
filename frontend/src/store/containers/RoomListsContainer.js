@@ -4,15 +4,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { getRoomList } from "store/reducers/roomListReducer";
 import { addPage } from "store/reducers/roomFilterReducer";
 import { addPageCount } from "store/reducers/pageReducer";
-import useIntersect from "utils/useIntersect";
 
-function RoomListsContainer({ main }) {
+function RoomListsContainer() {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.roomListReducer);
-  const { pageCount } = useSelector((state) => state.pageReducer);
+  // const { pageCount } = useSelector((state) => state.pageReducer);
   const filter = useSelector((state) => state.roomFilterReducer);
-  const page = useRef(pageCount);
+  // const page = useRef(pageCount);
   const [list, setList] = useState([]);
+  const [addList, setAddList] = useState([]);
+  const [flag, setFlag] = useState(true);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     dispatch(getRoomList(filter));
@@ -22,37 +24,71 @@ function RoomListsContainer({ main }) {
     setList(data.list);
   }, [data]);
 
-  const [addList, setAddList] = useState(list);
-  // const [_, setRef] = useIntersect(async (entry, observer) => {
-  //   observer.unobserve(entry.target);
-  //   await dispatch(addPage(page));
-  //   const addList = await dispatch(getRoomList(filter));
-  //   await setList([...list, addList]);
-  //   observer.observe(entry.target);
-  // }, {});
+  // useEffect(() => {
+  //   if (list !== undefined) {
+  //     setAddList([...addList, list]);
+  //   }
+  // }, [list]);
+  // // const nextPage = () => {
+  //   setFlag((prev) => false);
+  //   dispatch(addPageCount(page.current++, "ADD_PAGE_COUNT"));
+  //   dispatch(addPage(page.current, "ADD_PAGE"));
+  //   addNext();
+  // };
 
-  let maxRoomList = false;
+  useEffect(() => {
+    // Fetch data for the first time
+    // Add the scroll event listener
+    window.addEventListener("scroll", handleScroll);
+    // Clean up the event listener when the component unmounts
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [page]);
 
-  if (main) maxRoomList = true;
+  const handleScroll = () => {
+    const scrollTop =
+      (document.documentElement && document.documentElement.scrollTop) ||
+      document.body.scrollTop;
+    const scrollHeight =
+      (document.documentElement && document.documentElement.scrollHeight) ||
+      document.body.scrollHeight;
 
-  const addNext = async () => {
-    setAddList([...list, ...data.list]);
-  };
+    const clientHeight =
+      document.documentElement.clientHeight || window.innerHeight;
 
-  const nextPage = () => {
-    dispatch(addPageCount(pageCount, "ADD_PAGE_COUNT"));
-    dispatch(addPage(pageCount, "ADD_PAGE"));
-    addNext();
-    if (!data.hasNext) {
-      alert("남은페이지가 없어요!");
+    const threshold = 20;
+
+    if (scrollTop + clientHeight >= scrollHeight - threshold) {
+      setPage(page + 1);
+      const pageFilter = { ...filter };
+      pageFilter.page = page;
+      dispatch(getRoomList(pageFilter));
+
+      setAddList([...addList, ...list]);
+      if (addList.length > 0) {
+        setFlag(() => false);
+      }
     }
   };
 
+  const throttle = (callback, delay) => {
+    let timer = null;
+    return (arg) => {
+      if (timer === null) {
+        timer = setTimeout(() => {
+          callback(arg);
+          timer = null;
+        }, delay);
+      }
+    };
+  };
+
   return (
-    <div>
-      {addList && <RoomList roomLists={addList} maxRoomList={maxRoomList} />}
-      {loading && <div>로딩중</div>}
-      <button onClick={nextPage}>추가로 불러오기</button>
+    <div onScroll={throttle(handleScroll, 300)}>
+      {list && flag ? (
+        <RoomList roomLists={list} />
+      ) : (
+        <RoomList roomLists={addList} />
+      )}
     </div>
   );
 }

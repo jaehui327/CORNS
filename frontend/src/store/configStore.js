@@ -13,7 +13,12 @@ import { friendListReducer } from "store/reducers/friendListReducer";
 import { expProgressBarReducer } from "store/reducers/expProgressBarReducer";
 import { attendProgressBarReducer } from "store/reducers/attendProgressBarReducer";
 import { wordListReducer } from "./reducers/wordListReducer";
+import { logBookmarkListReducer } from "store/reducers/logBookmarkListReducer";
+import { logFilterReducer } from "store/reducers/logFilterReducer";
+import { logListReducer } from "store/reducers/logListReducer";
 import { expLogReducer } from "store/reducers/expLogReducer";
+import { expTopReducer } from "store/reducers/expTopReducer";
+import { indicatorsReducer } from "store/reducers/indicatorsReducer";
 import { pageReducer } from "store/reducers/pageReducer";
 
 const rootReducer = combineReducers({
@@ -25,7 +30,12 @@ const rootReducer = combineReducers({
   expProgressBarReducer: expProgressBarReducer.reducer,
   attendProgressBarReducer: attendProgressBarReducer.reducer,
   wordListReducer: wordListReducer.reducer,
+  logBookmarkListReducer: logBookmarkListReducer.reducer,
+  logFilterReducer: logFilterReducer.reducer,
+  logListReducer: logListReducer.reducer,
   expLogReducer: expLogReducer.reducer,
+  expTopReducer: expTopReducer.reducer,
+  indicatorsReducer: indicatorsReducer.reducer,
   pageReducer: pageReducer.reducer,
 });
 
