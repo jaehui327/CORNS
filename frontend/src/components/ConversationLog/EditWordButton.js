@@ -7,14 +7,11 @@ import { css } from "@emotion/react";
 import axios from "axios";
 import { Box, Button, Grid, Input, Modal, Typography } from "@mui/material";
 import { XSquare } from "react-bootstrap-icons";
+import { toStringDate } from "store/reducers/roomFilterReducer";
 
-function EditWordButton(props) {
-  const word = props.word;
+function EditWordButton({ word, setBaseTime, reload, setReload }) {
   const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => {
-    console.log(word);
-    setOpenModal(true);
-  };
+  const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
   const [eng, setWordEng] = useState(word.wordEng);
@@ -49,6 +46,8 @@ function EditWordButton(props) {
         wordKor: kor,
       });
       if (response.status === 200) {
+        setBaseTime(toStringDate(new Date()));
+        setReload(!reload);
         handleCloseModal();
       }
     } catch (e) {

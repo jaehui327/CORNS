@@ -5,8 +5,9 @@ import { XSquare } from "react-bootstrap-icons";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from "axios";
+import { toStringDate } from "store/reducers/roomFilterReducer";
 
-function AddWordButton() {
+function AddWordButton({ setBaseTime, reload, setReload }) {
   const [openModal, setOpenModal] = useState(false);
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
@@ -43,6 +44,10 @@ function AddWordButton() {
         wordKor: wordKor,
       });
       if (response.status === 200) {
+        setWordEng("");
+        setWordKor("");
+        setBaseTime(toStringDate(new Date()));
+        setReload(!reload);
         handleCloseModal();
       }
     } catch (e) {

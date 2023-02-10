@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
+import { CircularProgress } from "@mui/material";
 
-import DeleteIcon from "@mui/icons-material/DeleteForeverOutlined";
-import { Alert, IconButton, ListItemButton } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { getDoneList, getTodoList } from "store/reducers/wordListReducer";
 import axios from "axios";
+import { toStringDate } from "store/reducers/roomFilterReducer";
+
+import { GetDoneWord, GetTodoWord } from "./GetWord";
+import WordListItem from "./WordItemList";
 import AddWordButton from "./AddWordButton";
-import EditWordButton from "./EditWordButton";
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -25,21 +21,21 @@ function intersection(a, b) {
 }
 
 export default function TransferList() {
-  const dispatch = useDispatch();
-  const baseTime = "2023-02-28 00:00:00";
+  const [baseTime, setBaseTime] = useState(toStringDate(new Date()));
+  const [reload, setReload] = useState(true);
+  const [todoLoading, setTodoLoading] = useState(false);
+  const [doneLoading, setDoneLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getTodoList(baseTime));
-    dispatch(getDoneList(baseTime));
-  }, [baseTime, dispatch]);
+    if (baseTime) {
+      GetTodoWord(baseTime, setTodoWords, setTodoLoading);
+      GetDoneWord(baseTime, setDoneWords, setDoneLoading);
+    }
+  }, [reload]);
 
-  const [checked, setChecked] = React.useState([]);
-  const [todoWords, setLeft] = React.useState(
-    useSelector((state) => state.wordListReducer.todoList)
-  );
-  const [doneWords, setRight] = React.useState(
-    useSelector((state) => state.wordListReducer.doneList)
-  );
+  const [checked, setChecked] = useState([]);
+  const [todoWords, setTodoWords] = useState([]);
+  const [doneWords, setDoneWords] = useState([]);
 
   const leftChecked = intersection(checked, todoWords);
   const rightChecked = intersection(checked, doneWords);
@@ -58,42 +54,26 @@ export default function TransferList() {
     setChecked(newChecked);
   };
 
+  // 외운 단어로 상태 변경 (좌 -> 우)
   const handleCheckedRight = () => {
     let request = leftChecked.map(function (value) {
       return { status: 2, wordSq: value.wordSq };
     });
     updateWordStatus(request);
-    setRight(leftChecked.concat(doneWords));
 
-    setLeft(not(todoWords, leftChecked));
+    setTodoWords(not(todoWords, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
+  // 외워야할 단어로 상태 변경 (우 -> 좌)
   const handleCheckedLeft = () => {
     let request = rightChecked.map(function (value) {
       return { status: 1, wordSq: value.wordSq };
     });
     updateWordStatus(request);
 
-    setLeft(rightChecked.concat(todoWords));
-    setRight(not(doneWords, rightChecked));
+    setDoneWords(not(doneWords, rightChecked));
     setChecked(not(checked, rightChecked));
-  };
-
-  // 삭제 버튼 클릭 - [DELETE] 단어 삭제
-  const clickedDeleteButton = (word) => async () => {
-    try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_HOST}/word/${word.wordSq}`
-      );
-      if (response.status === 200) {
-        alert("쫑알단어가 삭제되었습니다");
-        setLeft(not(todoWords, [word]));
-        setRight(not(doneWords, [word]));
-      }
-    } catch (e) {
-      console.log(e);
-    }
   };
 
   // [PATCH] 단어 상태 변경
@@ -106,53 +86,13 @@ export default function TransferList() {
         body
       );
       if (response.status === 200) {
-        <Alert severity="success">잘 했어</Alert>;
+        setBaseTime(toStringDate(new Date()));
+        setReload(!reload);
       }
     } catch (e) {
       console.log(e);
     }
   };
-
-  const wordListItem = (item, id) => (
-    <ListItem
-      key={id}
-      secondaryAction={[
-        <IconButton>
-          <EditWordButton word={item} />
-        </IconButton>,
-        <IconButton>
-          <DeleteIcon
-            color="error"
-            className="deleteButton"
-            onClick={clickedDeleteButton(item)}
-          ></DeleteIcon>
-        </IconButton>,
-      ]}
-      disablePadding
-    >
-      <ListItemButton role="listitem" onClick={handleToggle(item)}>
-        <ListItemIcon>
-          <Checkbox
-            checked={checked.indexOf(item) !== -1}
-            tabIndex={-1}
-            disableRipple
-            inputProps={{
-              "aria-labelledby": item.wordSq,
-            }}
-          />
-        </ListItemIcon>
-        <ListItemText
-          id={`${item.wordEng}-ListItemText`}
-          primary={`${item.wordEng}`}
-        />
-        <ListItemText
-          id={`${item.wordEng}-ListItemText`}
-          primary={`${item.wordKor}`}
-        />
-        <ListItemIcon></ListItemIcon>
-      </ListItemButton>
-    </ListItem>
-  );
 
   return (
     <Grid
@@ -177,12 +117,32 @@ export default function TransferList() {
             alignItems="center"
           >
             <h3>외워야할 쫑알단어</h3>
-            <AddWordButton />
+            <AddWordButton
+              setBaseTime={setBaseTime}
+              reload={reload}
+              setReload={setReload}
+            />
           </Grid>
         </Grid>
         <Paper sx={{ width: "100%", height: "600px", overflow: "auto" }}>
           <List dense component="div" role="list">
-            {todoWords.map((item, id) => wordListItem(item, id))}
+            {todoLoading && <CircularProgress color="inherit" />}
+            {!todoLoading &&
+              todoWords.length > 0 &&
+              todoWords.map((item, id) => (
+                <WordListItem
+                  item={item}
+                  id={id}
+                  setBaseTime={setBaseTime}
+                  reload={reload}
+                  setReload={setReload}
+                  handleToggle={handleToggle}
+                  checked={checked}
+                />
+              ))}
+            {!todoLoading && todoWords.length === 0 && (
+              <p>쫑알단어를 등록하고 학습해보세요!</p>
+            )}
           </List>
         </Paper>
       </Grid>
@@ -227,9 +187,26 @@ export default function TransferList() {
           <h3>외운 쫑알단어</h3>
         </Grid>
         <Paper sx={{ width: "100%", height: "600px", overflow: "auto" }}>
-          <List dense component="div" role="list">
-            {doneWords.map((item, id) => wordListItem(item, id))}
-          </List>
+          {doneLoading && <CircularProgress color="inherit" />}
+          {!doneLoading && (
+            <List dense component="div" role="list">
+              {doneWords.length > 0 &&
+                doneWords.map((item, id) => (
+                  <WordListItem
+                    item={item}
+                    id={id}
+                    setBaseTime={setBaseTime}
+                    reload={reload}
+                    setReload={setReload}
+                    handleToggle={handleToggle}
+                    checked={checked}
+                  />
+                ))}
+              {doneWords.length === 0 && (
+                <p>쫑알단어를 학습하고 외운 단어로 옮겨보세요!</p>
+              )}
+            </List>
+          )}
         </Paper>
       </Grid>
     </Grid>
