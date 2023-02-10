@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { Box, Button, Grid, Input, Modal, Typography } from "@mui/material";
-import { XSquare } from "react-bootstrap-icons";
+
+import EditIcon from "@mui/icons-material/EditOutlined";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from "axios";
+import { Box, Button, Grid, Input, Modal, Typography } from "@mui/material";
+import { XSquare } from "react-bootstrap-icons";
 
-function AddWordButton() {
+function EditWordButton(props) {
+  const word = props.word;
   const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => setOpenModal(true);
+  const handleOpenModal = () => {
+    console.log(word);
+    setOpenModal(true);
+  };
   const handleCloseModal = () => setOpenModal(false);
 
-  const [wordEng, setWordEng] = useState("");
-  const [wordKor, setWordKor] = useState("");
+  const [eng, setWordEng] = useState(word.wordEng);
+  const [kor, setWordKor] = useState(word.wordKor);
 
   const onChangeWordEng = (e) => {
     setWordEng(e.target.value);
@@ -35,12 +41,12 @@ function AddWordButton() {
     p: "32px 0 200px",
   };
 
-  const clickedSubmitButton = async () => {
+  const clickedEditButton = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_HOST}/word`, {
-        userId: sessionStorage.getItem("userId"),
-        wordEng: wordEng,
-        wordKor: wordKor,
+      const response = await axios.put(`${process.env.REACT_APP_HOST}/word`, {
+        wordSq: word.wordSq,
+        wordEng: eng,
+        wordKor: kor,
       });
       if (response.status === 200) {
         handleCloseModal();
@@ -52,9 +58,11 @@ function AddWordButton() {
 
   return (
     <>
-      <Button onClick={handleOpenModal} variant="contained">
-        추가
-      </Button>
+      <EditIcon
+        color="warning"
+        className="editButton"
+        onClick={handleOpenModal}
+      ></EditIcon>
 
       <Modal
         open={openModal}
@@ -65,7 +73,7 @@ function AddWordButton() {
         <Box sx={style}>
           <Box sx={{ display: "flex", width: "100%", mr: "10%", mb: "5%" }}>
             <Typography variant="h5" sx={{ ml: "32px" }}>
-              단어 등록
+              단어 수정
             </Typography>
             <XSquare
               css={css`
@@ -92,7 +100,7 @@ function AddWordButton() {
               }}
             >
               <Input
-                value={wordEng}
+                value={eng}
                 onChange={onChangeWordEng}
                 rows={4}
                 multiline={true}
@@ -112,7 +120,7 @@ function AddWordButton() {
               }}
             >
               <Input
-                value={wordKor}
+                value={kor}
                 onChange={onChangeWordKor}
                 rows={4}
                 multiline={true}
@@ -125,8 +133,8 @@ function AddWordButton() {
             </Grid>
           </Grid>
           <Box sx={{ display: "flex", justifyContent: "center", mt: "4%" }}>
-            <Button onClick={clickedSubmitButton} variant="contained">
-              등록하기
+            <Button onClick={clickedEditButton} variant="contained">
+              수정하기
             </Button>
           </Box>
         </Box>
@@ -135,4 +143,4 @@ function AddWordButton() {
   );
 }
 
-export default AddWordButton;
+export default EditWordButton;
