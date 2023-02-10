@@ -126,7 +126,17 @@ export default function TransferList() {
         </Grid>
         <Paper sx={{ width: "100%", height: "600px", overflow: "auto" }}>
           <List dense component="div" role="list">
-            {todoLoading && <CircularProgress color="inherit" />}
+            {todoLoading && (
+              <Grid
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress color="inherit" />
+              </Grid>
+            )}
             {!todoLoading &&
               todoWords.length > 0 &&
               todoWords.map((item, id) => (
@@ -213,7 +223,17 @@ export default function TransferList() {
           <h3>외운 쫑알단어</h3>
         </Grid>
         <Paper sx={{ width: "100%", height: "600px", overflow: "auto" }}>
-          {doneLoading && <CircularProgress color="inherit" />}
+          {doneLoading && (
+            <Grid
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress color="inherit" />
+            </Grid>
+          )}
           {!doneLoading && (
             <List dense component="div" role="list">
               {doneWords.length > 0 &&
