@@ -46,7 +46,7 @@ public class CustomWordRepositoryImpl implements CustomWordRepository {
 
         List<Word> words = jpaQueryFactory.selectFrom(word)
                 .where(builder)
-                .orderBy(word.modTm.desc())
+                .orderBy(word.wordEng.asc()) // 사전순 정렬
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
