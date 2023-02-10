@@ -158,7 +158,7 @@ function Home() {
                 />
               </Link>
             </Box>
-            <RankingList />
+            <RankingList width={200} />
           </Box>
         </Box>
         <Box
