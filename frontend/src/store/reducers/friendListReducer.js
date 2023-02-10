@@ -24,8 +24,8 @@ export const friendListReducer = createSlice({
   name: "friend",
   initialState: initialFriendListState,
   reducers: {
-    isFriendListLoading(state) {
-      state.isFriendListLoading = !state.isFriendListLoading;
+    isFriendListLoading(state, actions) {
+      state.isFriendListLoading = actions.payload;
     },
     getFriendList(state, actions) {
       state.friendList = actions.payload;
@@ -74,7 +74,7 @@ export const getFriendListAxios = (type = "nickname", text = "") => {
     } catch (e) {
       console.error(e);
     }
-    dispatch(friendActions.isFriendListLoading());
+    dispatch(friendActions.isFriendListLoading(false));
   };
 };
 

@@ -10,7 +10,18 @@ function ProfileImg({ imgSrc, nickname, width }) {
     if (imgSrc) {
       // 프로필 img 있는 경우
       //  들어오는거 보고 고쳐야함
-      return <img />;
+      return (
+        <img
+          src={imgSrc}
+          alt={nickname}
+          css={css`
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+          `}
+        />
+      );
     } else {
       // 프로필 img 없는 경우
       return (
@@ -20,6 +31,8 @@ function ProfileImg({ imgSrc, nickname, width }) {
           css={css`
             width: 100%;
             margin-top: 10%;
+            object-fit: cover;
+            border-radius: 50%;
           `}
         />
       );
@@ -34,6 +47,7 @@ function ProfileImg({ imgSrc, nickname, width }) {
         borderRadius: "200px",
         border: "2px solid #111",
         backgroundColor: "white",
+        // backgroundImage: `url(${imgSrc})`,
       }}
     >
       {image()}
