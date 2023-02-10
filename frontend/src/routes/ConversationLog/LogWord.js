@@ -1,5 +1,5 @@
-import TransferList from "components/ConversationLog/TransferList";
 import React from "react";
+import TransferList from "components/ConversationLog/TransferList";
 
 function LogWord() {
   return (
