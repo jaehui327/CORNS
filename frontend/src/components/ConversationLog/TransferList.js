@@ -141,7 +141,9 @@ export default function TransferList() {
                 />
               ))}
             {!todoLoading && todoWords.length === 0 && (
-              <p>쫑알단어를 등록하고 학습해보세요!</p>
+              <Grid sx={{ ml: "16px" }}>
+                <p>쫑알단어를 등록하고 학습해보세요!</p>
+              </Grid>
             )}
           </List>
         </Paper>
@@ -227,7 +229,9 @@ export default function TransferList() {
                   />
                 ))}
               {doneWords.length === 0 && (
-                <p>쫑알단어를 학습하고 외운 단어로 옮겨보세요!</p>
+                <Grid sx={{ ml: "16px" }}>
+                  <p>쫑알단어를 학습하고 외운 단어로 옮겨보세요!</p>
+                </Grid>
               )}
             </List>
           )}
