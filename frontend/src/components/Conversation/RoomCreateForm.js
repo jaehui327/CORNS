@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 
 import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
@@ -13,6 +14,7 @@ import makeRoom from "components/Conversation/MakeRoom";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+// import { Radio } from "@mui/material";
 import { useSelector } from "react-redux";
 
 import MakeRoomSubjectBtn from "components/Conversation/MakeRoomSubjectBtn"
@@ -38,20 +40,63 @@ export default function RoomCreateModal() {
 
   const subjects = useSelector((state) => state.subjectsReducer);
 
-  const subjectBtn = subjects.map((item) => (
-    <MakeRoomSubjectBtn subject={item} key={item.subjectNo} />
-  ));
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleChange = (e) => {
-    setOpen(e.target.value);
-  };
+  // const handleChange = (e) => {
+  //   setOpen(e.target.value);
+  // };
 
   
-    // makeRoom();
+  const [subject, setSubject] = useState("");
+  const [topic, setTopic] = useState("");
+  const [selectTime, setSelectTime] = useState("");
+  const [selectCount, setSelectCount] = useState("");
+  
+  const onChangeTopic=(e)=>{
+    console.log(e)
+    setTopic(e.target.value)
+  }
+
+  const subjectBtn = subjects.map((item) => (
+    <MakeRoomSubjectBtn subject={item} key={item.subjectNo} />
+  ));
+
+  const onChangeSelectTime=(e)=>{
+    setSelectTime(e.target.value);
+  }
+
+  const onChangeSelectCount=(e)=>{
+    setSelectCount(e.target.value)
+  }
+
+  const goToMakeRoom = (e) => {
+
+    if(!subject){
+      alert("제목을 입력하세요");
+      return;
+    }
+
+    // if(!topic){
+    //   alert("주제를 선택하세요");
+    //   return;
+    // }
+
+    if(!selectTime){
+      alert("시간을 선택하세요");
+      return;
+    }
+
+    if(!selectCount){
+      alert("인원을 선택하세요");
+      return;
+    }
+
+    // makeRoom(subject, topic, selectTime, selectCount);
+    makeRoom(subject, "2", selectTime, selectCount);
+
+  }
   
 
 
@@ -89,24 +134,27 @@ export default function RoomCreateModal() {
              border: 3px solid #111;
              width: 1300px;
              height: 40px;
-             margin-top: 100px;
+             margin-top: 70px;
            `}
+           value={subject}
+            onChange={({ target: { value } }) => setSubject(value)}
             placeholder="제목을 입력해주세요."></input>
             <Box
             css={css`
-              margin: 5px;
+              // margin: 25px;
+              margin-top: 25px;
             `}
             ><div
             css={css`
-              margin: 5px;
+              margin-bottom: 5px;
             `}
             >주제</div>
-            { subjectBtn }
-              {/* 주제자리 */}
+              { subjectBtn }
             </Box>
             <Box
             css={css`
-            margin: 5px;
+            // margin: 25px;
+            margin-top: 25px;
             `}
               >
               시간      
@@ -121,7 +169,8 @@ export default function RoomCreateModal() {
                   margin: "5px"
                 }}
               >
-              <Select onChange={handleChange} min-width="100px">
+              <Select min-width="100px"
+              onChange={onChangeSelectTime}>
                 <MenuItem value={5}>5분</MenuItem>
                 <MenuItem value={10}>10분</MenuItem>
                 <MenuItem value={15}>15분</MenuItem>
@@ -133,7 +182,8 @@ export default function RoomCreateModal() {
             </Box>
             <Box
             css={css`
-            margin: 5px;
+            // margin: 25px;
+            margin-top: 25px;
             `}
               >
               인원
@@ -148,7 +198,8 @@ export default function RoomCreateModal() {
                   margin: "5px"
                 }}
               >
-              <Select onChange={handleChange} min-width="100px">
+              <Select 
+                onChange={onChangeSelectCount} min-width="100px">
                 <MenuItem value="2">2</MenuItem>
                 <MenuItem value="3">3</MenuItem>
                 <MenuItem value="4">4</MenuItem>
@@ -158,7 +209,7 @@ export default function RoomCreateModal() {
             <Button 
             css={css`
             float: right
-            `} variant="contained" onClick={makeRoom}>방만들기</Button>
+            `} variant="contained" onClick={goToMakeRoom}>방만들기</Button>
           </Box>
           <XSquare
             css={css`

@@ -1,5 +1,6 @@
 import { React, useState} from "react";
 import { Button } from "@mui/material";
+import { css } from "@emotion/react";
 
 
 function MakeRoomSubjectBtn({ subject }) {
@@ -8,13 +9,23 @@ function MakeRoomSubjectBtn({ subject }) {
     const [toggle, setToggle] = useState(true);
 
     // 버튼을 눌렀을 때 색깔이 바뀌게 하는 toggle 함수
-    const btnColorToggle = (e) => {
-      setToggle((prev) => !prev);
-    };
+    // const btnColorToggle = (e) => {
+    //   setToggle((prev) => !prev);
+    // };
     
 return (
     <>
-      <Button
+    <label  style={{
+        border: '3px solid #111',
+        margin: '15px',
+        padding: '3px',
+        color: "#111",
+        backgroundColor: "#98DA7A"
+    }}>
+        <input type="radio" name="topic" value={subjectNo}/> { value }  &nbsp;&nbsp;
+    </label>
+
+      {/* <Button
         variant="contained"
         sx={{
           height: "40px",
@@ -36,7 +47,7 @@ return (
         }}
       >
         { value }
-      </Button>
+      </Button> */}
     </>
   );
 }
