@@ -1,6 +1,4 @@
 import * as React from "react";
-import SubjectBtn from "./SubjectBtn";
-import SubjectsContainer from "store/containers/SubjectsContainer";
 
 import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
@@ -15,6 +13,9 @@ import makeRoom from "components/Conversation/MakeRoom";
 
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useSelector } from "react-redux";
+
+import MakeRoomSubjectBtn from "components/Conversation/MakeRoomSubjectBtn"
 
 
 const style = {
@@ -32,16 +33,15 @@ const style = {
   p: 4,
 };
 
-const datas = [
-  { id: 1, subject: "일상" },
-  { id: 2, subject: "비즈니스" },
-  { id: 3, subject: "소개팅" },
-  { id: 4, subject: "오픽" },
-  { id: 5, subject: "토스" },
-  { id: 6, subject: "자유" },
-];
 
 export default function RoomCreateModal() {
+
+  const subjects = useSelector((state) => state.subjectsReducer);
+
+  const subjectBtn = subjects.map((item) => (
+    <MakeRoomSubjectBtn subject={item} key={item.subjectNo} />
+  ));
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -51,7 +51,7 @@ export default function RoomCreateModal() {
   };
 
   
-    makeRoom();
+    // makeRoom();
   
 
 
@@ -101,7 +101,8 @@ export default function RoomCreateModal() {
               margin: 5px;
             `}
             >주제</div>
-              <SubjectsContainer/>  
+            { subjectBtn }
+              {/* 주제자리 */}
             </Box>
             <Box
             css={css`
