@@ -6,6 +6,7 @@ import com.w6w.corns.domain.room.Room;
 import com.w6w.corns.domain.room.RoomRepository;
 import com.w6w.corns.domain.roomuser.RoomUser;
 import com.w6w.corns.domain.roomuser.RoomUserRepository;
+import com.w6w.corns.domain.user.User;
 import com.w6w.corns.domain.user.UserRepository;
 import com.w6w.corns.dto.redis.SaveScriptRequestDto;
 import com.w6w.corns.dto.redis.ScriptDto;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +69,7 @@ public class RedisServiceImpl implements RedisService {
         // ---------------------------------------------------------------------------------------
 
         //HTML 문법 텍스트
+        String ENCODE = "<meta charset=\"utf-8\">";
         String TITLE = "<h1/>";
         String SUBTITLE = "<h2/>";
         String SCRIPT = "<h3/>";
@@ -87,6 +90,7 @@ public class RedisServiceImpl implements RedisService {
 
         // 스크립트 공통 텍스트(방 정보) 세팅
         StringBuilder roomInfoText = new StringBuilder();
+        roomInfoText.append(ENCODE);
         roomInfoText.append(CENTER_START).append(TITLE).append("[ ").append(roomInfo.getRoom().getTitle()).append(" ]").append(ENTER);
         roomInfoText.append(SUBTITLE).append(ICON_SUBJECT).append(roomInfo.getSubject().getValue())
                     .append(" | ").append(ICON_TIME).append(roomInfo.getRoom().getTime())
@@ -95,27 +99,34 @@ public class RedisServiceImpl implements RedisService {
 
         // 해당 방 roomUser 리스트, user 정보 가져오기
         List<RoomUser> roomUserList = roomUserRepo.findStartRoomUserInRoom(roomInfo.getRoom().getRoomNo(), RoomUserCode.ROOM_USER_END.getCode());
-        Map<Integer, String> nicknameList = new HashMap<>();
+        Map<Integer, User> userInfoList = new HashMap<>();
 
         Map<Integer, StringBuilder> scriptText = new HashMap<>(); // key : 개인 스크립트는 userId, 합본은 0
+        Map<Integer, Integer> scriptSize = new HashMap<>();
+        AtomicInteger scriptSizeAll = new AtomicInteger();
 
         for (int i = 0; i < roomUserList.size(); i++) {
             int userId = roomUserList.get(i).getUserId();
-            nicknameList.put(userId, userRepo.findByUserId(userId).getNickname());
+            userInfoList.put(userId, userRepo.findById(userId).get());
             BACKGROUND_START.put(userId, COLOR[i]);
             scriptText.put(userId, new StringBuilder(roomInfoText.toString()));
+            scriptSize.put(userId, 0);
         }
         scriptText.put(0, new StringBuilder(roomInfoText.toString()));
 
         // HTML 문법으로 스크립트 저장
         scriptList.stream().forEach(script -> {
             int userId = script.getUserId();
-            StringBuilder sentence = new StringBuilder().append(nicknameList.get(userId)).append("#").append(userId)
+            StringBuilder sentence = new StringBuilder().append(userInfoList.get(userId).getNickname()).append("#").append(userId)
                                                         .append(ICON_SPEAK).append(script.getSentence());
             scriptText.put(0, scriptText.get(0).append(BACKGROUND_START.get(userId))
                                                 .append(sentence.toString())
                                                 .append(BACKGROUND_END).append(ENTER));
             scriptText.put(userId, scriptText.get(userId).append(sentence.toString()).append(ENTER));
+
+            int size = script.getSentence().length();
+            scriptSizeAll.addAndGet(size);
+            scriptSize.put(userId, scriptSize.get(userId) + size);
         });
         
         // HTML 파일로 업로드
@@ -125,6 +136,14 @@ public class RedisServiceImpl implements RedisService {
 
             String scriptUrl = domainPath + "/scripts/" + roomInfo.getRoom().getRoomNo() + "_" + roomUser.getUserId() + ".html";
             roomUser.setScriptUrl(scriptUrl);
+
+            double scriptPerc = (double)scriptSize.get(roomUser.getUserId()) / scriptSizeAll.get() * 100;
+            int speakingSec = (int)Math.round((roomInfo.getRoom().getTime()* 60) * scriptPerc / 100);
+            roomUser.setSpeakingSec(speakingSec);
+
+            User user = userInfoList.get(roomUser.getUserId());
+            user.setSpeakingTotal(user.getSpeakingTotal()+speakingSec);
+            userRepo.save(user);
         }
         roomUserRepo.saveAll(roomUserList);
 
