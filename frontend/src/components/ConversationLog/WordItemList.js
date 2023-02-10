@@ -68,6 +68,12 @@ function WordListItem({
             inputProps={{
               "aria-labelledby": item.wordSq,
             }}
+            sx={{
+              color: "#111",
+              "&.Mui-checked": {
+                color: "#1766C3",
+              },
+            }}
           />
         </ListItemIcon>
         <ListItemText

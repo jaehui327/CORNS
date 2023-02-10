@@ -57,7 +57,19 @@ function AddWordButton({ setBaseTime, reload, setReload }) {
 
   return (
     <>
-      <Button onClick={handleOpenModal} variant="contained">
+      <Button
+        onClick={handleOpenModal}
+        variant="contained"
+        sx={{
+          border: "3px solid #111",
+          borderRadius: "0",
+          backgroundColor: "#3C90F2",
+          color: "#111",
+          "&:hover": {
+            backgroundColor: "#1766C3",
+          },
+        }}
+      >
         추가
       </Button>
 
@@ -97,6 +109,7 @@ function AddWordButton({ setBaseTime, reload, setReload }) {
               }}
             >
               <Input
+                placeholder="Word"
                 value={wordEng}
                 onChange={onChangeWordEng}
                 rows={4}
@@ -117,6 +130,7 @@ function AddWordButton({ setBaseTime, reload, setReload }) {
               }}
             >
               <Input
+                placeholder="의미"
                 value={wordKor}
                 onChange={onChangeWordKor}
                 rows={4}
@@ -130,7 +144,19 @@ function AddWordButton({ setBaseTime, reload, setReload }) {
             </Grid>
           </Grid>
           <Box sx={{ display: "flex", justifyContent: "center", mt: "4%" }}>
-            <Button onClick={clickedSubmitButton} variant="contained">
+            <Button
+              onClick={clickedSubmitButton}
+              variant="contained"
+              sx={{
+                border: "3px solid #111",
+                borderRadius: "0",
+                backgroundColor: "#3C90F2",
+                color: "#111",
+                "&:hover": {
+                  backgroundColor: "#1766C3",
+                },
+              }}
+            >
               등록하기
             </Button>
           </Box>

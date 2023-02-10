@@ -154,8 +154,20 @@ export default function TransferList() {
           alignItems="center"
         >
           <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
+            sx={{
+              my: 0.5,
+              border: "3px solid #111",
+              borderRadius: "0",
+              backgroundColor: "#3C90F2",
+              color: "#111",
+              "&:hover": {
+                backgroundColor: "#1766C3",
+              },
+              ":disabled": {
+                color: "#111",
+              },
+            }}
+            variant="contained"
             size="small"
             onClick={handleCheckedRight}
             disabled={leftChecked.length === 0}
@@ -164,8 +176,20 @@ export default function TransferList() {
             &gt;
           </Button>
           <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
+            sx={{
+              my: 0.5,
+              border: "3px solid #111",
+              borderRadius: "0",
+              backgroundColor: "#3C90F2",
+              color: "#111",
+              "&:hover": {
+                backgroundColor: "#1766C3",
+              },
+              ":disabled": {
+                color: "#111",
+              },
+            }}
+            variant="contained"
             size="small"
             onClick={handleCheckedLeft}
             disabled={rightChecked.length === 0}

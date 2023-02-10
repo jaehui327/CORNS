@@ -99,6 +99,7 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
               }}
             >
               <Input
+                placeholder="Word"
                 value={eng}
                 onChange={onChangeWordEng}
                 rows={4}
@@ -108,6 +109,7 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
                   backgroundColor: "white",
                   padding: "1rem 5.5rem 1rem 1rem",
                 }}
+                disabled="true"
               ></Input>
             </Grid>
             <Grid
@@ -119,6 +121,7 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
               }}
             >
               <Input
+                placeholder="의미"
                 value={kor}
                 onChange={onChangeWordKor}
                 rows={4}
@@ -132,7 +135,19 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
             </Grid>
           </Grid>
           <Box sx={{ display: "flex", justifyContent: "center", mt: "4%" }}>
-            <Button onClick={clickedEditButton} variant="contained">
+            <Button
+              onClick={clickedEditButton}
+              variant="contained"
+              sx={{
+                border: "3px solid #111",
+                borderRadius: "0",
+                backgroundColor: "#67C73A",
+                color: "#111",
+                "&:hover": {
+                  backgroundColor: "#45971E",
+                },
+              }}
+            >
               수정하기
             </Button>
           </Box>
