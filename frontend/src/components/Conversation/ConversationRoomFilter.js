@@ -12,6 +12,7 @@ import { Box, Checkbox, Button, Input } from "@mui/material";
 import { css } from "@emotion/react";
 
 function ConversationRoomFilter() {
+  const [checked, setChecked] = useState(false);
   const dispatch = useDispatch();
 
   const getMintime = (e) => {
@@ -22,8 +23,9 @@ function ConversationRoomFilter() {
     checkFilter("max", e.target.value);
   };
 
-  const getAvail = (e) => {
-    checkFilter("avail", e.target.value);
+  const getAvail = () => {
+    setChecked((prev) => !prev);
+    checkFilter("avail", checked);
   };
 
   // 필터 변경할 때마다 params 수정하는 함수
@@ -114,7 +116,7 @@ function ConversationRoomFilter() {
           >
             입장가능여부
           </span>
-          <Checkbox />
+          <Checkbox onClick={getAvail} />
         </Box>
         <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
