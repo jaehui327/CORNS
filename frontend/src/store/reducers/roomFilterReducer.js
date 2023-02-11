@@ -58,6 +58,9 @@ export const roomFilterReducer = createSlice({
     modifyIsAvail: (state, action) => {
       return { ...state, isAvail: !action.payload };
     },
+    resetFilter: (state, action) => {
+      return (state = initialState);
+    },
   },
 });
 
@@ -69,4 +72,5 @@ export const {
   modifyMinTime,
   modifyMaxTime,
   modifyIsAvail,
+  resetFilter,
 } = roomFilterReducer.actions;
