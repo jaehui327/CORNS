@@ -731,3 +731,34 @@ function initRoomInfo(){
 function setMemberCount(curr){
 	$("#roomViewMemberCount").text(curr + "/" + maxMemberCount);
 }
+
+function saveWord(){
+	var q_word = $("#q_word").val();
+	var a_word = $("#a_word").val();
+
+	var saveData = {
+		"userId": userId,
+		"wordEng": q_word,
+		"wordKor": a_word
+	};
+
+	$.ajax({
+		type : "POST",
+		url : serverUrl + "/word",    
+		headers: { "Content-Type": "application/json",
+					"Authorization" : "Basic " + accessToken,
+					"Access-Control-Allow-Credentials" : "true"},    
+		contentType : "application/json",
+		data : JSON.stringify(saveData),
+		success: function(data, textStatus, xhr) {
+			console.log("단어저장")
+			$("#q_word").val("");
+			$("#a_word").val("");	
+		},
+		error:function(request,status,error){
+			console.log(request);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
