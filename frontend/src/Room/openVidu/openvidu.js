@@ -100,7 +100,12 @@ function joinSession() {
 		// 여기에서 스크립트 만드는 api 호출
 		if (event.reason === "recognized") {
 			console.log(event.text);
-			
+			var scriptData = {
+				"roomNo": jRoomNo,
+				"sentence": event.text,
+				"time": "",
+				"userId": userId
+			};
 		}
 	});
 
