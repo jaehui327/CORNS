@@ -28,6 +28,8 @@ var accessToken;
 
 var myStream;
 
+var totalTime;
+
 /* OPENVIDU METHODS */
 
 function joinSession() {
@@ -98,6 +100,7 @@ function joinSession() {
 		// 여기에서 스크립트 만드는 api 호출
 		if (event.reason === "recognized") {
 			console.log(event.text);
+			
 		}
 	});
 
@@ -155,7 +158,6 @@ function joinSession() {
 						
 					// 방 입장처리 한다.
 					intoRoom(myUserName, '', token);
-					initRoomInfo();
 				}
 		
 
@@ -198,14 +200,31 @@ function joinSession() {
 
 	// 이벤트 받기
 	session.on('signal', (event) => {
-			//시작
-			if(event.type==="signal:start"){
-				// alert("dd")
-				// $("#startSttttt").click();
-				this.session.subscribeToSpeechToText(myStream, 'en-US');
-			}
-			//채팅
-			else{
+		//시작
+		if(event.type==="signal:start"){
+			this.session.subscribeToSpeechToText(myStream, 'en-US');
+			// 시작했다는 알림 받음
+			// $("#roomViewLastTimer").text(data.room.room.time + ":00");
+			// totalTime = data.room.room.time * 60;
+
+			var x = setInterval(function() {
+				//parseInt() : 정수를 반환
+				var min = parseInt(totalTime/60); //몫을 계산
+				var sec = totalTime%60; //나머지를 계산
+		
+				$("#roomViewLastTimer").text(min + ":" + sec);
+				// document.getElementById("demo").innerHTML = min + "분" + sec + "초";
+				totalTime--;
+		
+				//타임아웃 시
+				if (totalTime < 0) {
+					clearInterval(x); //setInterval() 실행을 끝냄
+					alert("대화끝!");
+				}
+			}, 1000);
+		}
+		//채팅
+		else{
 			if(event.data.includes(myUserName + " : ")){
 				// 내 메시지
 				var c_html = `<div><div style="float:right; margin:10px; ">` + event.data + `</div><div>`;
@@ -306,6 +325,7 @@ function intoRoom(connectionId, recordId, token){
 			console.log(textStatus);
 			console.log(xhr);
 			console.log("입장처리 완료");
+			initRoomInfo();
 		},
 		error:function(request,status,error){
 			// alert("방 입장처리 실패 : " + request.statusText);
@@ -462,7 +482,28 @@ function getConnections(sessionId){
 // 대화 시작
 function startConversation(){
 	// 시작했다고 모두에게 알리기
-	sendToOpenvidu("start", "data");
+	var sendData = {
+		"roomNo": jRoomNo
+	};
+	$.ajax({
+		type : "PATCH",
+		url : serverUrl + "room/start" ,
+		data :  JSON.stringify(sendData),
+		headers: { "Content-Type": "application/json",
+					"Authorization" : "Basic " + accessToken,
+					"Access-Control-Allow-Credentials" : "true"},     
+		contentType : "application/json",
+		success: function(data, textStatus, xhr) {
+			console.log(data)
+			sendToOpenvidu("start", "data");
+		},
+		error:function(request,status,error){
+			// alert("방 퇴장처리 실패 : " + request.statusText);
+			console.log(request);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }
 
 var maxMemberCount = 0;
@@ -505,6 +546,8 @@ function initRoomInfo(){
 
 			$("#roomViewTitle").text(data.room.room.title + "   [" + data.room.subject.value + "]");
 			$("#roomViewTimer").text(data.room.room.time + "분");
+			$("#roomViewLastTimer").text(data.room.room.time + ":00");
+			totalTime = data.room.room.time * 60;
 			maxMemberCount = data.room.room.currentMember;
 			setMemberCount(data.room.room.currentMember);
 
