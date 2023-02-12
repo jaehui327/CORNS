@@ -105,12 +105,9 @@ function joinSession() {
 	// --- 4) Connect to the session with a valid user token ---
 	// 세션아이디로 토큰 받아오기
 	getToken(mySessionId).then(token => {
-
 		token = token.token;
-
 		session.connect(token, { userId : userId, userName: myUserName })
 			.then(() => {
-
 				// 방이 없으면 만들어줘야 한다.
 				if(!jRoomNo){
 					// 방 만들어야한다.
@@ -140,6 +137,7 @@ function joinSession() {
 						data : JSON.stringify(makeroomdata),
 						success: function(data, textStatus, xhr) {
 							jRoomNo = data.room.room.roomNo;
+							initRoomInfo();
 							console.log("방 만들기")
 							console.log(data);
 							console.log(textStatus);
@@ -157,6 +155,7 @@ function joinSession() {
 						
 					// 방 입장처리 한다.
 					intoRoom(myUserName, '', token);
+					initRoomInfo();
 				}
 		
 
@@ -199,40 +198,27 @@ function joinSession() {
 
 	// 이벤트 받기
 	session.on('signal', (event) => {
-		//시작
-		if(event.type==="signal:start"){
-			// alert("dd")
-			// $("#startSttttt").click();
-			this.session.subscribeToSpeechToText(myStream, 'en-US');
-		}
-		//채팅
-		else{
-			/* <div id="roomViewChattingReceive">
-            <div style="float:left; margin:10px;">앤드류 : 안녕하세요. </div>
-            <div style="float:right; margin:10px;">가필드 : 안녕하세요! 반갑습니다.</div>
-            <div style="float:left; margin:10px;">앤드류 : 주제 확인하셨나요? </div>
-            <div style="float:right; margin:10px;">가필드 : 네 일상주제 확인했습니다.</div>
-            <div style="float:left; margin:10px;">앤드류 : 넵 3분만 더 기다리고 </div>
-            <div style="float:left; margin:10px;">앤드류 : 시작할게요~~~ </div> <br>
-            <div style="float:right; margin:10px;">가필드 : 네.</div>
-          </div> */
-		if(event.data.includes(myUserName + " : ")){
-			// 내 메시지
-			var c_html = `<div><div style="float:right; margin:10px; ">` + event.data + `</div><div>`;
-			$("#roomViewChattingReceive").append(c_html);
-			
-		}
-		else{
-			// 남의 메시지
-			var o_html = `<div style="float:left; margin:10px;">` + event.data + `</div>`;
-			$("#roomViewChattingReceive").append(o_html);
-		}
+			//시작
+			if(event.type==="signal:start"){
+				// alert("dd")
+				// $("#startSttttt").click();
+				this.session.subscribeToSpeechToText(myStream, 'en-US');
+			}
+			//채팅
+			else{
+			if(event.data.includes(myUserName + " : ")){
+				// 내 메시지
+				var c_html = `<div><div style="float:right; margin:10px; ">` + event.data + `</div><div>`;
+				$("#roomViewChattingReceive").append(c_html);
+				
+			}
+			else{
+				// 남의 메시지
+				var o_html = `<div style="float:left; margin:10px;">` + event.data + `</div>`;
+				$("#roomViewChattingReceive").append(o_html);
+			}
 		}
 		
-
-		// console.log(event.data); // Message
-		// console.log(event.from); // Connection object of the sender
-		// console.log(event.type); // The type of message
 	});
 
 }
@@ -289,7 +275,6 @@ function sendChatting(){
 function appendCaptionsButton(videoElement,myStream) {
 
 	document.getElementById("startSttttt").onmouseup = async (ev) => {
-		alert("zz")
 		await this.session.subscribeToSpeechToText(myStream, 'en-US');
 	};
 }
@@ -321,8 +306,6 @@ function intoRoom(connectionId, recordId, token){
 			console.log(textStatus);
 			console.log(xhr);
 			console.log("입장처리 완료");
-			initRoomInfo();
-
 		},
 		error:function(request,status,error){
 			// alert("방 입장처리 실패 : " + request.statusText);
