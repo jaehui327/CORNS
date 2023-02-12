@@ -56,6 +56,13 @@
     margin: 10px;
     margin-left: 30px;
     float: left;
+    display: none;
+}
+
+.roomViewAppMemberImage {
+    width: 350px;
+    height: 250px;
+    /* border: 1px solid black; */
 }
 
 #video-container {
