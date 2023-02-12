@@ -13,6 +13,7 @@ function Ranking({ location, history }) {
     { name: "인기", route: "/community/ranking/popularity", color: "#DDDDDD" },
   ];
   const [type, setType] = useState(1);
+  const [unit, setUnit] = useState("");
 
 
   // location.pathname: 현재 url
@@ -20,12 +21,16 @@ function Ranking({ location, history }) {
   useEffect(() => {
     if (location.pathname === "/community/ranking/sincerity") {
       setType(1);
+      setUnit("exp");
     } else if (location.pathname === "/community/ranking/thumbs") {
       setType(2);
+      setUnit("개");
     } else if (location.pathname === "/community/ranking/chat") {
       setType(3);
+      setUnit("분");
     } else if (location.pathname === "/community/ranking/popularity") {
       setType(4);
+      setUnit("명");
     } else {
       history.push("/NotFound");
     }
@@ -36,14 +41,14 @@ function Ranking({ location, history }) {
       <h2>알맹이 랭킹</h2>
 
       <Box sx={{ py: "64px" }}>
-        <RankingList width={150} />
+        <RankingList width={150} /> 
       </Box>
 
       <Tabmenu Items={TabMenus} Location={location.pathname} />
 
       {/* 각 랭킹 리스트 */}
       <Box sx={{ border: "3px solid #111111" }} padding="48px 112px" mb="32px">
-        <RankingTableList type={type} />
+        <RankingTableList type={type} unit={unit} />
       </Box>
     </>
   );

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import ProfileImg from "components/GlobalComponents/ProfileImg";
 import UserNameTag from "components/GlobalComponents/UserNameTag";
 import { TableRow, TableCell } from "@mui/material";
 
-function RankingTableItem({ item }) {
+function RankingTableItem({ item, unit }) {
   const { ranking, userId, nickname, imgUrl, levelNo, value } = item;
 
   return (
@@ -12,7 +12,7 @@ function RankingTableItem({ item }) {
       <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
         <TableCell>{ranking}등</TableCell>
         <TableCell>
-            <ProfileImg imgSrc={imgUrl} alt={nickname} width={"40px"}/>
+          <ProfileImg imgSrc={imgUrl} alt={nickname} width={"40px"} />
         </TableCell>
 
         <TableCell>
@@ -20,9 +20,8 @@ function RankingTableItem({ item }) {
         </TableCell>
 
         <TableCell>Lv.{levelNo}</TableCell>
-        <TableCell>{value}</TableCell>
+        <TableCell>{value}{unit}</TableCell>
       </TableRow>
-
     </>
   );
 }

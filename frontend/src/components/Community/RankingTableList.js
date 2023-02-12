@@ -4,17 +4,16 @@ import RankingTableItem from "./RankingTableItem";
 import { TableContainer, Table, TableBody } from "@mui/material";
 import useAxios from "auth/useAxios";
 
-function RankingtTableList({ type }) {
-
+function RankingtTableList({ type, unit }) {
   // useAxios hook
   const { data, status, isLoading, sendRequest } = useAxios();
+
 
   useEffect(() => {
     sendRequest({
       url: `${process.env.REACT_APP_HOST}/rank/${type}`,
     });
   }, [type]);
-
 
   return (
     <>
@@ -25,7 +24,7 @@ function RankingtTableList({ type }) {
             <TableBody>
               {data.rankList.map((item) => {
                 return (
-                  <RankingTableItem item={item} key={item.userId} />
+                  <RankingTableItem item={item} key={item.userId} unit={unit} />
                 );
               })}
             </TableBody>
