@@ -55,11 +55,7 @@ function NavbarDropdown() {
     <>
       <Box sx={{ cursor: "pointer", display: "flex" }} onClick={handleClick}>
         <ProfileImg
-          imgSrc={
-            sessionStorage.getItem("imgUrl") !== "null"
-              ? sessionStorage.getItem("imgUrl")
-              : ""
-          }
+          imgSrc={sessionStorage.getItem("imgUrl")}
           nickname={sessionStorage.getItem("nickname")}
           width={"30px"}
         />
@@ -110,9 +106,9 @@ function NavbarDropdown() {
               마이페이지
             </NavLink>
           </li>
-          
+
           <Divider />
-          
+
           <li
             css={css`
               padding: 5%;
@@ -142,9 +138,9 @@ function NavbarDropdown() {
               />
             )}
           </li>
-          
+
           <Divider />
-          
+
           <li
             css={css`
               padding: 5%;
@@ -152,17 +148,17 @@ function NavbarDropdown() {
             `}
           >
             <NavLink
-              to="/invitationList"
+              to="/community/invitation"
               style={{ textDecoration: "none", color: "black" }}
               css={css`
                 font-weight: ${window.location.href.includes(
-                  "invitationList"
+                  "/community/invitation"
                 ) && "bold"};
               `}
             >
               초대목록
             </NavLink>
-            </li>
+          </li>
         </Collapse>
       </ul>
     </>
