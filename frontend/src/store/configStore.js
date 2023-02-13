@@ -9,8 +9,6 @@ import { roomListReducer } from "store/reducers/roomListReducer";
 import { subjectsReducer } from "store/reducers/subjectsReducer";
 import { roomFilterReducer } from "store/reducers/roomFilterReducer";
 import { friendListReducer } from "store/reducers/friendListReducer";
-import { expProgressBarReducer } from "store/reducers/expProgressBarReducer";
-import { attendProgressBarReducer } from "store/reducers/attendProgressBarReducer";
 import { wordListReducer } from "./reducers/wordListReducer";
 import { logBookmarkListReducer } from "store/reducers/logBookmarkListReducer";
 import { logFilterReducer } from "store/reducers/logFilterReducer";
@@ -22,8 +20,6 @@ const rootReducer = combineReducers({
   subjectsReducer: subjectsReducer.reducer,
   roomFilterReducer: roomFilterReducer.reducer,
   friendListReducer: friendListReducer.reducer,
-  expProgressBarReducer: expProgressBarReducer.reducer,
-  attendProgressBarReducer: attendProgressBarReducer.reducer,
   wordListReducer: wordListReducer.reducer,
   logBookmarkListReducer: logBookmarkListReducer.reducer,
   logFilterReducer: logFilterReducer.reducer,
