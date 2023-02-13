@@ -92,6 +92,10 @@ export default function TransferList() {
     }
   };
 
+  console.log(todoWords);
+  console.log(doneWords);
+
+  useEffect(() => {}, []);
   return (
     <Grid
       container
@@ -123,7 +127,7 @@ export default function TransferList() {
           </Grid>
         </Grid>
         <Paper sx={{ width: "100%", height: "600px", overflow: "auto" }}>
-          <List dense component="div" role="list">
+          <List aria-labelledby="todo-word-list">
             {todoLoading && (
               <Grid
                 sx={{
@@ -137,17 +141,20 @@ export default function TransferList() {
             )}
             {!todoLoading &&
               todoWords.length > 0 &&
-              todoWords.map((item, id) => (
-                <WordListItem
-                  item={item}
-                  id={id}
-                  setBaseTime={setBaseTime}
-                  reload={reload}
-                  setReload={setReload}
-                  handleToggle={handleToggle}
-                  checked={checked}
-                />
-              ))}
+              todoWords.map((item, id) => {
+                return (
+                  <div key={id}>
+                    <WordListItem
+                      item={item}
+                      setBaseTime={setBaseTime}
+                      reload={reload}
+                      setReload={setReload}
+                      handleToggle={handleToggle}
+                      checked={checked}
+                    />
+                  </div>
+                );
+              })}
             {!todoLoading && todoWords.length === 0 && (
               <Grid sx={{ ml: "16px" }}>
                 <p>쫑알단어를 등록하고 학습해보세요!</p>
@@ -233,19 +240,22 @@ export default function TransferList() {
             </Grid>
           )}
           {!doneLoading && (
-            <List dense component="div" role="list">
+            <List aria-labelledby="done-word-list">
               {doneWords.length > 0 &&
-                doneWords.map((item, id) => (
-                  <WordListItem
-                    item={item}
-                    id={id}
-                    setBaseTime={setBaseTime}
-                    reload={reload}
-                    setReload={setReload}
-                    handleToggle={handleToggle}
-                    checked={checked}
-                  />
-                ))}
+                doneWords.map((item, id) => {
+                  return (
+                    <div key={id}>
+                      <WordListItem
+                        item={item}
+                        setBaseTime={setBaseTime}
+                        reload={reload}
+                        setReload={setReload}
+                        handleToggle={handleToggle}
+                        checked={checked}
+                      />
+                    </div>
+                  );
+                })}
               {doneWords.length === 0 && (
                 <Grid sx={{ ml: "16px" }}>
                   <p>쫑알단어를 학습하고 외운 단어로 옮겨보세요!</p>

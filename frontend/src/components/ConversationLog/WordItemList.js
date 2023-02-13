@@ -13,7 +13,6 @@ import { toStringDate } from "store/reducers/roomFilterReducer";
 
 function WordListItem({
   item,
-  id,
   setBaseTime,
   reload,
   setReload,
@@ -39,27 +38,22 @@ function WordListItem({
 
   return (
     <ListItem
-      key={id}
+      key={item.wordSq}
+      onClick={handleToggle(item)}
       secondaryAction={[
-        <IconButton>
-          <EditWordButton
-            word={item}
-            setBaseTime={setBaseTime}
-            reload={reload}
-            setReload={setReload}
-          />
-        </IconButton>,
-        <IconButton>
-          <DeleteIcon
-            color="error"
-            className="deleteButton"
-            onClick={clickedDeleteButton(item)}
-          ></DeleteIcon>
+        <EditWordButton
+          word={item}
+          setBaseTime={setBaseTime}
+          reload={reload}
+          setReload={setReload}
+        />,
+        <IconButton onClick={clickedDeleteButton(item)}>
+          <DeleteIcon color="error" className="deleteButton"></DeleteIcon>
         </IconButton>,
       ]}
       disablePadding
     >
-      <ListItemButton role="listitem" onClick={handleToggle(item)}>
+      <ListItemButton role="listitem">
         <ListItemIcon>
           <Checkbox
             checked={checked.indexOf(item) !== -1}
@@ -76,16 +70,8 @@ function WordListItem({
             }}
           />
         </ListItemIcon>
-        <ListItemText
-          id={`${item.wordEng}-ListItemText`}
-          primary={`${item.wordEng}`}
-          sx={{ width: "50%" }}
-        />
-        <ListItemText
-          id={`${item.wordEng}-ListItemText`}
-          primary={`${item.wordKor}`}
-          sx={{ width: "50%" }}
-        />
+        <ListItemText primary={`${item.wordEng}`} sx={{ width: "50%" }} />
+        <ListItemText primary={`${item.wordKor}`} sx={{ width: "50%" }} />
         <ListItemIcon></ListItemIcon>
       </ListItemButton>
     </ListItem>

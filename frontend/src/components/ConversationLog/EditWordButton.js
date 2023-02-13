@@ -5,7 +5,15 @@ import EditIcon from "@mui/icons-material/EditOutlined";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import axios from "axios";
-import { Box, Button, Grid, Input, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Input,
+  Modal,
+  Typography,
+} from "@mui/material";
 import { XSquare } from "react-bootstrap-icons";
 import { toStringDate } from "store/reducers/roomFilterReducer";
 
@@ -57,12 +65,13 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
 
   return (
     <>
-      <EditIcon
-        color="warning"
-        className="editButton"
-        onClick={handleOpenModal}
-      ></EditIcon>
-
+      <IconButton onClick={handleOpenModal}>
+        <EditIcon
+          key={word.wordSq + "edit-btn"}
+          color="warning"
+          className="editButton"
+        ></EditIcon>
+      </IconButton>
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -108,8 +117,8 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
                   width: "100%",
                   backgroundColor: "white",
                   padding: "1rem 5.5rem 1rem 1rem",
+                  disabled: true,
                 }}
-                disabled="true"
               ></Input>
             </Grid>
             <Grid

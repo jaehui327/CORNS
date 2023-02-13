@@ -37,6 +37,10 @@ function AddWordButton({ setBaseTime, reload, setReload }) {
   };
 
   const clickedSubmitButton = async () => {
+    if (!wordEng) {
+      window.alert("영어 단어를 입력해 주세요.");
+      return;
+    }
     try {
       const response = await axios.post(`${process.env.REACT_APP_HOST}/word`, {
         userId: sessionStorage.getItem("userId"),
