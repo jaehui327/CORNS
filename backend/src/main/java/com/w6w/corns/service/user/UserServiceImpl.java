@@ -153,18 +153,23 @@ public class UserServiceImpl implements UserService{
 
         //랭킹 나중에 추가
         UserDetailResponseDto responseDto = UserDetailResponseDto.fromEntity(user);
-        List<Rank> ranks = new ArrayList<>();
-        for(RankCode rankCd : RankCode.values()){ //null인 경우 처리 필요
-            ranks.add(rankRepository.findByUserIdAndRankCd(user.getUserId(), rankCd.getCode()));
-        }
-
         List<UserRankResponseDto> userRank = new ArrayList<>();
-        for(Rank rank : ranks){
-            userRank.add(UserRankResponseDto.builder()
-                    .ranking(rank.getRanking())
-                    .value(rank.getValue())
-                    .rankCd(rank.getRankCd())
-                    .build());
+
+        for(RankCode rankCd : RankCode.values()){ //null인 경우 처리 필요
+            Rank rank = rankRepository.findByUserIdAndRankCd(user.getUserId(), rankCd.getCode());
+            if(rank == null){
+                userRank.add(UserRankResponseDto.builder()
+                        .ranking(-1)
+                        .value(0)
+                        .rankCd(rankCd.getCode())
+                        .build());
+            }else{
+                userRank.add(UserRankResponseDto.builder()
+                        .ranking(rank.getRanking())
+                        .value(rank.getValue())
+                        .rankCd(rank.getRankCd())
+                        .build());
+            }
         }
         responseDto.setRank(userRank);
         return responseDto;
