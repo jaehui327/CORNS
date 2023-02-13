@@ -773,3 +773,12 @@ function VideoToggle(){
 		$("#roomViewVideo").css("opacity",1.0);
 	}
 }
+
+function toogleChatting(){
+	if($("#roomViewTranslation").css("display") == "none"){
+		$("#roomViewTranslation").css("display", "block");
+	}
+	else{
+		$("#roomViewTranslation").css("display", "none");
+	}
+}
