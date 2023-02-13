@@ -27,6 +27,7 @@ var count;// = urlParams.get('count');
 var accessToken;
 
 var myStream;
+var myPublisher;
 
 var totalTime;
 
@@ -79,6 +80,7 @@ function joinSession() {
 			// 누군가 새로운 사람이 들어오면 여기에 뜬다.
 			// 2번부터 띄워준다.
 			appendUserData(event.element, subscriber.stream.connection, roomno);
+			initRoomInfo();
 		});
 		
 		
@@ -208,6 +210,7 @@ function joinSession() {
 					// alert(document.getElementById("startSttttt"))
 					appendCaptionsButton(event.element, publisher.stream);
 					myStream = publisher.stream;
+					myPublisher = publisher;
 				});
 
 				// --- 8) Publish your stream ---
@@ -706,7 +709,8 @@ function initRoomInfo(){
 			$("#roomViewTimer").text(data.room.room.time + "분");
 			$("#roomViewLastTimer").text(data.room.room.time + ":00");
 			totalTime = data.room.room.time * 3;
-			maxMemberCount = data.room.room.currentMember;
+			maxMemberCount = data.room.room.maxMember;
+			console.log("현재 인원 : " + data.room.room.currentMember);
 			setMemberCount(data.room.room.currentMember);
 
 			// 방장이면 시작하기 버튼 세팅
@@ -761,4 +765,38 @@ function saveWord(){
 			console.log(error);
 		}
 	});
+}
+
+var audioEnabled = true;
+var videoEnabled = true;
+
+function MikeToggle(){
+	// alert("mike")
+	console.log(myStream);
+	// myPublisher.stream.audioActive = !myPublisher.stream.audioActive;
+	audioEnabled = !audioEnabled;
+	myPublisher.publishAudio(audioEnabled);   // true to unmute the audio track, false to mute it
+	if(!audioEnabled){
+		// 불투명처리
+		$("#roomViewMike").css("opacity",0.3);
+	}
+	else{
+		$("#roomViewMike").css("opacity",1.0);
+	}
+}
+
+function VideoToggle(){
+	// alert("mike")
+	console.log(myStream);
+	// myPublisher.stream.videoActive = !myPublisher.stream.videoActive;
+	videoEnabled = !videoEnabled;
+	myPublisher.publishVideo(videoEnabled);   // true to enable the video track, false to disable it
+
+	if(!videoEnabled){
+		// 불투명처리
+		$("#roomViewVideo").css("opacity",0.3);
+	}
+	else{
+		$("#roomViewVideo").css("opacity",1.0);
+	}
 }

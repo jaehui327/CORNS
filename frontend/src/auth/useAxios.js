@@ -16,7 +16,7 @@ function useAxios() {
   //  axios 함수
   const sendRequest = useCallback(async (requestConfig) => {
     setIsLoading(true);
-    console.log("sendRequest!", requestConfig.url);
+    console.log('sendRequest!', requestConfig.url);
     try {
       const response = await axios(requestConfig.url, {
         method: requestConfig.method ? requestConfig.method : "GET",
