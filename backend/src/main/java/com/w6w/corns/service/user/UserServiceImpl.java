@@ -231,7 +231,7 @@ public class UserServiceImpl implements UserService{
             String saveUrl = uploadPath + "/users/" + user.getUserId()+"_" + multipartFile.getOriginalFilename();
 
             //똑같은 id의 이미지가 있는지 확인 -> 있으면 삭제 후 새로운 파일 업로드
-            File dir = new File(uploadPath);
+            File dir = new File(uploadPath+"/users/");
 
             File[] preFiles = dir.listFiles();
 
