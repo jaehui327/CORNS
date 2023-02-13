@@ -10,6 +10,8 @@ import EditWordButton from "./EditWordButton";
 import DeleteIcon from "@mui/icons-material/DeleteForeverOutlined";
 import axios from "axios";
 import { toStringDate } from "store/reducers/roomFilterReducer";
+import useAxios from "auth/useAxios";
+import { useEffect } from "react";
 
 function WordListItem({
   item,
@@ -19,22 +21,28 @@ function WordListItem({
   handleToggle,
   checked,
 }) {
+  const { status: deleteWordStatus, sendRequest: deleteWordRequest } =
+    useAxios();
+
   // 삭제 버튼 클릭 - [DELETE] 단어 삭제
   const clickedDeleteButton = (word) => async () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      try {
-        const response = await axios.delete(
-          `${process.env.REACT_APP_HOST}/word/${word.wordSq}`
-        );
-        if (response.status === 200) {
-          setBaseTime(toStringDate(new Date()));
-          setReload(!reload);
-        }
-      } catch (e) {
-        console.log(e);
-      }
+      deleteWordRequest({
+        url: `${process.env.REACT_APP_HOST}/word/${word.wordSq}`,
+        method: "DELETE",
+      });
     }
   };
+
+  useEffect(() => {
+    if (deleteWordStatus === 200) {
+      console.log(
+        `[delete word] wordSq: ${item.wordSq}, wordEng: ${item.wordEng}, wordKor: ${item.wordKor}`
+      );
+      setBaseTime(toStringDate(new Date()));
+      setReload(!reload);
+    }
+  }, [deleteWordStatus]);
 
   return (
     <ListItem

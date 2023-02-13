@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import { XSquare } from "react-bootstrap-icons";
 import { toStringDate } from "store/reducers/roomFilterReducer";
+import useAxios from "auth/useAxios";
+import { useEffect } from "react";
 
 function EditWordButton({ word, setBaseTime, reload, setReload }) {
   const [openModal, setOpenModal] = useState(false);
@@ -46,22 +48,30 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
     p: "32px 0 200px",
   };
 
+  const { status: editWordStatus, sendRequest: editWordRequest } = useAxios();
+
   const clickedEditButton = async () => {
-    try {
-      const response = await axios.put(`${process.env.REACT_APP_HOST}/word`, {
+    editWordRequest({
+      url: `${process.env.REACT_APP_HOST}/word`,
+      method: "PUT",
+      data: {
         wordSq: word.wordSq,
         wordEng: eng,
         wordKor: kor,
-      });
-      if (response.status === 200) {
-        setBaseTime(toStringDate(new Date()));
-        setReload(!reload);
-        handleCloseModal();
-      }
-    } catch (e) {
-      console.log(e);
-    }
+      },
+    });
   };
+
+  useEffect(() => {
+    if (editWordStatus === 200) {
+      console.log(
+        `[edit word] wordEng: ${word.wordEng} => ${eng}, wordKor: ${word.wordKor} => ${kor}`
+      );
+      setBaseTime(toStringDate(new Date()));
+      setReload(!reload);
+      handleCloseModal();
+    }
+  }, [editWordStatus]);
 
   return (
     <>
@@ -117,8 +127,8 @@ function EditWordButton({ word, setBaseTime, reload, setReload }) {
                   width: "100%",
                   backgroundColor: "white",
                   padding: "1rem 5.5rem 1rem 1rem",
-                  disabled: true,
                 }}
+                disabled={true}
               ></Input>
             </Grid>
             <Grid

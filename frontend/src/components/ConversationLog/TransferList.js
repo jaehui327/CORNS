@@ -11,6 +11,8 @@ import { toStringDate } from "store/reducers/roomFilterReducer";
 import { GetDoneWord, GetTodoWord } from "./GetWord";
 import WordListItem from "./WordItemList";
 import AddWordButton from "./AddWordButton";
+import getRefreshToken from "auth/getRefreshToken";
+import Logout from "auth/Logout";
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -78,12 +80,31 @@ export default function TransferList() {
 
   // [PATCH] 단어 상태 변경
   const updateWordStatus = async (body) => {
-    try {
+    const sendRequest = async () => {
+      console.log(`[patch] update word status`);
       const response = await axios.patch(
         `${process.env.REACT_APP_HOST}/word`,
         body
       );
-      if (response.status === 200) {
+      if (response.status === 401) {
+        console.log("unauthorized!-> refresh!");
+        const refreshResponse = await getRefreshToken();
+
+        if (refreshResponse === 200) {
+          return sendRequest();
+        } else {
+          alert("세션이 만료되었습니다.");
+          Logout();
+          return false;
+        }
+      } else if (response.status === 200) {
+        return response;
+      }
+    };
+
+    try {
+      const updateWord = await sendRequest();
+      if (updateWord.status === 200) {
         setBaseTime(toStringDate(new Date()));
         setReload(!reload);
       }
@@ -92,10 +113,6 @@ export default function TransferList() {
     }
   };
 
-  console.log(todoWords);
-  console.log(doneWords);
-
-  useEffect(() => {}, []);
   return (
     <Grid
       container
