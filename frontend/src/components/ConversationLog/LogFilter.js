@@ -205,7 +205,7 @@ function LogFilter() {
       </Box>
 
       {/* 따봉뱃지 */}
-      <Box sx={{ mb: "48px" }}>
+      <Box sx={{ mb: "48px", display: "flex" }}>
         <span
           css={css`
             margin-right: 64px;
@@ -213,13 +213,15 @@ function LogFilter() {
         >
           따봉뱃지
         </span>
+        <span>
+          <DropDown
+            isSearchable
+            placeHolder="따봉뱃지 여부를 선택하세요."
+            options={ddabongOptions}
+            onChange={getThumb}
+          />
+        </span>
 
-        <DropDown
-          isSearchable
-          placeHolder="따봉뱃지 여부를 선택하세요."
-          options={ddabongOptions}
-          onChange={getThumb}
-        />
         {/* <span>
           <select
             id="user-selection"

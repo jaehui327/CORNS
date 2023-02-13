@@ -204,7 +204,7 @@ function RoomCard({ room, subject }) {
             fontSize: "20px",
           }}
         >
-          대화중
+          입장할 수 없는 방
         </Button>
       </Card>
     );
