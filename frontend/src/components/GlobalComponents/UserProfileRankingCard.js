@@ -71,7 +71,7 @@ function UserProfileRankingCard({ rank }) {
             text-align: center;
           `}
         >
-          {value} {unit}
+          {(rankCd === 2001) ? Math.round(value/60) : value} {unit}
         </p>
       </Box>
     </Grid>
