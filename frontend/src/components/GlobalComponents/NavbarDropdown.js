@@ -12,40 +12,87 @@ function NavbarDropdown() {
 
   // 친구 신청 확인
   const {
-    data: getData,
-    status: getStatus,
-    sendRequest: getRequest,
+    data: getFriendData,
+    status: getFriendStatus,
+    sendRequest: getFriendRequest,
   } = useAxios();
-  const { status: postStatus, sendRequest: postRequest } = useAxios();
+  const { status: postFriendStatus, sendRequest: postFriendRequest } = useAxios();
   const [newFriend, setNewFriend] = useState(false);
 
   useEffect(() => {
     // 친구 목록 들어오면 읽었다고 보내기
     if (window.location.pathname.includes("community/friends")) {
-      postRequest({
+      postFriendRequest({
         url: `${
           process.env.REACT_APP_HOST
-        }/notification/${sessionStorage.getItem("userId")}`,
-        method: "POST",
+        }/notification`,
+        method: "PUT",
+        data: {
+          userId: sessionStorage.getItem("userId"),
+          read: 0
+        }
       });
       setNewFriend(false);
     }
     // 이외의 라우터 들어가면 확인하기
     else {
-      getRequest({
+      getFriendRequest({
         url: `${
           process.env.REACT_APP_HOST
-        }/notification/${sessionStorage.getItem("userId")}`,
+        }/notification/friend/${sessionStorage.getItem("userId")}`,
       });
     }
   }, [window.location.pathname]);
 
   useEffect(() => {
-    if (getStatus === 200 && getData.isExist) {
+    if (getFriendStatus === 200 && getFriendData.isExist) {
       setNewFriend(true);
-      console.log(newFriend);
     }
-  }, [getData]);
+  }, [getFriendData]);
+
+
+  // 초대 목록 확인
+  const {
+    data: getInviteData,
+    status: getInviteStatus,
+    sendRequest: getInviteRequest,
+  } = useAxios();
+  const { status: postInviteStatus, sendRequest: postInviteRequest } = useAxios();
+  const [newInvite, setNewInvite] = useState(false);
+
+  useEffect(() => {
+    // 초대 목록 들어오면 읽었다고 보내기
+    if (window.location.pathname.includes("community/invitation")) {
+      postInviteRequest({
+        url: `${
+          process.env.REACT_APP_HOST
+        }/notification`,
+        method: "PUT",
+        data: {
+          userId: sessionStorage.getItem("userId"),
+          read: 1
+        }
+      });
+      setNewInvite(false);
+    }
+    // 이외의 라우터 들어가면 확인하기
+    else {
+      getInviteRequest({
+        url: `${
+          process.env.REACT_APP_HOST
+        }/notification/room/${sessionStorage.getItem("userId")}`,
+      });
+    }
+  }, [window.location.pathname]);
+
+
+  useEffect(() => {
+    if (getInviteStatus === 200 && getInviteData.isExist) {
+      setNewInvite(true);
+    }
+  }, [getInviteData]);
+
+
 
   const handleClick = () => {
     setOpen(!open);
@@ -59,7 +106,7 @@ function NavbarDropdown() {
           nickname={sessionStorage.getItem("nickname")}
           width={"30px"}
         />
-        {newFriend && (
+        {(newFriend || newInvite) && (
           <Box
             sx={{
               borderRadius: "200px",
@@ -158,6 +205,17 @@ function NavbarDropdown() {
             >
               초대목록
             </NavLink>
+            {newInvite && (
+              <Box
+                sx={{
+                  borderRadius: "200px",
+                  backgroundColor: "red",
+                  width: "8px",
+                  height: "8px",
+                  ml: "5px",
+                }}
+              />
+            )}
           </li>
         </Collapse>
       </ul>

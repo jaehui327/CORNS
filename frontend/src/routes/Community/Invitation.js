@@ -25,8 +25,8 @@ function Invitation() {
     <>
       <h2>초대목록</h2>
       {isLoading && <p>loading 중...</p>}
-      {!isLoading && status === 204 && <p>초대 목록이 없습니다.</p>}
-      {!isLoading && status === 200 && <InvitationList inviteList={inviteList} setInviteList={setInviteList}/>}
+      {!isLoading && inviteList.length === 0 && <p>초대 목록이 없습니다.</p>}
+      {!isLoading && inviteList.length > 0 && <InvitationList inviteList={inviteList} setInviteList={setInviteList}/>}
     </>
   );
 }
