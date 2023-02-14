@@ -4,6 +4,7 @@ var session;
 var roomListId = "roomViewUser";
 
 var myTocken;
+var isStart = false;
 
 // serverurl
 // let serverUrl = "https://corns.co.kr:4463/";
@@ -92,6 +93,16 @@ function joinSession() {
 	session.on('streamDestroyed', event => {
 		// Delete the HTML element with the user's nickname. HTML videos are automatically removed from DOM
 		removeUserData(event.stream.connection);
+		getConnections(mySessionId).then(data => {
+			if(data.numberOfElements == 1 && isStart){
+				$("#roomViewAppTitle").text("투표할 따봉멤버가 없어요 T_T");
+				endConversation();
+				setMember();	// 베스트 멤버 뽑자!
+			}
+		});
+	
+
+		// if(event.stream)
 		initRoomInfo();
 	});
 
@@ -192,6 +203,7 @@ function joinSession() {
 			this.session.subscribeToSpeechToText(myStream, 'en-US');
 
 			setNoOneBlack();
+			isStart = true;
 
 			var x = setInterval(function() {
 				//parseInt() : 정수를 반환
@@ -206,29 +218,8 @@ function joinSession() {
 				if (totalTime < 0) {
 					clearInterval(x); //setInterval() 실행을 끝냄
 					// alert("대화끝!");
-					var sendData = {
-						"roomNo": jRoomNo
-					};
-					$.ajax({
-						type : "PATCH",
-						url : serverUrl + "room/end" ,
-						data :  JSON.stringify(sendData),
-						headers: { "Content-Type": "application/json",
-									"Authorization" : "Basic " + accessToken,
-									"Access-Control-Allow-Credentials" : "true"},     
-						contentType : "application/json",
-						success: function(data, textStatus, xhr) {
-							console.log(data)
-							// 대화 종료 하고
-						},
-						error:function(request,status,error){
-							console.log(request);
-							console.log(status);
-							console.log(error);
-						}
-					});
+					endConversation();
 					setMember();	// 베스트 멤버 뽑자!
-					
 				}
 			}, 1000);
 		}
@@ -423,7 +414,6 @@ function intoRoom(connectionId, recordId, token){
 			console.log(data);
 			console.log(textStatus);
 			console.log(xhr.status);
-			alert(xhr.statusCode)
 			console.log("입장처리 완료");
 			initRoomInfo();
 		},
@@ -620,7 +610,6 @@ function getConnections(sessionId){
 
 // 대화 시작
 function startConversation(){
-	// 시작했다고 모두에게 알리기
 	var sendData = {
 		"roomNo": jRoomNo
 	};
@@ -634,7 +623,12 @@ function startConversation(){
 		contentType : "application/json",
 		success: function(data, textStatus, xhr) {
 			console.log(data)
-			sendToOpenvidu("start", "data");
+			if(xhr.status == 200){
+				sendToOpenvidu("start", "data");
+			}
+			else{
+				alert("대화를 시작할수없습니다.");
+			}
 		},
 		error:function(request,status,error){
 			console.log(request);
@@ -657,6 +651,11 @@ function initRoomInfo(){
 					"Access-Control-Allow-Credentials" : "true"},     
 		contentType : "application/json",
 		success: function(data, textStatus, xhr) {
+			// 만약 갱신되는데 시작했고 한명이면 대화 종료!
+			if(isStart && data.room.room.currentMember == 1){
+				endConversation();
+				setMember();	// 베스트 멤버 뽑자!
+			}
 			/* 
 						{
 			"room": {
@@ -681,23 +680,24 @@ function initRoomInfo(){
 			// var roomData = JSON.parse(data);
 
 			// console.log(roomData + "["alert(ata.room.room.title) + data.room.subject.value + "]");
-
-			$("#roomViewTitle").text(data.room.room.title + "   [" + data.room.subject.value + "]");
-			$("#roomViewTimer").text(data.room.room.time + "분");
-			$("#roomViewLastTimer").text(data.room.room.time + ":00");
-			totalTime = data.room.room.time * 3;
-			maxMemberCount = data.room.room.maxMember;
-			console.log("현재 인원 : " + data.room.room.currentMember);
-			setMemberCount(data.room.room.currentMember);
-
-			// 방장이면 시작하기 버튼 세팅
-			if(data.room.room.hostUserId == userId){
-				$("#roomViewPlay").show();
+			else{
+				$("#roomViewTitle").text(data.room.room.title + "   [" + data.room.subject.value + "]");
+				$("#roomViewTimer").text(data.room.room.time + "분");
+				$("#roomViewLastTimer").text(data.room.room.time + ":00");
+				totalTime = data.room.room.time * 3;
+				maxMemberCount = data.room.room.maxMember;
+				console.log("현재 인원 : " + data.room.room.currentMember);
+				setMemberCount(data.room.room.currentMember);
+	
+				// 방장이면 시작하기 버튼 세팅
+				if(data.room.room.hostUserId == userId){
+					$("#roomViewPlay").show();
+				}
 			}
-
 			console.log(data);
 			console.log(textStatus);
 			console.log(xhr);
+			
 		},
 		error:function(request,status,error){
 			console.log(request);
@@ -882,4 +882,28 @@ function makeOrIntoRoom(){
 			// 방 입장처리 한다.
 			intoRoom(myUserName, '', myTocken);
 		}
+}
+
+function endConversation(){
+	var sendData = {
+		"roomNo": jRoomNo
+	};
+	$.ajax({
+		type : "PATCH",
+		url : serverUrl + "room/end" ,
+		data :  JSON.stringify(sendData),
+		headers: { "Content-Type": "application/json",
+					"Authorization" : "Basic " + accessToken,
+					"Access-Control-Allow-Credentials" : "true"},     
+		contentType : "application/json",
+		success: function(data, textStatus, xhr) {
+			console.log(data)
+			// 대화 종료 하고
+		},
+		error:function(request,status,error){
+			console.log(request);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }
