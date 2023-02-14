@@ -3,17 +3,18 @@ import { Button } from "@mui/material";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-function MakeRoomSubjectBtn({ subject }) {
-  const { subjectNo, value } = subject;
-  const [toggle, setToggle] = useState(true);
 
-  // 버튼을 눌렀을 때 색깔이 바뀌게 하는 toggle 함수
-  // const btnColorToggle = (e) => {
-  //   setToggle((prev) => !prev);
-  // };
+
+
+  function MakeRoomSubjectBtn({ subject,onChange }) {
+  
+    const { subjectNo, value } = subject;
+    const [toggle, setToggle] = useState(true);
+
 
   return (
     <>
+
       <span
         css={css`
           border: 3px solid #111;
@@ -25,8 +26,8 @@ function MakeRoomSubjectBtn({ subject }) {
           font-weight: bold;
         `}
       >
-        <input type="radio" name="topic" value={subjectNo} /> {value}{" "}
-        &nbsp;&nbsp;
+        <input type="radio" name="topic" defaultValue={subjectNo} onChange={(e)=>onChange(e)}/> {value}
+        
       </span>
 
       {/* <Button
@@ -52,8 +53,8 @@ function MakeRoomSubjectBtn({ subject }) {
       >
         { value }
       </Button> */}
-    </>
-  );
+</>
+  )
 }
 
 export default MakeRoomSubjectBtn;
