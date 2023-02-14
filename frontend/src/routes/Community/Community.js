@@ -13,7 +13,7 @@ import { css } from "@emotion/react";
 function Community() {
   const SidebarItems = [
     { name: "알맹이랭킹", route: "/community/ranking/sincerity" },
-    { name: "유저검색", route: "/community/searchUser" },
+    { name: "알맹이검색", route: "/community/searchUser" },
     { name: "친구", route: "/community/friends" },
     { name: "초대목록", route: "/community/invitation" },
   ];
