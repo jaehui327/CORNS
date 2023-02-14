@@ -225,17 +225,9 @@ function joinSession() {
 		}
 		//채팅
 		else{
-			if(event.data.includes(myUserName + " : ")){
-				// 내 메시지
-				var c_html = `<div><div style="float:right; margin:10px; ">` + event.data + `</div><div>`;
-				$("#roomViewChattingReceive").append(c_html);
-				
-			}
-			else{
-				// 남의 메시지
-				var o_html = `<div style="float:left; margin:10px;">` + event.data + `</div>`;
-				$("#roomViewChattingReceive").append(o_html);
-			}
+			//width:80%; margin:10px;
+			var o_html = `<div style="width:80%; margin:10px;">` + event.data + `</div>`;
+			$("#roomViewChattingReceive").append(o_html);
 		}
 		
 	});
