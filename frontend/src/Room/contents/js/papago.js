@@ -28,7 +28,7 @@ function papago(){
 
 	$.ajax({
 		type : "POST",
-		url : "http://localhost:8645/" + "util/translation",    
+		url : serverUrl + "util/translation",    
 		headers: { "Content-Type": "application/json",
 					"Authorization" : "Basic " + accessToken,
 					"Access-Control-Allow-Credentials" : "true"},    
