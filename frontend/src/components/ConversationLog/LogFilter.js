@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import SubjectsContainer from "store/containers/SubjectsContainer";
 import SelfEvaluationFilter from "components/ConversationLog/SelfEvaluationFilter";
@@ -21,20 +21,27 @@ function LogFilter() {
   ];
   const selfEvaluationOptions = [
     { value: "6", label: "전체" },
-    { value: "0", label: "0개" },
+    { value: "0", label: "자기평가 안 함" },
     { value: "1", label: "1개" },
     { value: "2", label: "2개" },
     { value: "3", label: "3개" },
     { value: "4", label: "4개" },
     { value: "5", label: "5개" },
   ];
+  const [minTime, setMinTime] = useState(0);
+  const [maxTime, setMaxTime] = useState(30);
 
   const getMintime = (e) => {
-    checkFilter("min", e.target.value);
+    setMinTime(() => e.target.value);
   };
 
   const getMaxtime = (e) => {
-    checkFilter("max", e.target.value);
+    setMaxTime(() => e.target.value);
+  };
+
+  const sendFilter = () => {
+    checkFilter("min", minTime);
+    checkFilter("max", maxTime);
   };
 
   const getStartDate = (e) => {
@@ -144,6 +151,22 @@ function LogFilter() {
           }}
           onChange={getMaxtime}
         />
+        <Button
+          variant="contained"
+          sx={{
+            ml: "16px",
+            border: "3px solid #111",
+            borderRadius: 0,
+            backgroundColor: "#3C90F2",
+            color: "#111",
+            "&:hover": {
+              backgroundColor: "#7DB6FA",
+            },
+          }}
+          onClick={sendFilter}
+        >
+          적용
+        </Button>
       </Box>
 
       {/* 날짜 */}

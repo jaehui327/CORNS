@@ -15,14 +15,21 @@ import { css } from "@emotion/react";
 function ConversationRoomFilter() {
   const [checked, setChecked] = useState(false);
   const [clickReset, setClickReset] = useState(false);
+  const [minTime, setMinTime] = useState(0);
+  const [maxTime, setMaxTime] = useState(30);
   const dispatch = useDispatch();
 
   const getMintime = (e) => {
-    checkFilter("min", e.target.value);
+    setMinTime(() => e.target.value);
   };
 
   const getMaxtime = (e) => {
-    checkFilter("max", e.target.value);
+    setMaxTime(() => e.target.value);
+  };
+
+  const sendFilter = () => {
+    checkFilter("min", minTime);
+    checkFilter("max", maxTime);
   };
 
   const getAvail = () => {
@@ -117,8 +124,23 @@ function ConversationRoomFilter() {
               height: "45px",
             }}
             onChange={getMaxtime}
-            // defaultValue={30}
           />
+          <Button
+            variant="contained"
+            sx={{
+              ml: "16px",
+              border: "3px solid #111",
+              borderRadius: 0,
+              backgroundColor: "#98DA7A",
+              color: "#111",
+              "&:hover": {
+                backgroundColor: "#BAE8A4",
+              },
+            }}
+            onClick={sendFilter}
+          >
+            적용
+          </Button>
         </Box>
         <Box sx={{ mb: "48px", mr: "64px" }}>
           <span
