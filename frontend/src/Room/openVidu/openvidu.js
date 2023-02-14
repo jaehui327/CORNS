@@ -412,13 +412,23 @@ function intoRoom(connectionId, recordId, token){
 		contentType : "application/json",
 		data : JSON.stringify(data),
 		success: function(data, textStatus, xhr) {
+			if(xhr.status != 200){
+				if(window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")){
+					window.location.href = "https://localhost:3000/conversation";
+				}
+				else{
+					window.location.href = "https://corns.co.kr:4438/conversation";
+				}
+			}
 			console.log(data);
 			console.log(textStatus);
-			console.log(xhr);
+			console.log(xhr.status);
+			alert(xhr.statusCode)
 			console.log("입장처리 완료");
 			initRoomInfo();
 		},
 		error:function(request,status,error){
+			alert("실패")
 			// alert("방 입장처리 실패 : " + request.statusText);
 			console.log(request);
 			console.log(status);
@@ -468,7 +478,7 @@ function outRoom(rUserId){	// 떠나는 사람 방 번호 받는다.
 	});
 }
 
-function outOneRoom(rUserId,roomNo){	// 떠나는 사람 방 번호 받는다.
+function outOneRoom(rUserId,roomNo,current,total){	// 떠나는 사람 방 번호 받는다.
 
 	var outdata = {
 		"roomNo": roomNo,
@@ -477,7 +487,6 @@ function outOneRoom(rUserId,roomNo){	// 떠나는 사람 방 번호 받는다.
 
 	console.log("roomNo : " + roomNo);
 	console.log("userId : " +rUserId);
-
 	$.ajax({
 		type : "PATCH",
 		url : serverUrl + "room/user",      
@@ -491,7 +500,9 @@ function outOneRoom(rUserId,roomNo){	// 떠나는 사람 방 번호 받는다.
 			console.log(textStatus);
 			console.log(xhr);
 			console.log("퇴장처리 완료");
-			makeOrIntoRoom();
+			if(current === total-1){
+				makeOrIntoRoom();
+			}
 
 		},
 		error:function(request,status,error){
@@ -534,8 +545,6 @@ function removeUserData(connection) {
 	console.log(connection);
 	var rUserData = JSON.parse(connection.data);
 	console.log(rUserData);
-
-	// outRoom(rUserData.userId);
 }
 
 
@@ -803,7 +812,7 @@ function outAllRoom(){
 			if(data != null && data.rooms != null && data.rooms.length > 0){
 				// alert("있음!")
 				for(var i = 0 ; i < data.rooms.length; i++){
-					outOneRoom(userId, data.rooms[i].room.roomNo);
+					outOneRoom(userId, data.rooms[i].room.roomNo,i,data.rooms.length);
 				}
 			}
 			else{
@@ -815,7 +824,7 @@ function outAllRoom(){
 			console.log(xhr);
 		},
 		error:function(request,status,error){
-			console.log("방 퇴장처리 실패 : " + request.statusText);
+			console.log("입장한 방 리스트 불러오기 : " + request.statusText);
 			console.log(request);
 			console.log(status);
 			console.log(error);
