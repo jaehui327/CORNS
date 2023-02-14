@@ -1,32 +1,46 @@
+function changeTranslationLang(){
+    var sourceText = $("#roomViewTranslationSource").text();
+    var sourceValue = $("#roomViewTranslationSourceValue").val();
+
+    $("#roomViewTranslationSource").text($("#roomViewTranslationTarget").text());
+    $("#roomViewTranslationSourceValue").val($("#roomViewTranslationTargetValue").val());
+
+    $("#roomViewTranslationTarget").text(sourceText);
+    $("#roomViewTranslationTargetValue").val(sourceValue);
+
+}
+
 function papago(){
-    // function papago(source, targer, text){
+// function papago(source, targer, text){
 
-    // var papagoData = {
-    //     "source" : source,
-    //     "target" : targer,
-    //     "text" : text
-    // };
+    if($("#roomViewTranslationText").val().length == 0){
+        alert("번역할 말을 입력하세요");
+        return;
+    }
 
-    $.ajax({
-        type : "POST",
-        url : "https://openapi.naver.com/v1/papago/n2mt?source=ko&target=en&text=만나서 반갑습니다." ,
-        headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "X-Naver-Client-Id" : "Vd906NVULAoCUQOwpQQM",
-                    "X-Naver-Client-Secret" : "cM0898GJhV",
-					"Access-Control-Allow-Origin" : "*"},    
-        success: function(data, textStatus, xhr) {
-            
-            console.log(data)
-            console.log(textStatus)
-            console.log(xhr)
-            
-            
-        },
-        error:function(request,status,error){
-            alert("친구 초대에 실패했습니다.");
-            console.log(request);
-            console.log(status);
-            console.log(error);
-        }
-    });
+    var papagoData = {
+        "source" : $("#roomViewTranslationSourceValue").val(),
+        "target" : $("#roomViewTranslationTargetValue").val(),
+        "text" : $("#roomViewTranslationText").val()
+    };
+
+    console.log(papagoData)
+
+	$.ajax({
+		type : "POST",
+		url : "http://localhost:8645/" + "util/translation",    
+		headers: { "Content-Type": "application/json",
+					"Authorization" : "Basic " + accessToken,
+					"Access-Control-Allow-Credentials" : "true"},    
+		contentType : "application/json",
+		data : JSON.stringify(papagoData),
+		success: function(data, textStatus, xhr) {
+			$("#roomViewTranslationResult").text(data.result);
+		},
+		error:function(request,status,error){
+			console.log(request);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }

@@ -26,7 +26,6 @@
       <script src="contents/js/papago.js"></script>
     </head>
     <body>
-      <button onclick="papago()">papago</button>
       <button id="startSttttt" style="display:none"></button>
       <div id="roomViewBackground">
         <!-- 탑바 -->
@@ -43,7 +42,7 @@
           <span id="roomViewAddMember" onclick="openInvite()"><i class="fa-solid fa-user-plus"></i></span>
         </div>
         <!-- 평가 -->
-        <div id="roomViewApp">
+        <div id="roomViewApp" style="display:none">
           <div id="roomViewAppExit">
             <i id="closeRoomViewApp" class="fa-regular fa-rectangle-xmark" onclick="goToEvolution()"></i>
           </div>
@@ -80,27 +79,26 @@
           </div>
         </div>
         <!-- 채팅창 -->
-        <div id="roomViewChatting">
+        <div id="roomViewChatting" style="display:none">
           <div id="roomViewChattingReceive">
           </div>
           <div id="roomViewChattingSend">
             <input id="roomViewChattingSendMessage" type="text" onkeyup="onKeyUpChatting()"/>
-            <a id="roomViewChattingSendButton" onclick="sendChatting()"><i class="fa-regular fa-paper-plane"></i></a>    
-            <!-- <div id="roomViewChattingSendMessage">
-            </div> -->
+            <a id="roomViewChattingSendButton" onclick="sendChatting()"><i class="fa-regular fa-paper-plane"></i></a>
           </div>
-            <!-- <input></input>
-            <button>
-              <img src="/image/chat.svg" />
-            </button> -->
           </label>
-          <!-- <div id="roomViewChattingSend">
-            <input type="text" class="form-control" placeholder="Your Email">
-            <span class="input-group-text">전송</span>
-          </div> -->
         </div>
-        <div id="roomViewTranslation" style="display:none">
-          <div id="roomViewTranslationDo"></div>
+        <div id="roomViewTranslation" >
+          <div id="roomViewTranslationDo">
+            <span id="roomViewTranslationSource" class="roomViewTranslationLang" >영어</span>
+            <input  type="hidden" id="roomViewTranslationSourceValue" value="en" />
+            <button onclick="changeTranslationLang()"><-></button>
+            <span id="roomViewTranslationTarget" class="roomViewTranslationLang" >한국어</span>
+            <input  type="hidden" id="roomViewTranslationTargetValue" value="ko" />
+            <textarea id="roomViewTranslationText"></textarea>
+            <button onclick="papago()">번역</button><br>
+            <span id="roomViewTranslationResult"></span>
+          </div>
           <div id="roomViewTranslationSave">
             <div id="roomViewTranslationSaveWord">
               <div>WORD</div>
