@@ -65,94 +65,104 @@ function ConversationRoomFilter() {
           border: "3px solid #111",
           backgroundColor: "#FFD704",
           p: "32px",
+          display: "flex",
         }}
       >
-        <Box sx={{ mb: "48px" }}>
-          <span
+        <Box
+          sx={{
+            mr: "48px",
+            pr: "48px",
+            borderRight: "3px solid #111",
+            fontSize: "20px",
+            fontWeight: "bold",
+            fontFamily: "font-family: 'Noto Sans KR', sans-serif",
+          }}
+        >
+          <p
             css={css`
-              margin-right: 64px;
+              margin: 0 0 64px 0;
             `}
           >
             주제
-          </span>
-          <RoomSubjectsContainer />
-        </Box>
-
-        <Box sx={{ mb: "48px" }}>
-          <span
+          </p>
+          <p
             css={css`
-              margin-right: 64px;
+              margin: 0 0 64px 0;
             `}
           >
             시간
-          </span>
-          <span
-            css={css`
-              margin-right: 1rem;
-            `}
-          >
-            최소시간(분)
-          </span>
-          <Input
-            id="outlined-basic"
-            placeholder="5"
-            sx={{
-              backgroundColor: "#fff",
-              border: "3px solid #111",
-              pl: "1rem",
-              mr: "1rem",
-              width: "128px",
-              height: "45px",
-            }}
-            onChange={getMintime}
-          />
-          <span
-            css={css`
-              margin-right: 1rem;
-            `}
-          >
-            최대시간(분)
-          </span>
-          <Input
-            id="outlined-basic"
-            placeholder="30"
-            sx={{
-              backgroundColor: "#fff",
-              border: "3px solid #111",
-              pl: "1rem",
-              width: "128px",
-              height: "45px",
-            }}
-            onChange={getMaxtime}
-          />
-          <Button
-            variant="contained"
-            sx={{
-              ml: "16px",
-              border: "3px solid #111",
-              borderRadius: 0,
-              backgroundColor: "#98DA7A",
-              color: "#111",
-              "&:hover": {
-                backgroundColor: "#BAE8A4",
-              },
-            }}
-            onClick={sendFilter}
-          >
-            적용
-          </Button>
+          </p>
+          <p>입장가능여부</p>
         </Box>
-        <Box sx={{ mb: "48px", mr: "64px" }}>
-          <span
-            css={css`
-              margin-right: 64px;
-            `}
-          >
-            입장가능여부
-          </span>
-          <Checkbox onClick={getAvail} checked={checked} />
-        </Box>
-        {/* <Box
+        <Box>
+          <Box sx={{ mb: "48px" }}>
+            <RoomSubjectsContainer />
+          </Box>
+
+          <Box sx={{ mb: "48px" }}>
+            <span
+              css={css`
+                margin-right: 1rem;
+              `}
+            >
+              최소시간(분)
+            </span>
+            <Input
+              id="outlined-basic"
+              placeholder="5"
+              sx={{
+                backgroundColor: "#fff",
+                border: "3px solid #111",
+                pl: "1rem",
+                mr: "1rem",
+                width: "128px",
+                height: "45px",
+              }}
+              onChange={getMintime}
+            />
+            <span
+              css={css`
+                margin-right: 1rem;
+              `}
+            >
+              최대시간(분)
+            </span>
+            <Input
+              id="outlined-basic"
+              placeholder="30"
+              sx={{
+                backgroundColor: "#fff",
+                border: "3px solid #111",
+                pl: "1rem",
+                width: "128px",
+                height: "45px",
+              }}
+              onChange={getMaxtime}
+            />
+            <Button
+              variant="contained"
+              sx={{
+                ml: "16px",
+                border: "3px solid #111",
+                borderRadius: 0,
+                backgroundColor: "#98DA7A",
+                color: "#111",
+                fontFamily: "'Noto Sans KR', sans-serif",
+                fontWeight: "bold",
+                fontSize: "16px",
+                "&:hover": {
+                  backgroundColor: "#BAE8A4",
+                },
+              }}
+              onClick={sendFilter}
+            >
+              적용
+            </Button>
+          </Box>
+          <Box sx={{ mr: "64px" }}>
+            <Checkbox onClick={getAvail} checked={checked} />
+          </Box>
+          {/* <Box
           sx={{ display: "flex", flexDirection: "row-reverse" }}
           onClick={reset}
         >
@@ -171,6 +181,7 @@ function ConversationRoomFilter() {
             전체해제
           </Button>
         </Box> */}
+        </Box>
       </Box>
     </>
   );

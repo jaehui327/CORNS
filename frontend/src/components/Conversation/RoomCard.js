@@ -113,7 +113,7 @@ function RoomCard({ room, subject }) {
         >
           {value}
         </div>
-        <CardContent sx={{ height: 110 - 32 }}>
+        <CardContent sx={{ height: "100px", p: "0 16px" }}>
           <p
             gutterBottom
             variant="p"
@@ -122,6 +122,7 @@ function RoomCard({ room, subject }) {
               margin: 8px 0;
               font-size: 20px;
               font-weight: bold;
+              height: 50px;
             `}
           >
             {title}
@@ -155,6 +156,8 @@ function RoomCard({ room, subject }) {
             "&:hover": {
               backgroundColor: "#98DA7A",
             },
+            fontFamily: "'Noto Sans KR', sans-serif",
+
             fontSize: "20px",
             fontWeight: "bold",
           }}
@@ -194,7 +197,7 @@ function RoomCard({ room, subject }) {
         >
           {value}
         </div>
-        <CardContent sx={{ height: 110 - 32 }}>
+        <CardContent sx={{ height: "100px", p: "0 16px" }}>
           <p
             gutterBottom
             variant="p"
@@ -203,6 +206,7 @@ function RoomCard({ room, subject }) {
               margin: 8px 0;
               font-size: 20px;
               font-weight: bold;
+              height: 50px;
             `}
           >
             {title}
@@ -237,6 +241,7 @@ function RoomCard({ room, subject }) {
               backgroundColor: "#ddd",
             },
             cursor: "default",
+            fontFamily: "'Noto Sans KR', sans-serif",
             fontSize: "20px",
             fontWeight: "bold",
           }}
