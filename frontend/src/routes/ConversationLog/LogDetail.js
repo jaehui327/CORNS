@@ -8,7 +8,6 @@ import SelfEvaluation from "components/GlobalComponents/SelfEvaluation";
 import { Table, TableBody, Box, Button } from "@mui/material";
 import backgroundImage from "assets/backgroundImage.png";
 
-
 // open handler
 const openScript = (scriptUrl) => {
   if (!scriptUrl) {
@@ -22,7 +21,10 @@ const downloadScript = async (scriptUrl, roomNo, userId) => {
   if (!scriptUrl) {
     return;
   }
-  window.open(`${process.env.REACT_APP_HOST}/corns-log/script/${roomNo}/${userId}`, "_blank");
+  window.open(
+    `${process.env.REACT_APP_HOST}/corns-log/script/${roomNo}/${userId}`,
+    "_blank"
+  );
 };
 
 function LogDetail({ match }) {
@@ -47,7 +49,7 @@ function LogDetail({ match }) {
       setLog(data.room);
       setParticipants(data.memberList);
     } else if (status === 500) {
-      setLog({});
+      setLog(false);
     }
   }, [status]);
 
@@ -68,8 +70,6 @@ function LogDetail({ match }) {
           participants={participants}
         />
 
-        <hr />
-
         <Box
           sx={{
             display: "flex",
@@ -86,6 +86,13 @@ function LogDetail({ match }) {
               border: "2px solid #111",
               width: "30%",
               height: "50px",
+              borderRadius: "0",
+              fontWeight: "bold",
+              fontSize: "18px",
+              fontFamily: "Noto Sans KR",
+              "&:hover": {
+                backgroundColor: "#FFD704",
+              },
             }}
             onClick={() => openScript(log.scriptUrl)}
           >
@@ -95,16 +102,24 @@ function LogDetail({ match }) {
           <Button
             sx={{
               backgroundColor: "#024A9E",
-              color: "#111111",
+              color: "white",
               border: "2px solid #111",
               width: "30%",
               height: "50px",
+              borderRadius: "0",
+              fontWeight: "bold",
+              fontSize: "18px",
+              fontFamily: "Noto Sans KR",
+              "&:hover": {
+                backgroundColor: "#1766C3",
+              },
             }}
             onClick={() => downloadScript(log.scriptUrl, roomNo, 0)}
           >
             전체 스크립트 다운
           </Button>
         </Box>
+        
 
         <Box
           sx={{
@@ -124,6 +139,8 @@ function LogDetail({ match }) {
         </Box>
       </>
     );
+  } else if (log) {
+    return <p>중도퇴장하여 확인할 수 없는 방입니다.</p>;
   } else {
     return <p>확인할 수 없는 방입니다.</p>;
   }

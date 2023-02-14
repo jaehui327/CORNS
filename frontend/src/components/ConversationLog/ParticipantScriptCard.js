@@ -9,25 +9,6 @@ import { HandThumbsUp } from "react-bootstrap-icons";
 import { css } from "@emotion/react";
 
 
-// 수정 예정
-// const downloadScript = (scriptUrl) => {
-//   if (!scriptUrl) {
-//     return;
-//   }
-//   let fileName = '파일이름.txt';
-//   let output = "string 타입의 데이터";
-//   const element = document.createElement('a');
-//   const file = new Blob([output], {
-//     type: 'text/plain',
-//   });
-//   element.href = scriptUrl;
-//   element.download = fileName;
-//   document.body.appendChild(element);
-//   element.click();
-
-// }
-
-
 function ParticipantScriptCard({ roomNo, participant }) {
   const { userId, nickname, imgUrl, thumbCnt, speaking, scriptUrl } = participant;
 
@@ -83,9 +64,9 @@ function ParticipantScriptCard({ roomNo, participant }) {
           sx={{
             display: "flex",
             flexDirection: "column",
-            width: "50%",
+            width: "80%",
             gap: "8px",
-            margin: "0 0 30px 0",
+            margin: "15px 0 20px 0",
           }}
         >
           <Button
@@ -93,6 +74,15 @@ function ParticipantScriptCard({ roomNo, participant }) {
               backgroundColor: "#FFC804",
               color: "#111111",
               border: "2px solid #111",
+              width: "100%",
+              height: "50px",
+              borderRadius: "0",
+              fontWeight: "bold",
+              fontSize: "16px",
+              fontFamily: "Noto Sans KR",
+              "&:hover": {
+                backgroundColor: "#FFD704",
+              },
             }}
             onClick={() => openScript(scriptUrl)}
           >
@@ -102,9 +92,17 @@ function ParticipantScriptCard({ roomNo, participant }) {
           <Button
             sx={{
               backgroundColor: "#024A9E",
-              color: "#111111",
+              color: "white",
               border: "2px solid #111",
               width: "100%",
+              height: "50px",
+              borderRadius: "0",
+              fontWeight: "bold",
+              fontSize: "16px",
+              fontFamily: "Noto Sans KR",
+              "&:hover": {
+                backgroundColor: "#1766C3",
+              },
             }}
             onClick={() => downloadScript(scriptUrl, roomNo, userId)}
           >
