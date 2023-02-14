@@ -92,7 +92,8 @@ function LogFilter() {
         backgroundColor: "#FFD704",
         p: "32px",
         display: "flex",
-        margin: "30px 0"
+        margin: "30px 0",
+        fontFamily: "Noto Sans KR",
       }}
     >
       <Box
@@ -142,7 +143,7 @@ function LogFilter() {
         </Box>
 
         {/* 시간 */}
-        <Box sx={{ mb: "48px" }}>
+        <Box sx={{ mb: "48px", fontFamily: "Noto Sans KR" }}>
           <span
             css={css`
               margin-right: 1rem;
@@ -187,6 +188,7 @@ function LogFilter() {
               border: "3px solid #111",
               borderRadius: 0,
               backgroundColor: "#3C90F2",
+              fontFamily: "Noto Sans KR",
               color: "#111",
               "&:hover": {
                 backgroundColor: "#7DB6FA",
@@ -252,7 +254,6 @@ function LogFilter() {
               onChange={getThumb}
             />
           </span>
-
         </Box>
       </Box>
     </Box>
