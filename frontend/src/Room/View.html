@@ -172,6 +172,11 @@
 
         let accessToken= urlParams.get("accessToken");
 
+        //삭제예정
+        $("#userId").val(userid);
+        $("#accessToken").val(accessToken);
+        //삭제예정
+
         if(isNull(accessToken) || isNull(session)){
           // alert("잘못된 접근입니다.");
           // if(window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")){
