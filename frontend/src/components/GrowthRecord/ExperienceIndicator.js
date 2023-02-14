@@ -74,7 +74,8 @@ function ExperienceIndicator({}) {
                     font-weight: bold;
                   `}
                 >
-                  {nickName}님의 경험치는 상위 {data.percentile}% 입니다.
+                  {nickName}님의 경험치는
+                  <br /> 상위 {data.percentile}% 입니다.
                 </p>
               )}
             </Box>
