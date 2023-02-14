@@ -458,12 +458,17 @@ function outRoom(rUserId){	// 떠나는 사람 방 번호 받는다.
 			else{
 				window.location.href = "https://corns.co.kr:4438/conversation";
 			}
-		
 		},
 		error:function(request,status,error){
 			console.log(request);
 			console.log(status);
 			console.log(error);
+			if(window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")){
+				window.location.href = "https://localhost:3000/conversation";
+			}
+			else{
+				window.location.href = "https://corns.co.kr:4438/conversation";
+			}
 		}
 	});
 }
