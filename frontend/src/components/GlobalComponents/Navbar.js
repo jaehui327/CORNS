@@ -37,7 +37,7 @@ function Navbar() {
             justify-content: space-between;
             align-items: center;
             padding: 0 36px;
-            width: 1615px;
+            width: 1620px;
             height: 60px;
             background: #ffc804;
             border: 3px solid #111;
