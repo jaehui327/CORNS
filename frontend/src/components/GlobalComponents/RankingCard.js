@@ -18,11 +18,11 @@ export default function RankingCard({ rankInfo, customWidth }) {
     transKorean = "성실";
     bgColor = "#FFD704";
     unit = "exp";
-  } else if (rankType === 2) {
+  } else if (rankType === 3) {
     transKorean = "따봉";
     bgColor = "#3C90F2";
     unit = "개";
-  } else if (rankType === 3) {
+  } else if (rankType === 2) {
     transKorean = "수다";
     bgColor = "#67C73A";
     unit = "분";
