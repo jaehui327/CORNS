@@ -23,10 +23,10 @@ function Community() {
       css={css`
         margin: 0 105px;
       `}
-    > 
+    >
       <Navbar />
 
-      <Grid container spacing={1} sx={{margin: '124px 0 0 0'}}>
+      <Grid container spacing={1} sx={{ margin: "64px 0 0 0" }}>
         <Grid item xs={2}>
           <Sidebar Items={SidebarItems} />
         </Grid>
@@ -47,8 +47,12 @@ function Community() {
               />
               <Route exact path="/community/friends" component={Friends} />
 
-              <Route exact path="/community/invitation" component={Invitation} />
-              
+              <Route
+                exact
+                path="/community/invitation"
+                component={Invitation}
+              />
+
               <Redirect to="/NotFound" />
             </Switch>
           </div>
