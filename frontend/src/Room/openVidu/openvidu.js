@@ -335,7 +335,6 @@ function setMember(){
 		},
 		error:function(request,status,error){
 			console.log("setMember Error")
-			// alert("방 퇴장처리 실패 : " + request.statusText);
 			console.log(request);
 			console.log(status);
 			console.log(error);
@@ -424,15 +423,11 @@ function intoRoom(connectionId, recordId, token){
 			console.log(request);
 			console.log(status);
 			console.log(error);
-			if(request.status === 409){
-				console.log("이미 접속완료된 회원");
-				if(window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")){
-					window.location.href = "https://localhost:3000/conversation";
-				}
-				else{
-					window.location.href = "https://corns.co.kr:4438/conversation";
-				}
-
+			if(window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")){
+				window.location.href = "https://localhost:3000/conversation";
+			}
+			else{
+				window.location.href = "https://corns.co.kr:4438/conversation";
 			}
 		}
 	});
@@ -466,7 +461,6 @@ function outRoom(rUserId){	// 떠나는 사람 방 번호 받는다.
 		
 		},
 		error:function(request,status,error){
-			// alert("방 퇴장처리 실패 : " + request.statusText);
 			console.log(request);
 			console.log(status);
 			console.log(error);
@@ -634,7 +628,6 @@ function startConversation(){
 			sendToOpenvidu("start", "data");
 		},
 		error:function(request,status,error){
-			// alert("방 퇴장처리 실패 : " + request.statusText);
 			console.log(request);
 			console.log(status);
 			console.log(error);
@@ -698,7 +691,6 @@ function initRoomInfo(){
 			console.log(xhr);
 		},
 		error:function(request,status,error){
-			// alert("방 퇴장처리 실패 : " + request.statusText);
 			console.log(request);
 			console.log(status);
 			console.log(error);
@@ -817,9 +809,6 @@ function outAllRoom(){
 			else{
 				makeOrIntoRoom();
 			}
-
-
-	
 
 			console.log(data);
 			console.log(textStatus);
