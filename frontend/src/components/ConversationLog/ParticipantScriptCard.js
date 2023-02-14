@@ -9,6 +9,7 @@ import { HandThumbsUp } from "react-bootstrap-icons";
 import { css } from "@emotion/react";
 
 
+// 수정 예정
 const downloadScript = (scriptUrl) => {
   if (!scriptUrl) {
     return;
@@ -28,11 +29,7 @@ const downloadScript = (scriptUrl) => {
 
 
 function ParticipantScriptCard({ participant }) {
-  // scriptUrl 추가해야함!!!!!!!!!!!!
-  const { userId, nickname, imgUrl, thumbCnt, speaking } = participant;
-
-  // dummy url
-  const scriptUrl = "https://corns.co.kr:4435/uploads/scripts/316_1106.html";
+  const { userId, nickname, imgUrl, thumbCnt, speaking, scriptUrl } = participant;
 
   return (
     <>
