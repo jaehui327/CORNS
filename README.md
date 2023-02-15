@@ -74,6 +74,22 @@ CORNS는 그러한 니즈를 충족하기 위해 탄생한 회상 영어 회화 
 - Lombok
 - MySQL
 
+#### package 구조
+
+```
+com.w6w.corns
+  ├── config
+  ├── controller
+  ├── domain
+  │   ├── entity
+  │   └── repository
+  ├── domain
+  │   └── simple
+  ├── dto
+  ├── service
+  └── util
+```
+
 ### Frontend
 
 - Visual Studio Code IDE
@@ -143,14 +159,14 @@ CORNS는 그러한 니즈를 충족하기 위해 탄생한 회상 영어 회화 
 ## 💻 프로젝트 산출물
 
 - [회의록](https://zhilogs.notion.site/W6W-2d2f00a857d54105a1c079c08439b69a)
-- 컨벤션
-- IA
-- WBS
+- [컨벤션](https://zhilogs.notion.site/540cb8f21b474743b1c0925584538b67)
+- [IA](./src/ia.png)
+- [WBS](https://docs.google.com/spreadsheets/d/1bioYl9ew_S9c9JJHP2FEnGKV43hS11z-UsIPmI8eZFM/edit#gid=438224077)
 - [목업디자인](https://www.figma.com/file/aGXa737bSDqDJHShqLEctZ/%ED%95%B4%EC%BB%A4%ED%86%A4?node-id=382%3A1751&t=sU3iVB7GiWPuY76v-1)
-- 기능명세
+- [기능명세](https://zhilogs.notion.site/764b2e39eac84c428b2762838aef1370?v=2c08e662f5274e67aa170abac3c34772)
 - ERD
-- API 명세
-- QA
+- [API 명세](https://zhilogs.notion.site/2654f0708fc6488a8f6859a4daf15307?v=3cf24eae71544232b9b191fe8ca39549)
+- [QA](https://zhilogs.notion.site/wish-83521e9c3bef4d19b6c63def5caf3baa)
 - [중간발표자료](./src/0127.pdf)
 - 최종발표자료
 
