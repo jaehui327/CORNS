@@ -679,6 +679,7 @@ function startConversation() {
       console.log(data);
       if (xhr.status == 200) {
         sendToOpenvidu("start", "data");
+        $("#roomViewPlay").hide();
       } else {
         alert("대화를 시작할수없습니다.");
       }
