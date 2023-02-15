@@ -43,7 +43,7 @@
           <span id="startSttttt"><i class="fa-solid fa-bolt"></i></span>
         </div>
         <!-- 평가 -->
-        <div id="roomViewApp" style="display: none;">
+        <div id="roomViewApp">
           <div id="roomViewAppExit">
             <i id="closeRoomViewApp" class="fa-regular fa-rectangle-xmark" onclick="goToEvolution()"></i>
           </div>
@@ -59,7 +59,7 @@
               </div>
               <div class="roomViewAppMemberBtnContainer">
                 <label for="selectBestMember1">투표하기</label>
-                <input type="radio" name="selectBestMember" id="selectBestMember1"/>
+                <input type="radio" name="selectBestMember" id="selectBestMember1" onchange="setBestDisable();"/>
               </div>
             </div>
             <div class="roomViewAppMember">
@@ -69,7 +69,7 @@
               </div>
               <div class="roomViewAppMemberBtnContainer">
                 <label for="selectBestMember2">투표하기</label>
-                <input type="radio" name="selectBestMember" id="selectBestMember2"/>
+                <input type="radio" name="selectBestMember" id="selectBestMember2" onchange="setBestDisable();"/>
               </div>
             
             </div>
@@ -80,7 +80,7 @@
               </div>
               <div class="roomViewAppMemberBtnContainer">
                 <label for="selectBestMember3">투표하기</label>
-                <input type="radio" name="selectBestMember" id="selectBestMember3"/>
+                <input type="radio" name="selectBestMember" id="selectBestMember3" onchange="setBestDisable();"/>
               </div>
             </div>
             <div class="roomViewAppMember">
@@ -90,7 +90,7 @@
               </div>
               <div class="roomViewAppMemberBtnContainer">
                 <label for="selectBestMember4">투표하기</label>
-                <input type="radio" name="selectBestMember" id="selectBestMember4"/>
+                <input type="radio" name="selectBestMember" id="selectBestMember4" onchange="setBestDisable();"/>
               </div>
             </div>
           </div>

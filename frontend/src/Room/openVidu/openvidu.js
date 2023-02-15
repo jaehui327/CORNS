@@ -974,3 +974,7 @@ function endConversation() {
     },
   });
 }
+
+function setBestDisable(){
+  $('input[name$="selectBestMember"]').attr("disabled","disabled");
+}
