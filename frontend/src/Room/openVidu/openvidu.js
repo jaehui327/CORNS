@@ -830,10 +830,12 @@ function VideoToggle() {
 }
 
 function toogleChatting() {
-  if ($("#roomViewTranslation").css("display") == "none") {
-    $("#roomViewTranslation").css("display", "block");
+  if ($("#roomViewChatting").css("display") == "none") {
+    $("#roomViewChatting").css("display", "block");
+    $("#roomViewChattingDisplay").html(`<i class="fa-solid fa-message"></i>`);
   } else {
-    $("#roomViewTranslation").css("display", "none");
+    $("#roomViewChatting").css("display", "none");
+    $("#roomViewChattingDisplay").html(`<i class="fa-solid fa-pen-to-square"></i>`);
   }
 }
 
