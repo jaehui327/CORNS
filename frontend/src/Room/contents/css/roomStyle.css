@@ -1,0 +1,449 @@
+* {
+  font-family: "Noto Sans KR";
+}
+
+/* 나중에 공통 css로 뺄 예정 */
+#roomViewBackground {
+  position: absolute;
+  background-image: url("../img/background.png");
+  width: calc(100vw - 2vw - 2vw);
+  height: calc(100vh - 4vh - 4vh);
+  /* 비교해보기 쉽게 calc 사용. 최종결정되면 숫자로 변경 예정 */
+  margin-left: 2vw;
+  margin-right: 2vw;
+  margin-top: 4vh;
+  margin-bottom: 4vh;
+  /* z-index: -1; */
+  border: 3px solid #111;
+}
+
+#roomViewTopBar {
+  position: absolute;
+  left: 2vw;
+  top: 3vh;
+  height: 7vh;
+  width: 71vw;
+  border: 3px solid #111;
+  background-color: white;
+}
+
+#roomViewTopBar > span {
+  font-size: large;
+  line-height: 7vh;
+  vertical-align: middle;
+  margin-left: 2vw;
+}
+
+#roomViewTopBar > span > i {
+  cursor: pointer;
+}
+
+#roomViewApp {
+  position: absolute;
+  border: 3px solid #111;
+  padding: 32px 32px;
+  width: 1600px;
+  height: 700px;
+  top: 10%;
+  left: 6%;
+  z-index: 100;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+#roomViewAppTimerContainer {
+  width: 50px;
+  height: 50px;
+  animation: moveBorder alternate-reverse 1s infinite;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#roomViewAppTimer {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@keyframes moveBorder {
+  0% {
+    border: 1px solid #ffe767;
+  }
+  100% {
+    border: 11px solid #ffa903;
+  }
+}
+
+#roomViewAppTitle {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 32px;
+  font-weight: bold;
+  margin: 0 0 32px 0;
+}
+
+#roomViewAddMemberContainer {
+  width: 100%;
+  height: 70%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 24px;
+}
+
+#roomViewAppExit {
+  font-size: 32px;
+  text-align: right;
+}
+
+.roomViewAppMember {
+  border: 3px solid #111;
+  display: none;
+}
+
+.roomViewAppMemberImage {
+  width: 350px;
+  height: 250px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* border: 1px solid black; */
+}
+
+.roomViewAppMemberImage > img {
+  width: 70%;
+  object-fit: contain;
+  border: 3px solid #111;
+  border-radius: 50%;
+}
+
+.roomViewAppMemberImage > span {
+  margin-top: 16px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.roomViewAppMemberBtnContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 48px;
+}
+
+.roomViewAppMemberBtnContainer > label {
+  cursor: pointer;
+  padding-bottom: 16px;
+  font-size: 24px;
+}
+.roomViewAppMemberBtnContainer > input {
+  cursor: pointer;
+}
+
+#video-container {
+  position: absolute;
+}
+
+.roomViewUser {
+  position: absolute;
+  width: 640; /*35vw;*/
+  height: 360; /*37.5vh;*/
+  border: 3px solid #111;
+  background-color: white;
+}
+
+#roomViewUser1 {
+  margin-left: 3vw;
+  margin-top: 11vh;
+}
+
+#roomViewUser2 {
+  margin-left: 3vw;
+  margin-top: calc(12vh + 37.5vh + 1vh);
+}
+
+#roomViewUser3 {
+  margin-left: calc(2vw + 35vw + 1vw);
+  margin-top: 11vh;
+}
+
+#roomViewUser4 {
+  margin-left: calc(2vw + 35vw + 1vw);
+  margin-top: calc(12vh + 37.5vh + 1vh);
+}
+
+#roomViewChatting {
+  position: absolute;
+  margin-left: calc(2vw + 71vw + 2vw);
+  margin-top: 4vh;
+  border: 3px solid #111;
+  background-color: white;
+  width: 19vw;
+  height: 84vh;
+}
+
+#roomViewLastTimer {
+  width: 10px;
+  height: 10px;
+  border: 3px solid #111;
+  box-sizing: border-box;
+  background-color: red;
+  color: white;
+  padding: 4px 12px;
+}
+
+#roomViewChattingReceive {
+  width: calc(19vw - 2vw);
+  height: 65vh;
+  border: 3px solid #111;
+  box-sizing: border-box;
+  margin-left: 1vw;
+  margin-top: 2vh;
+  /* margin-left: calc(0.5vw - 1px);
+    margin-bottom: 0.5vh; */
+  overflow: auto;
+}
+
+#roomViewChattingSend {
+  width: calc(19vw - 2vw);
+  height: 12.5vh;
+  margin-left: 1vw;
+  margin-top: 16px;
+  border: 3px solid #111;
+  box-sizing: border-box;
+}
+
+#roomViewChattingSendMessage {
+  display: block;
+  width: 100%;
+  height: 9vh;
+  border: 0;
+  word-wrap: break-word;
+}
+
+#roomViewChattingSendMessage:focus {
+  outline: none;
+}
+
+#roomViewChattingSendButton {
+  font-size: 20px;
+  margin-right: 8px;
+  text-align: right;
+  cursor: pointer;
+  color: #1766c3;
+}
+
+#roomViewTranslation {
+  position: absolute;
+  margin-left: calc(2vw + 71vw + 2vw);
+  margin-top: 4vh;
+  border: 3px solid #111;
+  box-sizing: border-box;
+  background-color: white;
+  width: 19vw;
+  height: 84vh;
+}
+
+#roomViewTranslationDo {
+  border: 3px solid #111;
+  box-sizing: border-box;
+  margin-left: 1vw;
+  margin-top: 1.5vh;
+  width: 17vw;
+  height: calc(84vh / 2 - 3vh);
+  text-align: center;
+  background-color: #fff;
+  padding: 24px;
+}
+
+#roomViewTranslationHeader {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.roomViewTranslationLang {
+  width: 120px;
+  box-sizing: border-box;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+#roomViewTranslationChange {
+  border: 3px solid #111;
+  box-sizing: border-box;
+  padding: 4px 16px;
+  background-color: #98da7a;
+}
+#roomViewTranslationChange:hover {
+  background-color: #b8ee9f;
+}
+
+#roomViewTranslationText {
+  width: 100%;
+  height: 13vh;
+  border: 3px solid #111;
+  box-sizing: border-box;
+  padding: 8px;
+}
+
+#roomViewTranslationDoBtn {
+  border: 0;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 0;
+  background-color: #98da7a;
+  border-left: 3px solid #111;
+  border-right: 3px solid #111;
+  font-weight: bold;
+}
+
+#roomViewTranslationResult {
+  width: 100%;
+  height: 13vh;
+  border: 3px solid #111;
+  box-sizing: border-box;
+  text-align: left;
+  padding: 8px;
+}
+
+#roomViewTranslationSave {
+  border: 3px solid #111;
+  box-sizing: border-box;
+  margin-left: 1vw;
+  margin-top: 1.5vh;
+  width: 17vw;
+  height: calc(84vh / 2 - 3vh);
+  padding: 24px;
+}
+
+#roomViewTranslationSaveWord {
+  border: 3px solid #111;
+  box-sizing: border-box;
+  width: 100%;
+  height: 14vh;
+}
+
+#roomViewTranslationSaveWord > div {
+  padding-left: 8px;
+  border-right: 3px solid #111;
+  border-bottom: 3px solid #111;
+  box-sizing: border-box;
+  width: calc(15vw / 3);
+  height: calc((84vh / 4 - 4vh) / 6);
+  font-weight: bold;
+}
+
+#roomViewTranslationSaveSave {
+  margin-top: 8px;
+  border: 3px solid #111;
+  box-sizing: border-box;
+  width: 100%;
+  height: 14vh;
+}
+
+#roomViewTranslationSaveSave > div {
+  padding-left: 8px;
+  border-right: 3px solid #111;
+  border-bottom: 3px solid #111;
+  box-sizing: border-box;
+  width: calc(15vw / 3);
+  height: calc((84vh / 4 - 4vh) / 6);
+  font-weight: bold;
+}
+
+#saveWord {
+  margin-top: 8px;
+  float: right;
+  font-weight: bold;
+  border: 3px solid #111;
+  box-sizing: border-box;
+  padding: 4px 16px;
+  background-color: #98da7a;
+}
+
+._word {
+  width: 100%;
+  height: 9vh;
+  border: 0px solid black;
+}
+._word:focus {
+  outline: none;
+}
+
+#friendList {
+  width: 25vw;
+  height: 40vh;
+  border: 3px solid #111;
+  background-color: #fff;
+  position: absolute;
+  left: 45%;
+  top: calc(3vh + 55px);
+  overflow-y: scroll;
+}
+
+#friendList > ul {
+  list-style: none;
+  padding: 0 8px;
+}
+
+#friendList > ul > li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 2px solid #111;
+}
+
+#friendList > ul > li > img {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #111;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#friendList > ul > li > p {
+  margin: 0;
+}
+
+#friendList > ul > li > button {
+  border: 2px solid #111;
+  background-color: #98da7a;
+  padding: 8px 8px;
+}
+
+#friendList > ul > li > button:hover {
+  background-color: #5ab133;
+}
+
+/* #roomViewChattingSendMessage {
+    width: calc(19vw - 1vw);
+    height: calc(6vh - 0.5vh);
+    border: 1px solid black;
+    margin-left: calc(0.5vw - 1px);
+    margin-bottom: 0.5vh;
+} */
+
+/* #roomViewChattingSend > input {
+    float: left; 
+    width: 80%;
+}
+#roomViewChattingSend > span {
+    float: left; 
+    width: 20%;
+} */
+
+.userData {
+  background-color: #11111175;
+  width: 100px;
+  border: 1px solid #111;
+  color: white;
+  padding: 8px 16px;
+  font-weight: bold;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+}

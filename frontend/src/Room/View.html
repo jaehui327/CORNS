@@ -1,0 +1,268 @@
+<html>
+    <head>
+      <meta charset="utf-8" />
+      <link rel="icon" type="image/png" sizes="96x96" href="/public/favicon-96x96.png">
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="theme-color" content="#000000" />
+      <meta
+        name="description"
+        content="Web site created using create-react-app"
+      />
+      <link rel="apple-touch-icon" href="/public/logo192.png" />
+      <link rel="manifest" href="/public/manifest.json" />
+      <title>CORNS</title>
+      <!-- Bootstrap -->
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <!-- Bootstrap -->
+      <!-- <link rel="stylesheet" href="openVidu/openvidu-style.css" type="text/css" media="screen"> -->
+      <script src="https://kit.fontawesome.com/b09b9ec2e7.js" crossorigin="anonymous"></script>
+      <script src="openVidu/openvidu-browser-2.25.0.js"></script>
+      <link rel="stylesheet" href="contents/css/roomStyle.css">
+      <script src="openVidu/openvidu.js"></script>
+      <script src="contents/js/invite.js"></script>
+      <script src="contents/js/papago.js"></script>
+    </head>
+    <body>
+      <!-- <button id="startSttttt" style="visibility:hidden"></button> -->
+      <div id="roomViewBackground">
+        <!-- 탑바 -->
+        <div id="roomViewTopBar">
+          <span id="roomViewTitle"><!--🎈 제목이 들어갈 자리입니다. [일상]--></span>
+          <span id="roomViewTimer"><!--10:00--></span>
+          <span id="roomViewMemberCount"><!--2/3--></span>
+          <span id="roomViewMike" onclick="MikeToggle()"><i class="fa-solid fa-microphone"></i></span>
+          <span id="roomViewVideo" onclick="VideoToggle()"><i class="fa-solid fa-video"></i></span>
+          <span id="roomViewPlay" onclick="startConversation()" hidden><i class="fa-solid fa-play"></i></span>
+          <span id="roomViewChattingDisplay" onclick="toogleChatting()"> <i class="fa-solid fa-pen-to-square"></i></span>
+          <!-- <span id="roomViewChattingDisplay" onclick="toogleChatting()"><i class="fa-solid fa-message"></i> </span> -->
+          <span id="roomViewOut" onclick="outRoomBtn()"><i class="fa-solid fa-right-from-bracket"></i></span>
+          <span id="roomViewLastTimer">10:00</span>
+          <span id="roomViewAddMember" onclick="openInvite()"><i class="fa-solid fa-user-plus"></i></span>
+          <span id="startSttttt" style="color: white;"><i class="fa-solid fa-bolt"></i></span>
+        </div>
+        <!-- 평가 -->
+        <div id="roomViewApp" style="display: none;">
+          <div id="roomViewAppExit">
+            <i id="closeRoomViewApp" class="fa-regular fa-rectangle-xmark" onclick="goToEvolution()"></i>
+          </div>
+          <div id="roomViewAppTimerContainer">
+            <div id="roomViewAppTimer"></div>
+          </div>
+          <div id="roomViewAppTitle">이번 대화에서 따봉 멤버를 뽑아주세요!</div>  
+          <div id="roomViewAddMemberContainer">
+            <div class="roomViewAppMember">
+              <div class="roomViewAppMemberImage">
+                <img id="roomViewAppMember1img" />
+                <span id="roomViewAppMember1name"></span>
+              </div>
+              <div class="roomViewAppMemberBtnContainer">
+                <label for="selectBestMember1">투표하기</label>
+                <input type="radio" name="selectBestMember" id="selectBestMember1" onchange="setBestDisable();"/>
+              </div>
+            </div>
+            <div class="roomViewAppMember">
+              <div class="roomViewAppMemberImage">
+                <img id="roomViewAppMember2img"/>
+                <span id="roomViewAppMember2name"></span>
+              </div>
+              <div class="roomViewAppMemberBtnContainer">
+                <label for="selectBestMember2">투표하기</label>
+                <input type="radio" name="selectBestMember" id="selectBestMember2" onchange="setBestDisable();"/>
+              </div>
+            
+            </div>
+            <div class="roomViewAppMember">
+              <div class="roomViewAppMemberImage">
+                <img id="roomViewAppMember3img"/>
+                <span id="roomViewAppMember3name"></span>
+              </div>
+              <div class="roomViewAppMemberBtnContainer">
+                <label for="selectBestMember3">투표하기</label>
+                <input type="radio" name="selectBestMember" id="selectBestMember3" onchange="setBestDisable();"/>
+              </div>
+            </div>
+            <div class="roomViewAppMember">
+              <div class="roomViewAppMemberImage">
+                <img id="roomViewAppMember4img"/>
+                <span id="roomViewAppMember4name"></span>
+              </div>
+              <div class="roomViewAppMemberBtnContainer">
+                <label for="selectBestMember4">투표하기</label>
+                <input type="radio" name="selectBestMember" id="selectBestMember4" onchange="setBestDisable();"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 번역 -->
+        <div id="roomViewTranslation">
+          <div id="roomViewTranslationDo">
+            <div id="roomViewTranslationHeader">
+              <span id="roomViewTranslationSource" class="roomViewTranslationLang" >영어</span>
+              <button id="roomViewTranslationChange" onclick="changeTranslationLang()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
+              </svg></button>
+              <span id="roomViewTranslationTarget" class="roomViewTranslationLang" >한국어</span>
+            </div>
+            <input  type="hidden" id="roomViewTranslationSourceValue" value="en" />
+            <input  type="hidden" id="roomViewTranslationTargetValue" value="ko" />
+            <textarea id="roomViewTranslationText"></textarea>
+            <button id="roomViewTranslationDoBtn" onclick="papago()">번역</button>
+            <div id="roomViewTranslationResult"></div>
+          </div>
+          <div id="roomViewTranslationSave">
+            <div id="roomViewTranslationSaveWord">
+              <div>WORD</div>
+              <input id="q_word" class="_word"/>
+            </div>
+            <div id="roomViewTranslationSaveSave">
+              <div>MEANING </div>   
+              <input id="a_word" class="_word"/>          
+            </div>
+            <button id="saveWord" onclick="saveWord();">저장</button>
+          </div>
+        </div>
+        <!-- 채팅창 -->
+        <div id="roomViewChatting" style="display:none">
+          <div id="roomViewChattingReceive">
+          </div>
+          <div id="roomViewChattingSend">
+            <textarea id="roomViewChattingSendMessage" onkeyup="onKeyUpChatting()"></textarea>
+            <div id="roomViewChattingSendButton" onclick="sendChatting()"><i class="fa-regular fa-paper-plane"></i></div>
+          </div>
+          </label>
+        </div>
+        <div id="roomViewUserList">
+          <!-- 유저1 -->
+          <div id="roomViewUser1" class="roomViewUser">
+            <!-- <p style="background-color: gray; width:100px;  border: 1px solid #111;">Ucal</p> -->
+          </div>
+          <!-- 유저2 -->
+          <div id="roomViewUser2" class="roomViewUser"></div>
+          <!-- 유저3 -->
+          <div id="roomViewUser3" class="roomViewUser"></div>
+          <!-- 유저4 -->
+          <div id="roomViewUser4" class="roomViewUser"></div>
+        </div>
+        <div id="friendList" style="display:none;">
+          <ul>
+            <!-- <li>
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZCbmyXv0Ot7qnc0pVi68_ptYAi7jnpcCUEQ&usqp=CAU" alt="user-image" />
+              <p>nickname #1530</p>
+              <button>초대하기</button>
+            </li>
+            <li>
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZCbmyXv0Ot7qnc0pVi68_ptYAi7jnpcCUEQ&usqp=CAU" alt="user-image" />
+              <p>nickname #1530</p>
+              <button>초대하기</button>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+      <input type="hidden" id="sessionId" />
+      <input type="hidden" id="userName" />
+      <input type="hidden" id="jRoomNo" />
+      <input type="hidden" id="userId" />
+      <input type="hidden" id="subject" />
+      <input type="hidden" id="type" />
+      <input type="hidden" id="time" />
+      <input type="hidden" id="count" />
+      <input type="hidden" id="accessToken" />
+      
+    </body>
+    <script type="text/javascript">
+      
+      function isNull(value){
+        if( value == "null" || value == "" || value == null || value == undefined || 
+        ( value != null && typeof value == "object" && !Object.keys(value).length ) ){
+          return true;
+        }
+
+        return false; // null 아니면 false
+      }
+
+      $(document).ready(function(){
+        // 시작부분
+        // 파라미터에서 세션값, 자기 연결값 가져오기
+        let urlParams = new URL(location.href).searchParams;
+
+        let session = urlParams.get('session');
+        let username = urlParams.get('username'); // sessionstorage의 nickname
+        let userid = urlParams.get('userId');     // sessionstorage의 userId
+        let jroomno = urlParams.get('jroomno');
+        // alert('session = ' + session)
+        // 쫑알룸 방 번호를 받거나 아니면 정보를 받아서 방을 생성해준다.
+        //subject, type, time, count
+                let subject = urlParams.get('subject');
+                let type = urlParams.get('type');
+                let time = urlParams.get('time');
+                let count = urlParams.get('count');
+
+        let accessToken= urlParams.get("accessToken");
+
+        if(isNull(accessToken) || isNull(session)){
+          // alert("잘못된 접근입니다.");
+          // if(window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")){
+          //   window.location.href = "https://localhost:3000/conversation";
+          // }
+          // else{
+          //   window.location.href = "https://corns.co.kr:4438/conversation";
+          // }
+        }
+        else{
+          // 이슈 없이 커넥션이랑 세션 다 들어옴!
+          $("#sessionId").val(session);
+          $("#userName").val(username);
+          $("#jRoomNo").val(jroomno);
+          $("#userId").val(userid);
+          
+          $("#subject").val(subject);
+          $("#type").val(type);
+          $("#time").val(time);
+          $("#count").val(count);
+
+          $("#accessToken").val(accessToken);
+          
+          joinSession();          
+          
+          // if(jroomno){
+          //   initRoomInfo();
+          // }
+          // initRoomInfo();
+
+        }
+
+
+      });
+    </script>
+
+    <script>
+    window.onload = function() {
+      console.log("[window onload] : [start]");
+      console.log("");
+  
+      /* 브라우저 닫기 이벤트 감지 실시 [1]*/
+      window.addEventListener("beforeunload", function (event) {
+      console.log("[window beforeunload] : [start]");
+      console.log("");                    
+                // event.returnValue = "브라우저를 종료하시겠습니까?";                
+        outRoom($("#userId").val());
+        alert("종료")
+      });            
+      
+    };
+    
+    
+        /* 브라우저 닫기 이벤트 감지 실시 [2] */
+      window.onbeforeunload = function() {
+        console.log("[window onbeforeunload] : [start]");
+        console.log("");
+  
+        alert("종료")
+        outRoom($("#userId").val());
+            // return "브라우저를 종료하시겠습니까?";
+      };     
+    </script>
+</html>
