@@ -1,1 +1,4 @@
 /.metadata/
+/frontend/.env
+**/*.properties
+
