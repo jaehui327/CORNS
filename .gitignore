@@ -1,4 +1,4 @@
 /.metadata/
-/frontend/.env
-**/*.properties
-
+.env
+application.properties
+application-oauth.properties
