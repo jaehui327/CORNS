@@ -176,7 +176,10 @@ com.w6w.corns
 - [API 명세](https://zhilogs.notion.site/2654f0708fc6488a8f6859a4daf15307?v=3cf24eae71544232b9b191fe8ca39549)
 - [QA](https://zhilogs.notion.site/wish-83521e9c3bef4d19b6c63def5caf3baa)
 - [중간발표자료](./src/0127.pdf)
-- 최종발표자료
+- [최종발표자료](./src/0217.pptx)
+- [프로젝트 배포 가이드](/exec/3_1.deploy.md)
+- [OpenVidu 배포 가이드](/exec/3_2.openvidu_deploy.md)
+- [환경 변수 설정](/exec/2.env_setting.md)
 
 ---
 
